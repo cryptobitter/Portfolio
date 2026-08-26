@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aditya Rajput — Backend &amp; AI Engineer</title>
+<meta name="description" content="Aditya Rajput — backend-focused CS undergrad building AI-powered systems across legal-tech, healthcare and safety.">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⌁</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div id="scrollProgress"></div>
+
+<!-- Custom cursor -->
+<div id="cursorDot"></div>
+<div id="cursorRing"></div>
+
+<!-- Background ambient orbs -->
+<div class="bg-orbs" aria-hidden="true"></div>
+
+<!-- Matrix rain -->
+<canvas id="matrixCanvas" aria-hidden="true"></canvas>
+
+<!-- CRT scanline -->
+<div class="scanline" aria-hidden="true"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="top">
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand">aditya<span class="dim">@</span>rajput<span class="cursor-blink">_</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#whoami" data-section="whoami">whoami</a>
+      <a href="#experience" data-section="experience">experience</a>
+      <a href="#projects" data-section="projects">projects</a>
+      <a href="#skills" data-section="skills">skills</a>
+      <a href="#log" data-section="log">log</a>
+      <a href="#contact" data-section="contact">contact</a>
+    </nav>
+    <a class="nav-cta" href="assets/resume.pdf" target="_blank" rel="noopener">GET /resume.pdf</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ HERO / WHOAMI ============ -->
+<section class="hero cinematic-hero" id="whoami">
+  <!-- Ghost watermark in background -->
+  <div class="hero-watermark" aria-hidden="true">ADITYA RAJPUT</div>
+  
+  <!-- Interactive constellation particle canvas -->
+  <canvas id="heroCanvas" class="hero-constellation-canvas" aria-hidden="true"></canvas>
+
+  <div class="hero-content">
+    <div class="hero-greeting reveal">
+      <span class="greeting-dot"></span>
+      <span>Hello, World 👋</span>
+    </div>
+
+    <h1 class="hero-main-title reveal" style="transition-delay:0.06s">I'M ADITYA RAJPUT</h1>
+    
+    <div class="hero-role-title reveal" style="transition-delay:0.12s">
+      SOFTWARE DEVELOPER
+    </div>
+
+    <p class="hero-subtitle reveal" style="transition-delay:0.18s">
+      I build high-performance backend systems, APIs, and AI-powered products that feel alive.
+    </p>
+
+    <div class="hero-cta-group reveal" style="transition-delay:0.24s">
+      <a class="hero-btn hero-btn--primary" href="#projects">View My Work</a>
+      <a class="hero-btn hero-btn--secondary" href="assets/resume.pdf" target="_blank" rel="noopener">Download CV</a>
+    </div>
+
+    <div class="hero-social-row reveal" style="transition-delay:0.3s">
+      <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+      <a href="https://linkedin.com/in/adityaaaarajputtt" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+      </a>
+      <a href="mailto:adityarajput.86046@gmail.com" aria-label="Email" class="social-icon-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </a>
+      <a href="tel:+918604672115" aria-label="Phone" class="social-icon-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+      </a>
+    </div>
+
+    <a href="#experience" class="hero-scroll-indicator reveal" style="transition-delay:0.36s">
+      <span class="scroll-square"></span>
+      <span>SCROLL TO EXPLORE</span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCE ============ -->
+<section class="section" id="experience">
+  <p class="section-tag reveal">02 · experience</p>
+  <h2 class="section-title reveal" style="transition-delay:0.06s">Where I've worked</h2>
+  <div class="timeline">
+    <div class="tl-item reveal" style="transition-delay:0.12s">
+      <div class="tl-marker"><span class="dot dot--live"></span></div>
+      <div class="tl-content">
+        <div class="tl-head">
+          <h3>FlyRank</h3>
+          <span class="tl-date">Jul 2026 — Present</span>
+        </div>
+        <p class="tl-role">Back-End AI Engineering Intern</p>
+        <p class="tl-body">Six-week engagement building backend services and AI integrations with FastAPI —
+          shipping production code alongside a live engineering team, not a simulated one.</p>
+        <div class="tl-tags"><span>FastAPI</span><span>Python</span><span>AI Integrations</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section class="section" id="projects">
+  <p class="section-tag reveal">03 · projects</p>
+  <h2 class="section-title reveal" style="transition-delay:0.06s">Service directory</h2>
+  <p class="section-desc reveal" style="transition-delay:0.12s">Everything I build ends up looking like a service: an endpoint, a status, a
+    changelog. Here's the directory.</p>
+
+  <div class="project-grid">
+
+    <article class="proj proj--live reveal stagger-1">
+      <div class="proj-top">
+        <span class="method">GET</span>
+        <span class="path">/projects/nyaya-ai</span>
+        <span class="status status--live">● live</span>
+      </div>
+      <h3>Nyaya AI</h3>
+      <p class="proj-meta">AI-powered legal aid platform · 2024 — Present</p>
+      <p class="proj-desc">Full-stack bilingual (English/Hindi) legal assistant for Indian citizens.
+        Groq's llama-3.3-70b via FastAPI delivers real-time, India-law-aware guidance; Supabase Auth
+        (email + Google OAuth) and Postgres handle users and query history.</p>
+      <div class="proj-tags"><span>FastAPI</span><span>Groq API</span><span>Supabase</span><span>React</span></div>
+    </article>
+
+    <article class="proj proj--live reveal stagger-2">
+      <div class="proj-top">
+        <span class="method">GET</span>
+        <span class="path">/projects/fractoes</span>
+        <span class="status status--live">● live</span>
+      </div>
+      <h3>FRACTOES</h3>
+      <p class="proj-meta">AI-assisted fracture X-ray analysis · 2025 — Present</p>
+      <p class="proj-desc">Sole backend developer on a 5-person team. FastAPI backend on Render with JWT
+        auth and OTP email verification; a fracture-detection model feeds Grok-generated radiology
+        reports, auto-compiled into PDFs via ReportLab.</p>
+      <div class="proj-tags"><span>FastAPI</span><span>SQLAlchemy</span><span>Supabase</span><span>ReportLab</span></div>
+    </article>
+
+    <article class="proj proj--build reveal stagger-3">
+      <div class="proj-top">
+        <span class="method">GET</span>
+        <span class="path">/projects/truthlens</span>
+        <span class="status status--build">◐ building</span>
+      </div>
+      <h3>TruthLens</h3>
+      <p class="proj-meta">AI-powered deepfake detection backend · Ongoing</p>
+      <p class="proj-desc">Backend lead on a scalable deepfake-detection analysis pipeline — FastAPI,
+        Redis for queueing/caching, Postgres for persistence.</p>
+      <div class="proj-tags"><span>FastAPI</span><span>Redis</span><span>PostgreSQL</span></div>
+    </article>
+
+    <article class="proj proj--build reveal stagger-4">
+      <div class="proj-top">
+        <span class="method">GET</span>
+        <span class="path">/projects/astra</span>
+        <span class="status status--build">◐ building</span>
+      </div>
+      <h3>Astra <span class="sub">(SIH 2026 candidate)</span></h3>
+      <p class="proj-meta">Offline AI companion for astronaut well-being · Ongoing</p>
+      <p class="proj-desc">Based on ISRO's MAITRI problem statement. Backend / systems architecture lead
+        for a 6-person team — APIs, database, an offline alert queue, a sync engine, and auth built to
+        survive intermittent connectivity.</p>
+      <div class="proj-tags"><span>FastAPI</span><span>Offline-first</span><span>Systems design</span></div>
+    </article>
+
+    <article class="proj proj--build reveal stagger-5">
+      <div class="proj-top">
+        <span class="method">GET</span>
+        <span class="path">/projects/hic</span>
+        <span class="status status--build">◐ building</span>
+      </div>
+      <h3>Holographic Interface Control</h3>
+      <p class="proj-meta">Gesture-controlled holographic image manipulation · Ongoing</p>
+      <p class="proj-desc">Computer-vision + motion sensing system — OpenCV gesture tracking paired with
+        an ESP32/MPU6050 rig to manipulate a holographic image display in real time.</p>
+      <div class="proj-tags"><span>Python</span><span>OpenCV</span><span>ESP32</span><span>MPU6050</span></div>
+    </article>
+
+    <article class="proj proj--live reveal stagger-6">
+      <div class="proj-top">
+        <span class="method">GET</span>
+        <span class="path">/projects/smart-helmet</span>
+        <span class="status status--live">● shipped</span>
+      </div>
+      <h3>Smart Helmet</h3>
+      <p class="proj-meta">IoT safety system · 2024</p>
+      <p class="proj-desc">Dual-vehicle safety system that blocks ignition unless the helmet is worn, with
+        MQ-3 alcohol detection, an SOS button, live GPS, and a real-time web dashboard.</p>
+      <div class="proj-tags"><span>ESP32</span><span>GPS</span><span>MQ-3 Sensor</span></div>
+    </article>
+
+    <article class="proj proj--live reveal stagger-7">
+      <div class="proj-top">
+        <span class="method">GET</span>
+        <span class="path">/projects/echoing-dimensions</span>
+        <span class="status status--live">● shipped</span>
+      </div>
+      <h3>Echoing Dimensions</h3>
+      <p class="proj-meta">Emotion-reactive chatbot · 2023</p>
+      <p class="proj-desc">Reads a user's emotional tone through keyword patterns and shifts the entire UI
+        atmosphere — color, motion, mood — in real time.</p>
+      <div class="proj-tags"><span>HTML/CSS</span><span>JavaScript</span><span>Python</span></div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ SKILLS ============ -->
+<section class="section skills-section" id="skills">
+  <!-- Ghost background watermark -->
+  <div class="skills-watermark-text" aria-hidden="true">SKILLS</div>
+  
+  <!-- Running tech ticker background -->
+  <div class="skills-ticker-wrap" aria-hidden="true">
+    <div class="skills-ticker">
+      <span>PYTHON • FASTAPI • POSTGRESQL • REDIS • DOCKER • REACT • NODE.JS • SUPABASE • LLM • GROQ • OPENCV • TAILWIND • ESP32 • KUBERNETES • FLASK • DJANGO • MONGODB • REST API • </span>
+      <span>PYTHON • FASTAPI • POSTGRESQL • REDIS • DOCKER • REACT • NODE.JS • SUPABASE • LLM • GROQ • OPENCV • TAILWIND • ESP32 • KUBERNETES • FLASK • DJANGO • MONGODB • REST API • </span>
+    </div>
+  </div>
+
+  <div class="skills-header-row">
+    <p class="section-tag reveal">04 / SKILLS</p>
+    <h2 class="section-title reveal" style="transition-delay:0.06s">Tech Stack</h2>
+  </div>
+
+  <div class="skills-interactive reveal" style="transition-delay:0.12s">
+    <!-- Left: Category tabs -->
+    <div class="skills-tabs" id="skillsTabs" role="tablist">
+      <button class="skill-tab active" data-category="backend" role="tab" aria-selected="true">Backend &amp; APIs</button>
+      <button class="skill-tab" data-category="ai" role="tab" aria-selected="false">AI &amp; ML</button>
+      <button class="skill-tab" data-category="databases" role="tab" aria-selected="false">Databases</button>
+      <button class="skill-tab" data-category="languages" role="tab" aria-selected="false">Languages</button>
+      <button class="skill-tab" data-category="frontend" role="tab" aria-selected="false">Frontend &amp; Web</button>
+      <button class="skill-tab" data-category="iot" role="tab" aria-selected="false">IoT &amp; Embedded</button>
+      <button class="skill-tab" data-category="tools" role="tab" aria-selected="false">Tools &amp; DevOps</button>
+    </div>
+
+    <!-- Right: Skill cards panel -->
+    <div class="skills-panel-wrapper">
+      <div class="skills-panel" id="skillsPanel" role="tabpanel">
+        <!-- Rendered dynamically by script.js with fallback content -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOG ============ -->
+<section class="section" id="log">
+  <p class="section-tag reveal">05 · log</p>
+  <h2 class="section-title reveal" style="transition-delay:0.06s">changelog</h2>
+  <div class="changelog">
+    <div class="cl-row reveal-left stagger-1">
+      <span class="cl-date">2026-08</span>
+      <p>Completed Walmart Global Tech "Advanced Software Engineering" job simulation (Forage) —
+        advanced data structures, software architecture, relational DB design, data munging.</p>
+    </div>
+    <div class="cl-row reveal-left stagger-2">
+      <span class="cl-date">2026</span>
+      <p>Earned 5 Microsoft Learn certifications — core AI, Generative AI, Azure AI solutions, AI Agent
+        development, and model deployment via Microsoft Foundry Portal.</p>
+    </div>
+    <div class="cl-row reveal-left stagger-3">
+      <span class="cl-date">2026</span>
+      <p>Completed Anthropic Academy — Claude 101 and AI Fluency for Students.</p>
+    </div>
+    <div class="cl-row reveal-left stagger-4">
+      <span class="cl-date">2026</span>
+      <p>HackerRank REST API (Intermediate) certified. IBM "Data Analysis with Python" certified via Coursera.</p>
+    </div>
+    <div class="cl-row reveal-left stagger-5">
+      <span class="cl-date">2026</span>
+      <p>Represented PSIT as backend developer (Python/FastAPI) at Nexify'26 Hackathon.</p>
+    </div>
+    <div class="cl-row reveal-left stagger-6">
+      <span class="cl-date">—</span>
+      <p>Finalist, BBD Hackathon.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section" id="contact">
+  <p class="section-tag reveal">06 · contact</p>
+  <h2 class="section-title reveal" style="transition-delay:0.06s">Send a request</h2>
+  <div class="contact-wrap reveal" style="transition-delay:0.12s">
+    <div class="contact-card">
+      <div class="terminal-bar"><span></span><span></span><span></span><p>POST /contact</p></div>
+      <form class="contact-form" id="contactForm">
+        <label for="cf-name">name</label>
+        <input id="cf-name" name="name" type="text" placeholder="jane doe" required>
+        <label for="cf-email">email</label>
+        <input id="cf-email" name="email" type="email" placeholder="jane@company.com" required>
+        <label for="cf-message">message</label>
+        <textarea id="cf-message" name="message" rows="4" placeholder="let's build something..." required></textarea>
+        <button type="submit" class="btn btn--primary btn--block">send request →</button>
+        <p class="form-note" id="formNote">Opens your email client — this form doesn't hit a live server yet.</p>
+      </form>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:adityarajput.86046@gmail.com">
+        <span class="link-label">email</span>
+        <span class="link-value">adityarajput.86046@gmail.com</span>
+      </a>
+      <a href="https://github.com/cryptobitter" target="_blank" rel="noopener">
+        <span class="link-label">github</span>
+        <span class="link-value">github.com/cryptobitter</span>
+      </a>
+      <a href="https://linkedin.com/in/adityaaaarajputtt" target="_blank" rel="noopener">
+        <span class="link-label">linkedin</span>
+        <span class="link-value">in/adityaaaarajputtt</span>
+      </a>
+      <a href="tel:+918604672115">
+        <span class="link-label">phone</span>
+        <span class="link-value">+91 86046 72115</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>© 2026 Aditya Rajput · Built with HTML/CSS/JS · Status: <span class="footer-live">● operational</span></p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
