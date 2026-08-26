@@ -341,7 +341,7 @@ if (skillTabs.length) {
 // =============================================
 // ACTIVE NAV LINK ON SCROLL
 // =============================================
-const sections = ['whoami', 'experience', 'projects', 'skills', 'log', 'contact'];
+const sections = ['whoami', 'experience', 'projects', 'skills', 'achievements', 'contact'];
 const navLinkEls = document.querySelectorAll('.nav-links a[data-section]');
 
 if (navLinkEls.length) {
@@ -414,3 +414,119 @@ if (!reduceMotion) {
     });
   }
 }
+
+// =============================================
+// HERO CONSTELLATION PARTICLES CANVAS
+// =============================================
+if (!reduceMotion) {
+  const heroCanvas = document.getElementById('heroCanvas');
+  if (heroCanvas) {
+    const ctx = heroCanvas.getContext('2d');
+    let width = heroCanvas.width = heroCanvas.parentElement.offsetWidth;
+    let height = heroCanvas.height = heroCanvas.parentElement.offsetHeight;
+
+    const particleCount = Math.min(Math.floor((width * height) / 9000), 100);
+    const particles = [];
+    let mousePos = { x: -1000, y: -1000 };
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
+        this.radius = Math.random() * 1.5 + 0.8;
+        this.baseAlpha = Math.random() * 0.6 + 0.2;
+        this.color = Math.random() > 0.4 ? '#00D4FF' : '#7B2FBE';
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.baseAlpha;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = heroCanvas.getBoundingClientRect();
+      mousePos.x = e.clientX - rect.left;
+      mousePos.y = e.clientY - rect.top;
+    });
+
+    function renderConstellation() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw connecting lines between particles
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = '#00D4FF';
+            ctx.globalAlpha = (1 - dist / 100) * 0.12;
+            ctx.lineWidth = 0.75;
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+      }
+
+      // Connect to mouse
+      for (let i = 0; i < particles.length; i++) {
+        const dx = particles[i].x - mousePos.x;
+        const dy = particles[i].y - mousePos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 130) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(mousePos.x, mousePos.y);
+          ctx.strokeStyle = '#00D4FF';
+          ctx.globalAlpha = (1 - dist / 130) * 0.35;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+
+        particles[i].update();
+        particles[i].draw();
+      }
+
+      requestAnimationFrame(renderConstellation);
+    }
+
+    renderConstellation();
+
+    window.addEventListener('resize', () => {
+      if (!heroCanvas.parentElement) return;
+      width = heroCanvas.width = heroCanvas.parentElement.offsetWidth;
+      height = heroCanvas.height = heroCanvas.parentElement.offsetHeight;
+    }, { passive: true });
+  }
+}
+
