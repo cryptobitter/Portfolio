@@ -320,57 +320,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMobile = window.innerWidth < 768;
 
     /* -------------------------------------------------------------
-       1. Hero 3D Scene: Floating Geometric Glass & Wireframe Objects
+       1. Ambient Page-Wide 3D Geometric Floater Scene (All Sections)
        ------------------------------------------------------------- */
-    const heroCanvas = document.getElementById('hero3dCanvas');
-    const heroSection = document.getElementById('hero');
+    const globalCanvas = document.getElementById('global3dCanvas');
 
-    if (heroCanvas && heroSection) {
-      const heroRenderer = new THREE.WebGLRenderer({
-        canvas: heroCanvas,
+    if (globalCanvas) {
+      const globalRenderer = new THREE.WebGLRenderer({
+        canvas: globalCanvas,
         alpha: true,
         antialias: !isMobile,
         powerPreference: 'high-performance'
       });
-      heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      globalRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-      const heroScene = new THREE.Scene();
-      const heroCamera = new THREE.PerspectiveCamera(45, heroSection.clientWidth / heroSection.clientHeight, 0.1, 100);
-      heroCamera.position.z = 22;
+      const globalScene = new THREE.Scene();
+      const globalCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 120);
+      globalCamera.position.z = 24;
 
-      // Geometries & Materials (Palette: cream, orange #C8653B, deep charcoal #181614)
-      const orangeMat = new THREE.MeshBasicMaterial({ color: 0xC8653B, wireframe: true, transparent: true, opacity: 0.35 });
-      const darkMat   = new THREE.MeshBasicMaterial({ color: 0x181614, wireframe: true, transparent: true, opacity: 0.22 });
-      const goldMat   = new THREE.MeshBasicMaterial({ color: 0xD97706, wireframe: true, transparent: true, opacity: 0.28 });
+      // Palette: copper #C8653B, amber #D97706, bronze #9E948A, editorial cream #EDE8DF
+      const copperMat = new THREE.MeshBasicMaterial({ color: 0xC8653B, wireframe: true, transparent: true, opacity: 0.38 });
+      const amberMat  = new THREE.MeshBasicMaterial({ color: 0xD97706, wireframe: true, transparent: true, opacity: 0.32 });
+      const bronzeMat = new THREE.MeshBasicMaterial({ color: 0x9E948A, wireframe: true, transparent: true, opacity: 0.28 });
+      const creamMat  = new THREE.MeshBasicMaterial({ color: 0xEDE8DF, wireframe: true, transparent: true, opacity: 0.25 });
+
+      const materials = [copperMat, amberMat, bronzeMat, creamMat];
 
       const objectsGroup = new THREE.Group();
-      heroScene.add(objectsGroup);
+      globalScene.add(objectsGroup);
 
-      // Low-poly floating geometric objects
-      const count = isMobile ? 4 : 7;
+      // Low-poly floating geometric objects distributed across 3D space
+      const count = isMobile ? 5 : 12;
       const geos = [
-        new THREE.IcosahedronGeometry(1.4, 0),
-        new THREE.OctahedronGeometry(1.2, 0),
-        new THREE.TetrahedronGeometry(1.3, 0),
-        new THREE.TorusGeometry(1.5, 0.25, 8, 20)
+        new THREE.IcosahedronGeometry(1.5, 0),
+        new THREE.OctahedronGeometry(1.3, 0),
+        new THREE.TetrahedronGeometry(1.4, 0),
+        new THREE.TorusGeometry(1.6, 0.22, 8, 24),
+        new THREE.DodecahedronGeometry(1.3, 0)
       ];
 
       const meshList = [];
       for (let i = 0; i < count; i++) {
         const geo = geos[i % geos.length];
-        const mat = i % 2 === 0 ? orangeMat : (i % 3 === 0 ? goldMat : darkMat);
+        const mat = materials[i % materials.length];
         const mesh = new THREE.Mesh(geo, mat);
 
         mesh.position.set(
-          (Math.random() - 0.5) * 28,
-          (Math.random() - 0.5) * 16,
-          (Math.random() - 0.5) * 8
+          (Math.random() - 0.5) * 32,
+          (Math.random() - 0.5) * 22,
+          (Math.random() - 0.5) * 12
         );
         mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
 
         mesh.userData = {
-          rotSpeedX: (Math.random() - 0.5) * 0.008,
-          rotSpeedY: (Math.random() - 0.5) * 0.008,
+          rotSpeedX: (Math.random() - 0.5) * 0.007,
+          rotSpeedY: (Math.random() - 0.5) * 0.007,
           driftSpeed: (Math.random() * 0.003 + 0.002),
           baseY: mesh.position.y
         };
@@ -379,22 +382,22 @@ document.addEventListener('DOMContentLoaded', () => {
         meshList.push(mesh);
       }
 
-      // Floating Particles
-      const particleCount = isMobile ? 35 : 80;
+      // Floating Particles across depth
+      const particleCount = isMobile ? 35 : 100;
       const particleGeo = new THREE.BufferGeometry();
       const posArray = new Float32Array(particleCount * 3);
       for (let i = 0; i < particleCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 40;
+        posArray[i] = (Math.random() - 0.5) * 44;
       }
       particleGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
       const particleMat = new THREE.PointsMaterial({
-        size: 0.12,
+        size: 0.14,
         color: 0xC8653B,
         transparent: true,
-        opacity: 0.4
+        opacity: 0.45
       });
       const particles = new THREE.Points(particleGeo, particleMat);
-      heroScene.add(particles);
+      globalScene.add(particles);
 
       // Mouse Parallax
       let targetMouseX = 0, targetMouseY = 0;
@@ -404,46 +407,52 @@ document.addEventListener('DOMContentLoaded', () => {
         targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2.5;
       }, { passive: true });
 
-      function resizeHero() {
-        if (!heroSection || !heroCanvas) return;
-        const w = heroSection.clientWidth;
-        const h = heroSection.clientHeight;
-        heroCamera.aspect = w / h;
-        heroCamera.updateProjectionMatrix();
-        heroRenderer.setSize(w, h, false);
+      // Scroll Position tracking
+      let scrollY = window.scrollY || 0;
+      window.addEventListener('scroll', () => {
+        scrollY = window.scrollY || 0;
+      }, { passive: true });
+
+      function resizeGlobal() {
+        if (!globalCanvas) return;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        globalCamera.aspect = w / h;
+        globalCamera.updateProjectionMatrix();
+        globalRenderer.setSize(w, h, false);
       }
-      resizeHero();
-      window.addEventListener('resize', resizeHero, { passive: true });
+      resizeGlobal();
+      window.addEventListener('resize', resizeGlobal, { passive: true });
 
-      // Frame Rate Throttling / Off-screen pausing
-      let heroIsVisible = true;
-      const heroIo = new IntersectionObserver(([entry]) => {
-        heroIsVisible = entry.isIntersecting;
-      }, { threshold: 0.05 });
-      heroIo.observe(heroSection);
-
-      let heroTime = 0;
-      function animateHero() {
-        if (heroIsVisible && !document.hidden) {
-          heroTime += 0.01;
+      let globalTime = 0;
+      function animateGlobal() {
+        if (!document.hidden) {
+          globalTime += 0.01;
           curMouseX += (targetMouseX - curMouseX) * 0.05;
           curMouseY += (targetMouseY - curMouseY) * 0.05;
 
+          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          const scrollProgress = scrollY / maxScroll;
+
+          // Parallax + smooth vertical shift based on scroll through sections
           objectsGroup.position.x = curMouseX * 1.5;
-          objectsGroup.position.y = -curMouseY * 1.5;
+          objectsGroup.position.y = -curMouseY * 1.5 + (scrollProgress - 0.5) * 14;
+          objectsGroup.rotation.z = (scrollProgress - 0.5) * 0.5;
 
           meshList.forEach(m => {
             m.rotation.x += m.userData.rotSpeedX;
             m.rotation.y += m.userData.rotSpeedY;
-            m.position.y = m.userData.baseY + Math.sin(heroTime + m.position.x) * 0.4;
+            m.position.y = m.userData.baseY + Math.sin(globalTime + m.position.x) * 0.45;
           });
 
-          particles.rotation.y = heroTime * 0.04;
-          heroRenderer.render(heroScene, heroCamera);
+          particles.rotation.y = globalTime * 0.03 + (scrollProgress * 0.6);
+          particles.position.y = (scrollProgress - 0.5) * 8;
+
+          globalRenderer.render(globalScene, globalCamera);
         }
-        requestAnimationFrame(animateHero);
+        requestAnimationFrame(animateGlobal);
       }
-      animateHero();
+      animateGlobal();
     }
 
     /* -------------------------------------------------------------
@@ -452,11 +461,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mascotContainer = document.getElementById('mascot3dContainer');
     const mascotImgFallback = document.getElementById('mascotImgFallback');
 
-    // Attempt to load GLB loader if model exists
     if (mascotContainer && typeof THREE.GLTFLoader !== 'undefined') {
       const loader = new THREE.GLTFLoader();
       loader.load('assets/character.glb', (gltf) => {
-        // GLB found! Mount Three.js renderer inside mascotContainer
         mascotContainer.style.display = 'block';
         if (mascotImgFallback) mascotImgFallback.style.display = 'none';
 
@@ -482,190 +489,10 @@ document.addEventListener('DOMContentLoaded', () => {
           requestAnimationFrame(animMascot);
         }
         animMascot();
-      }, undefined, (err) => {
-        // Model not found - Keep fallback image + 3D tilt
-        // console.info('character.glb not found at assets/character.glb; graceful fallback active.');
-      });
-    }
-
-    /* -------------------------------------------------------------
-       3. Backend Architecture Visualization (FastAPI, Redis, PostgreSQL, Groq)
-       ------------------------------------------------------------- */
-    const archCanvas = document.getElementById('arch3dCanvas');
-    const archBox    = document.getElementById('arch3dCanvasBox');
-    const tooltip    = document.getElementById('archNodeTooltip');
-
-    if (archCanvas && archBox) {
-      const archRenderer = new THREE.WebGLRenderer({
-        canvas: archCanvas,
-        alpha: true,
-        antialias: !isMobile
-      });
-      archRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
-      const archScene  = new THREE.Scene();
-      const archCamera = new THREE.PerspectiveCamera(40, archBox.clientWidth / archBox.clientHeight, 0.1, 50);
-      archCamera.position.set(0, 0, 11);
-
-      const graphGroup = new THREE.Group();
-      archScene.add(graphGroup);
-
-      // Node definitions
-      const nodeDefs = [
-        { id: 'fastapi', name: 'FastAPI Service', role: 'Async Core Gateway & Routing Engine', pos: [0, 0.8, 0], color: 0xC8653B },
-        { id: 'groq',    name: 'Groq API / LLM',  role: 'Llama 3.3 70B Real-Time Inference Stream', pos: [2.5, 1.4, -0.4], color: 0xD97706 },
-        { id: 'redis',   name: 'Redis Cache',     role: 'Task Queue & In-Memory Response Caching', pos: [-2.4, -0.6, 0.2], color: 0x9333EA },
-        { id: 'postgres',name: 'PostgreSQL DB',   role: 'ACID Relational Storage & Vector Search', pos: [1.8, -1.2, 0.2], color: 0x2563EB }
-      ];
-
-      const nodeMeshes = [];
-      const nodeMat = new THREE.MeshBasicMaterial({ color: 0x181614 });
-
-      nodeDefs.forEach(def => {
-        const geom = new THREE.SphereGeometry(0.48, 16, 16);
-        const ringGeom = new THREE.RingGeometry(0.58, 0.64, 24);
-        const ringMat = new THREE.MeshBasicMaterial({ color: def.color, side: THREE.DoubleSide });
-
-        const mesh = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: def.color }));
-        const ring = new THREE.Mesh(ringGeom, ringMat);
-
-        mesh.position.set(def.pos[0], def.pos[1], def.pos[2]);
-        ring.position.set(def.pos[0], def.pos[1], def.pos[2]);
-
-        mesh.userData = def;
-        graphGroup.add(mesh);
-        graphGroup.add(ring);
-        nodeMeshes.push(mesh);
-      });
-
-      // Pipeline Connection Lines
-      const connections = [
-        { from: nodeDefs[0], to: nodeDefs[1] }, // FastAPI -> Groq
-        { from: nodeDefs[0], to: nodeDefs[2] }, // FastAPI -> Redis
-        { from: nodeDefs[0], to: nodeDefs[3] }, // FastAPI -> Postgres
-        { from: nodeDefs[2], to: nodeDefs[3] }  // Redis <-> Postgres sync
-      ];
-
-      const packetList = [];
-      const lineMat = new THREE.LineBasicMaterial({ color: 0x181614, transparent: true, opacity: 0.25 });
-
-      connections.forEach(conn => {
-        const points = [
-          new THREE.Vector3(...conn.from.pos),
-          new THREE.Vector3(...conn.to.pos)
-        ];
-        const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-        const line = new THREE.Line(lineGeo, lineMat);
-        graphGroup.add(line);
-
-        // Data packets flowing along lines
-        for (let p = 0; p < 2; p++) {
-          const packetGeo = new THREE.SphereGeometry(0.09, 8, 8);
-          const packetMesh = new THREE.Mesh(packetGeo, new THREE.MeshBasicMaterial({ color: 0xC8653B }));
-          graphGroup.add(packetMesh);
-          packetList.push({
-            mesh: packetMesh,
-            start: points[0],
-            end: points[1],
-            progress: Math.random()
-          });
-        }
-      });
-
-      // Drag Orbit with Angle Limits
-      let isDragging = false;
-      let prevX = 0, prevY = 0;
-      let rotTargetX = 0, rotTargetY = 0;
-
-      archBox.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        prevX = e.clientX;
-        prevY = e.clientY;
-      });
-
-      window.addEventListener('mouseup', () => {
-        isDragging = false;
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - prevX;
-        const dy = e.clientY - prevY;
-        prevX = e.clientX;
-        prevY = e.clientY;
-
-        rotTargetY = Math.max(-0.65, Math.min(0.65, rotTargetY + dx * 0.008));
-        rotTargetX = Math.max(-0.45, Math.min(0.45, rotTargetX + dy * 0.008));
-      });
-
-      // Hover Raycasting for Node Role Tooltip
-      const raycaster = new THREE.Raycaster();
-      const mouseVec  = new THREE.Vector2();
-
-      archBox.addEventListener('mousemove', (e) => {
-        const rect = archBox.getBoundingClientRect();
-        mouseVec.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        mouseVec.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-        raycaster.setFromCamera(mouseVec, archCamera);
-        const intersects = raycaster.intersectObjects(nodeMeshes);
-
-        if (intersects.length > 0) {
-          const targetNode = intersects[0].object.userData;
-          if (tooltip) {
-            tooltip.innerHTML = `<span class="node-name">${targetNode.name}:</span> ${targetNode.role}`;
-            tooltip.classList.add('active');
-          }
-          intersects[0].object.scale.set(1.2, 1.2, 1.2);
-        } else {
-          if (tooltip) tooltip.classList.remove('active');
-          nodeMeshes.forEach(m => m.scale.set(1, 1, 1));
-        }
-      }, { passive: true });
-
-      function resizeArch() {
-        if (!archBox || !archCanvas) return;
-        const w = archBox.clientWidth;
-        const h = archBox.clientHeight;
-        archCamera.aspect = w / h;
-        archCamera.updateProjectionMatrix();
-        archRenderer.setSize(w, h, false);
-      }
-      resizeArch();
-      window.addEventListener('resize', resizeArch, { passive: true });
-
-      let archVisible = true;
-      const archIo = new IntersectionObserver(([entry]) => {
-        archVisible = entry.isIntersecting;
-      }, { threshold: 0.05 });
-      archIo.observe(archBox);
-
-      let archTime = 0;
-      function animateArch() {
-        if (archVisible && !document.hidden) {
-          archTime += 0.015;
-
-          // Slow idle float + user drag inertia
-          if (!isDragging) {
-            rotTargetY += Math.sin(archTime * 0.5) * 0.001;
-          }
-          graphGroup.rotation.y += (rotTargetY - graphGroup.rotation.y) * 0.08;
-          graphGroup.rotation.x += (rotTargetX - graphGroup.rotation.x) * 0.08;
-
-          // Flowing data packets
-          packetList.forEach(pkt => {
-            pkt.progress += 0.012;
-            if (pkt.progress > 1) pkt.progress = 0;
-            pkt.mesh.position.lerpVectors(pkt.start, pkt.end, pkt.progress);
-          });
-
-          archRenderer.render(archScene, archCamera);
-        }
-        requestAnimationFrame(animateArch);
-      }
-      animateArch();
+      }, undefined, () => {});
     }
   }
+
 
   /* ============ Dynamic Script Loader ============ */
   function loadScript(src) {

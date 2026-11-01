@@ -23,6 +23,11 @@
 
 <div id="scrollProgress"></div>
 
+<!-- Ambient 3D Geometric Floater Scene (Spans All Sections) -->
+<div class="global-3d-bg" id="global3dContainer" aria-hidden="true">
+  <canvas id="global3dCanvas"></canvas>
+</div>
+
 <!-- Page Load Intro Animation -->
 <div class="intro-curtain" id="introCurtain" aria-hidden="true">
   <div class="intro-content">
@@ -64,11 +69,6 @@
 
 <!-- ============ HERO SECTION (LIGHT EDITORIAL) ============ -->
 <section class="hero-section" id="hero">
-  <!-- Full-bleed 3D Background Canvas -->
-  <div class="hero-3d-bg" id="hero3dContainer" aria-hidden="true">
-    <canvas id="hero3dCanvas"></canvas>
-  </div>
-
   <!-- Giant Editorial Header -->
   <div class="editorial-title-wrap reveal">
     <h1 class="editorial-title">PORTFOLIO</h1>
@@ -314,18 +314,6 @@
 
         <div class="process-footer-quote">
           <p><em>"Engineering is not just what it does; it's how fast, clean, and reliable it runs."</em></p>
-        </div>
-
-        <!-- 3D Backend Architecture Node Graph Visualization -->
-        <div class="arch-3d-wrap" id="arch3dWrap" aria-label="3D Backend Architecture Node Graph: FastAPI, Redis, PostgreSQL, and Groq/LLM with real-time data packets">
-          <div class="arch-3d-header">
-            <span class="arch-3d-title">3D BACKEND ARCHITECTURE · LIVE PACKET FLOW</span>
-            <span class="arch-3d-hint">Drag to orbit · Hover node for role</span>
-          </div>
-          <div class="arch-3d-canvas-box" id="arch3dCanvasBox">
-            <canvas id="arch3dCanvas" aria-hidden="true"></canvas>
-            <div class="arch-node-tooltip" id="archNodeTooltip" aria-live="polite"></div>
-          </div>
         </div>
       </div>
 
