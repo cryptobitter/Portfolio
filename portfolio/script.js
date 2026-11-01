@@ -122,6 +122,67 @@ document.addEventListener('DOMContentLoaded', () => {
     idleFloat();
   }
 
+  /* ============ 4x5 Tech Stack Matrix ============ */
+  const skillsMatrixData = [
+    // Languages
+    { name: 'Python', badge: 'PY', category: 'Language', catClass: 'cat-lang' },
+    { name: 'JavaScript', badge: 'JS', category: 'Language', catClass: 'cat-lang' },
+    { name: 'SQL', badge: 'SQ', category: 'Language', catClass: 'cat-lang' },
+
+    // Backend & frameworks
+    { name: 'FastAPI', badge: 'FA', category: 'Backend', catClass: 'cat-backend' },
+    { name: 'React', badge: 'RE', category: 'Backend', catClass: 'cat-backend' },
+    { name: 'Redis', badge: 'RD', category: 'Backend', catClass: 'cat-backend' },
+
+    // LLM, RAG & AI
+    { name: 'Groq API', badge: 'GQ', category: 'LLM / RAG', catClass: 'cat-ai' },
+    { name: 'RAG Pipelines', badge: 'RG', category: 'LLM / RAG', catClass: 'cat-ai' },
+    { name: 'Embeddings', badge: 'EM', category: 'LLM / RAG', catClass: 'cat-ai' },
+    { name: 'Vector DB', badge: 'VD', category: 'LLM / RAG', catClass: 'cat-ai' },
+    { name: 'OpenCV', badge: 'CV', category: 'LLM / RAG', catClass: 'cat-ai' },
+
+    // Databases
+    { name: 'PostgreSQL', badge: 'PG', category: 'Database', catClass: 'cat-db' },
+    { name: 'Neon', badge: 'NE', category: 'Database', catClass: 'cat-db' },
+    { name: 'Supabase', badge: 'SB', category: 'Database', catClass: 'cat-db' },
+
+    // Deployment & DevOps
+    { name: 'Vercel', badge: 'VC', category: 'Deployment', catClass: 'cat-devops' },
+    { name: 'Render', badge: 'RN', category: 'Deployment', catClass: 'cat-devops' },
+    { name: 'Docker', badge: 'DK', category: 'Deployment', catClass: 'cat-devops' },
+    { name: 'Git / GitHub', badge: 'GT', category: 'Deployment', catClass: 'cat-devops' },
+
+    // Hardware / IoT
+    { name: 'ESP32', badge: 'ES', category: 'IoT', catClass: 'cat-iot' }
+  ];
+
+  const matrixContainer = document.getElementById('skillsMatrixGrid');
+  if (matrixContainer) {
+    const totalSkills = skillsMatrixData.length;
+    // Calculate slots: at least 20 slots (4 cols x 5 rows).
+    // If more than 20, grow by whole rows of 4 and pad the last row with empty blocks.
+    const targetSlots = totalSkills <= 20 ? 20 : Math.ceil(totalSkills / 4) * 4;
+    const emptyCount = targetSlots - totalSkills;
+
+    const cardsHtml = skillsMatrixData.map(skill => `
+      <div class="skill-circle-card ${skill.catClass}">
+        <div class="circle-icon">${skill.badge}</div>
+        <span class="skill-name">${skill.name}</span>
+        <div class="skill-cat-row">
+          <span class="cat-indicator-dot"></span>
+          <span class="skill-cat">${skill.category}</span>
+        </div>
+      </div>
+    `).join('');
+
+    let emptyHtml = '';
+    for (let i = 0; i < emptyCount; i++) {
+      emptyHtml += `<div class="skill-card-empty" aria-hidden="true">+</div>`;
+    }
+
+    matrixContainer.innerHTML = cardsHtml + emptyHtml;
+  }
+
   /* ============ Scroll Reveal (Intersection Observer) ============ */
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries) => {
