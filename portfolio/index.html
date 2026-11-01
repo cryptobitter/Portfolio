@@ -8,16 +8,30 @@
 <meta name="theme-color" content="#F5F2EC">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 
-<!-- Google Fonts: Playfair Display (Serif Editorial), Plus Jakarta Sans (Body), Sacramento (Signature) -->
+<!-- Google Fonts: Preloaded for non-blocking render performance -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&family=Space+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&family=Space+Mono:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&family=Space+Mono:wght@400;700&display=swap">
+</noscript>
 
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="light-theme">
 
 <div id="scrollProgress"></div>
+
+<!-- Page Load Intro Animation -->
+<div class="intro-curtain" id="introCurtain" aria-hidden="true">
+  <div class="intro-content">
+    <div class="intro-logo">AR</div>
+    <div class="intro-title">ADITYA RAJPUT</div>
+    <div class="intro-sub">BACKEND &amp; AI ENGINEER</div>
+    <button class="intro-skip" id="introSkip" aria-label="Skip intro animation">SKIP ↵</button>
+  </div>
+</div>
 
 <!-- Custom Editorial Cursor -->
 <div id="cursor-dot"></div>
@@ -50,6 +64,11 @@
 
 <!-- ============ HERO SECTION (LIGHT EDITORIAL) ============ -->
 <section class="hero-section" id="hero">
+  <!-- Full-bleed 3D Background Canvas -->
+  <div class="hero-3d-bg" id="hero3dContainer" aria-hidden="true">
+    <canvas id="hero3dCanvas"></canvas>
+  </div>
+
   <!-- Giant Editorial Header -->
   <div class="editorial-title-wrap reveal">
     <h1 class="editorial-title">PORTFOLIO</h1>
@@ -87,9 +106,11 @@
         <div class="m-badge m-badge-3">Groq LLM</div>
         <div class="m-badge m-badge-4">Redis</div>
 
-        <!-- 3D Mascot Image Frame -->
+        <!-- 3D Mascot Image / Model Frame -->
+        <!-- TODO: Add 3D GLB model at assets/character.glb to enable full 3D interactive mascot with cursor-tracking bone rig. Currently falling back gracefully to 3D tilted photo frame. -->
         <div class="mascot-card" id="mascotCard">
-          <img src="assets/character.jpg" alt="Aditya Rajput 3D Mascot" class="mascot-img">
+          <div class="mascot-canvas-container" id="mascot3dContainer" aria-hidden="true"></div>
+          <img src="assets/character.jpg" alt="Aditya Rajput 3D Mascot" class="mascot-img" id="mascotImgFallback" width="290" height="340" loading="eager">
           <div class="mascot-overlay"></div>
         </div>
 
@@ -145,7 +166,7 @@
     </div>
 
     <div class="projects-editorial-grid">
-      <!-- Project 01: NYAYA AI (Strongest Live AI System) -->
+      <!-- Project 01: NAYAY AI (Legal Clause Explainer) -->
       <article class="proj-card-editorial reveal">
         <div class="proj-card-media">
           <div class="proj-card-badge">LIVE PRODUCT</div>
@@ -157,27 +178,26 @@
         <div class="proj-card-content">
           <span class="proj-num">01</span>
           <div class="proj-meta-group">
-            <h3 class="proj-title">NYAYA AI</h3>
-            <span class="proj-subtitle">AI-Powered Legal Aid Platform</span>
+            <h3 class="proj-title">NAYAY AI</h3>
+            <span class="proj-subtitle">AI-Powered Legal Clause Explainer &amp; Aid Platform</span>
           </div>
           <p class="proj-description">
-            Bilingual (English/Hindi) legal assistant for Indian citizens. Powered by Groq's <code>llama-3.3-70b</code> via FastAPI backend for low-latency guidance, with Supabase Auth &amp; PostgreSQL.
+            Bilingual (English/Hindi) legal assistant and clause explainer for Indian citizens. Powered by Groq's <code>llama-3.3-70b</code> via FastAPI backend for low-latency guidance, with Supabase Auth &amp; PostgreSQL.
           </p>
-          <!-- TODO: Add verified metrics for Nyaya AI (e.g. latency, query volume, or active users) -->
+          <!-- TODO: Add verified metrics for Nayay AI (e.g. latency, query volume, or active users) -->
           <div class="proj-metric"></div>
           <div class="proj-tags">
             <span>FastAPI</span><span>Groq API</span><span>Supabase</span><span>PostgreSQL</span>
           </div>
           <div class="proj-actions">
-            <!-- TODO: Add verified repository name for Nyaya AI if available: https://github.com/cryptobitter/<repo> -->
-            <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
+            <a href="https://github.com/cryptobitter/nayay-ai-legal-clause-explainer" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
             <!-- TODO: Set Live Demo URL when ready -->
             <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
           </div>
         </div>
       </article>
 
-      <!-- Project 02: NIRNAY (New AI Project) -->
+      <!-- Project 02: NIRNAY (On-Chain Policy Decision Auditor) -->
       <article class="proj-card-editorial reveal" style="transition-delay: 0.1s">
         <div class="proj-card-media">
           <div class="proj-card-badge">IN DEVELOPMENT</div>
@@ -201,48 +221,15 @@
             <span>RAG</span><span>LLM</span><span>Blockchain</span><span>FastAPI</span><span>Vector DB</span>
           </div>
           <div class="proj-actions">
-            <!-- TODO: Add verified repository name for NIRNAY: https://github.com/cryptobitter/<repo> -->
-            <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
+            <a href="https://github.com/cryptobitter/Nirnay" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
             <!-- TODO: Set Live Demo URL when ready -->
             <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
           </div>
         </div>
       </article>
 
-      <!-- Project 03: TRUTHLENS -->
+      <!-- Project 03: FRACTOES (AI Fracture X-Ray Analysis) -->
       <article class="proj-card-editorial reveal" style="transition-delay: 0.2s">
-        <div class="proj-card-media">
-          <div class="proj-card-badge">IN DEVELOPMENT</div>
-          <div class="proj-code-preview">
-            <span class="p-lang">FASTAPI + REDIS</span>
-            <div class="p-snippet">truthlens/queue/worker.py</div>
-          </div>
-        </div>
-        <div class="proj-card-content">
-          <span class="proj-num">03</span>
-          <div class="proj-meta-group">
-            <h3 class="proj-title">TRUTHLENS</h3>
-            <span class="proj-subtitle">Deepfake Detection Analysis Pipeline</span>
-          </div>
-          <p class="proj-description">
-            Backend lead for a scalable deepfake video and audio detection pipeline. Engineered using FastAPI, Redis queueing for heavy async media jobs, and PostgreSQL persistence.
-          </p>
-          <!-- TODO: Add verified metrics for TruthLens (e.g. analysis queue throughput, frame processing latency) -->
-          <div class="proj-metric"></div>
-          <div class="proj-tags">
-            <span>FastAPI</span><span>Redis Queue</span><span>PostgreSQL</span><span>OpenCV</span>
-          </div>
-          <div class="proj-actions">
-            <!-- TODO: Add verified repository name for TruthLens: https://github.com/cryptobitter/<repo> -->
-            <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
-            <!-- TODO: Set Live Demo URL when ready -->
-            <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Project 04: FRACTOES -->
-      <article class="proj-card-editorial reveal" style="transition-delay: 0.3s">
         <div class="proj-card-media">
           <div class="proj-card-badge">PRODUCTION SHIPPED</div>
           <div class="proj-code-preview">
@@ -251,7 +238,7 @@
           </div>
         </div>
         <div class="proj-card-content">
-          <span class="proj-num">04</span>
+          <span class="proj-num">03</span>
           <div class="proj-meta-group">
             <h3 class="proj-title">FRACTOES</h3>
             <span class="proj-subtitle">AI Fracture X-Ray Analysis &amp; Radiology PDF</span>
@@ -266,45 +253,12 @@
             <span>FastAPI</span><span>SQLAlchemy</span><span>Supabase</span><span>ReportLab</span>
           </div>
           <div class="proj-actions">
-            <!-- TODO: Add verified repository name for FRACTOES: https://github.com/cryptobitter/<repo> -->
-            <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
+            <a href="https://github.com/cryptobitter/FRACTOES" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
             <!-- TODO: Set Live Demo URL when ready -->
             <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
           </div>
         </div>
       </article>
-    </div>
-
-    <!-- Secondary Projects Sub-Grid -->
-    <div class="secondary-projects-grid reveal" style="transition-delay: 0.3s">
-      <div class="sec-proj-card">
-        <div class="sec-proj-num">05</div>
-        <h4>ASTRA <span class="tag-sih">SIH 2026 Candidate</span></h4>
-        <p class="sec-proj-sub">Offline AI Companion for Astronaut Well-Being</p>
-        <p>Based on ISRO's MAITRI problem statement. Systems architecture lead designing offline alert queues, sync engines, and resilient sqlite/fastapi sync.</p>
-        <!-- TODO: Add verified metrics for Astra (e.g. offline queue sync rate) -->
-        <div class="proj-metric"></div>
-        <div class="proj-tags"><span>FastAPI</span><span>Offline-First</span><span>Systems Design</span></div>
-        <div class="proj-actions">
-          <!-- TODO: Add verified repository name for Astra: https://github.com/cryptobitter/<repo> -->
-          <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
-          <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
-        </div>
-      </div>
-      <div class="sec-proj-card">
-        <div class="sec-proj-num">06</div>
-        <h4>HOLOGRAPHIC INTERFACE CONTROL</h4>
-        <p class="sec-proj-sub">Gesture-Controlled Holographic Image Manipulation</p>
-        <p>Computer vision system combining OpenCV gesture tracking with ESP32 and MPU6050 IMU sensors to manipulate 3D holographic displays in real time.</p>
-        <!-- TODO: Add verified metrics for Holographic Interface (e.g. FPS or tracking latency) -->
-        <div class="proj-metric"></div>
-        <div class="proj-tags"><span>Python</span><span>OpenCV</span><span>ESP32</span><span>MPU6050</span></div>
-        <div class="proj-actions">
-          <!-- TODO: Add verified repository name for Holographic Interface: https://github.com/cryptobitter/<repo> -->
-          <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
-          <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -361,6 +315,18 @@
         <div class="process-footer-quote">
           <p><em>"Engineering is not just what it does; it's how fast, clean, and reliable it runs."</em></p>
         </div>
+
+        <!-- 3D Backend Architecture Node Graph Visualization -->
+        <div class="arch-3d-wrap" id="arch3dWrap" aria-label="3D Backend Architecture Node Graph: FastAPI, Redis, PostgreSQL, and Groq/LLM with real-time data packets">
+          <div class="arch-3d-header">
+            <span class="arch-3d-title">3D BACKEND ARCHITECTURE · LIVE PACKET FLOW</span>
+            <span class="arch-3d-hint">Drag to orbit · Hover node for role</span>
+          </div>
+          <div class="arch-3d-canvas-box" id="arch3dCanvasBox">
+            <canvas id="arch3dCanvas" aria-hidden="true"></canvas>
+            <div class="arch-node-tooltip" id="archNodeTooltip" aria-live="polite"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Right Column: Skills & Tech Grid -->
@@ -403,49 +369,39 @@
       <!-- Timeline item 1: FlyRank Internship (Completed) -->
       <div class="timeline-row reveal">
         <div class="tl-left">
-          <!-- TODO: Fill real dates for FlyRank internship -->
-          <span class="tl-period">[START MONTH YEAR] — [END MONTH YEAR]</span>
+          <span class="tl-period">JUL 2026 — OCT 2026</span>
           <span class="tl-badge">INTERNSHIP</span>
         </div>
         <div class="tl-right">
           <h3>FLYRANK <span class="tl-role-tag">— Back-End AI Engineering Intern</span></h3>
-          <p>Eight-week internship building backend services and AI integrations with FastAPI — shipped production code alongside a live engineering team.</p>
-          <div class="proj-tags"><span>FastAPI</span><span>Python</span><span>AI Integrations</span></div>
+          <p>Completed 16-week intensive engineering internship building production backend services, embeddable lead-capture widgets, and LLM integrations with FastAPI — shipped production code alongside a live engineering team.</p>
+          <div class="proj-tags"><span>FastAPI</span><span>Python</span><span>AI Integrations</span><span>Lead-Capture Widget</span></div>
         </div>
       </div>
 
-      <!-- Timeline item 2: Hackathons -->
+      <!-- Timeline item 2: Build with Bharat 2.0 (NIT Delhi Semi-Finalist) -->
       <div class="timeline-row reveal" style="transition-delay: 0.1s">
         <div class="tl-left">
-          <span class="tl-period">2026</span>
+          <span class="tl-period">SEP 2026</span>
+          <span class="tl-badge">NATIONAL HACKATHON</span>
+        </div>
+        <div class="tl-right">
+          <h3>BUILD WITH BHARAT 2.0 <span class="tl-role-tag">— National Semi-Finalist (NIT Delhi)</span></h3>
+          <p>Qualified as Semi-Finalist in Build with Bharat 2.0 national-level hackathon under team <strong>The Wildcards</strong> at NIT Delhi (13–14 September 2026), demonstrating high-impact technological innovation (organized by Codeverse, HackCulture, Logitech, and GitHub).</p>
+          <div class="proj-tags"><span>NIT Delhi</span><span>National Hackathon</span><span>Systems Architecture</span><span>FastAPI</span></div>
+        </div>
+      </div>
+
+      <!-- Timeline item 3: Coderush 2.0 (BBDNIIT) & NEXIFY'26 Finalist -->
+      <div class="timeline-row reveal" style="transition-delay: 0.15s">
+        <div class="tl-left">
+          <span class="tl-period">APR 2026</span>
           <span class="tl-badge">HACKATHONS</span>
         </div>
         <div class="tl-right">
-          <h3>NEXIFY'26 &amp; BBD HACKATHON FINALIST</h3>
-          <!-- TODO: Add what the team built at NEXIFY'26 and BBD Hackathon -->
-          <p>Finalist at NEXIFY'26 and BBD Hackathon as lead backend developer (FastAPI), building real-time microservices.</p>
-          <div class="proj-tags"><span>FastAPI</span><span>Microservices</span><span>Systems Design</span></div>
-        </div>
-      </div>
-
-      <!-- Timeline item 3: Certifications & Simulations (Walmart + Microsoft grouped) -->
-      <div class="timeline-row timeline-row--secondary reveal" style="transition-delay: 0.15s">
-        <div class="tl-left">
-          <span class="tl-period">2026</span>
-          <span class="tl-badge">CREDENTIALS</span>
-        </div>
-        <div class="tl-right">
-          <h3>CERTIFICATIONS &amp; SIMULATIONS</h3>
-          <div class="timeline-subitems">
-            <div class="timeline-subitem">
-              <h4>Microsoft Learn — 5x Certifications</h4>
-              <p>Core AI, Generative AI, Azure AI solutions, AI Agent development, and model deployment via Microsoft Foundry.</p>
-            </div>
-            <div class="timeline-subitem">
-              <h4>Walmart Global Tech — Advanced Software Engineering Simulation</h4>
-              <p>Forage simulation covering advanced data structures, software architecture, relational database design, and data munging.</p>
-            </div>
-          </div>
+          <h3>CODERUSH 2.0 &amp; NEXIFY'26 <span class="tl-role-tag">— Hackathon Finalist</span></h3>
+          <p>Finalist at Coderush 2.0 Hackathon organized by BBDNIIT (13th April 2026) and NEXIFY'26 as lead backend developer (FastAPI), architecting real-time microservices and async data pipelines.</p>
+          <div class="proj-tags"><span>BBDNIIT</span><span>FastAPI</span><span>Microservices</span><span>Systems Design</span></div>
         </div>
       </div>
 
@@ -530,6 +486,7 @@
   </div>
 </section>
 
-<script src="script.js"></script>
+<!-- Core Application Script (Lazy loads 3D libraries after main render) -->
+<script defer src="script.js"></script>
 </body>
 </html>

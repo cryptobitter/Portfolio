@@ -659,9 +659,9 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 .projects-editorial-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 32px;
-  margin-bottom: 50px;
+  margin-bottom: 0;
 }
 
 .proj-card-editorial {
@@ -1479,7 +1479,275 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   gap: 12px;
 }
 
-/* ============ REVEAL ANIMATIONS ============ */
+/* ==========================================================================
+   3D & MOTION ENHANCEMENTS (GSAP, Three.js, Intro, Architecture Graph, Tilt)
+   ========================================================================== */
+
+/* Intro Curtain Animation */
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .intro-curtain {
+    display: none !important;
+  }
+}
+
+@keyframes mascotIdleFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0.6deg);
+  }
+}
+
+.mascot-frame {
+  animation: mascotIdleFloat 4.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.intro-curtain.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.intro-logo {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--accent-copper);
+  letter-spacing: 0.1em;
+  animation: introLogoPulse 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes introLogoPulse {
+  from { transform: scale(0.96); opacity: 0.8; }
+  to { transform: scale(1.04); opacity: 1; }
+}
+
+.intro-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-light);
+}
+
+.intro-sub {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-light-muted);
+  letter-spacing: 0.12em;
+}
+
+.intro-skip {
+  margin-top: 18px;
+  background: transparent;
+  border: 1px solid var(--border-dark);
+  color: var(--text-light-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.intro-skip:hover {
+  border-color: var(--accent-copper);
+  color: var(--text-light);
+}
+
+/* Touch device cursor reset */
+@media (hover: none) and (pointer: coarse) {
+  body {
+    cursor: auto !important;
+  }
+  #cursor-dot, #cursor-ring {
+    display: none !important;
+  }
+}
+
+/* Hero Full-bleed 3D Canvas Background */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-3d-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+#hero3dCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-grid, .editorial-title-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+/* 3D Mascot GLB Canvas Container */
+.mascot-canvas-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: none; /* activated if GLB loads successfully */
+}
+
+.mascot-canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* 3D Architecture Node Graph in Process Section */
+.arch-3d-wrap {
+  margin-top: 36px;
+  background: var(--bg-light-card);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(24, 22, 20, 0.06);
+}
+
+.arch-3d-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: rgba(24, 22, 20, 0.04);
+  border-bottom: 1px solid var(--border-light);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.arch-3d-title {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.arch-3d-hint {
+  color: var(--accent-copper);
+}
+
+.arch-3d-canvas-box {
+  position: relative;
+  width: 100%;
+  height: 290px;
+  background: radial-gradient(circle at center, #EFEAE0 0%, #E2DCD0 100%);
+  cursor: grab;
+}
+
+.arch-3d-canvas-box:active {
+  cursor: grabbing;
+}
+
+#arch3dCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.arch-node-tooltip {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  background: rgba(18, 17, 16, 0.92);
+  color: var(--text-light);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 10;
+}
+
+.arch-node-tooltip.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.arch-node-tooltip .node-name {
+  color: var(--accent-copper);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* 3D Card Tilt with Soft Sheen Overlay */
+.proj-card-editorial, .sec-proj-card, .skill-circle-card {
+  will-change: transform;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.card-shine-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 5;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+}
+
+.proj-card-editorial:hover .card-shine-sheen,
+.sec-proj-card:hover .card-shine-sheen,
+.skill-circle-card:hover .card-shine-sheen {
+  opacity: 1;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .hero-3d-bg, #arch3dCanvas {
+    display: none !important;
+  }
+  .intro-curtain {
+    display: none !important;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
 .reveal {
   opacity: 0;
   transform: translateY(28px);
