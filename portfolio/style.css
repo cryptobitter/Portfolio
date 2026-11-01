@@ -1588,51 +1588,6 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   }
 }
 
-/* Ambient Page-Wide 3D Geometric Floater Scene */
-.global-3d-bg {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-#global3dCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: block;
-  pointer-events: none;
-}
-
-section {
-  position: relative;
-  z-index: 0;
-}
-
-.hero-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.section-container,
-.nav-header,
-.hero-grid,
-.editorial-title-wrap,
-.projects-editorial-grid,
-.process-skills-grid,
-.timeline-editorial,
-.contact-banner-wrap,
-.contact-grid,
-.footer-bar {
-  position: relative;
-  z-index: 2;
-}
-
 /* 3D Mascot GLB Canvas Container */
 .mascot-canvas-container {
   position: absolute;
@@ -1675,9 +1630,6 @@ section {
 
 /* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
-  .global-3d-bg, #global3dCanvas {
-    display: none !important;
-  }
   .intro-curtain {
     display: none !important;
   }
