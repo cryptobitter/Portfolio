@@ -45,8 +45,8 @@ html {
 }
 
 body {
-  background-color: var(--bg-light);
-  color: var(--text-dark);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
   font-family: var(--font-sans);
   line-height: 1.6;
   overflow-x: hidden;
@@ -127,11 +127,58 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   left: 0;
   right: 0;
   z-index: 900;
-  background: rgba(245, 242, 236, 0.88);
+  background: rgba(18, 17, 16, 0.88);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-dark);
   padding: 16px 4vw;
+  transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+  color: var(--text-light);
+}
+
+.nav-header .nav-brand-logo {
+  color: var(--text-light);
+  transition: color 0.3s;
+}
+
+.nav-header .nav-left {
+  color: var(--text-light-muted);
+  transition: color 0.3s;
+}
+
+.nav-header .status-badge {
+  background: var(--bg-dark-card);
+  border: 1px solid var(--border-dark);
+  color: var(--text-light-muted);
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.nav-header .nav-toggle span {
+  background: var(--text-light);
   transition: background 0.3s;
+}
+
+.nav-header.nav-light {
+  background: rgba(245, 242, 236, 0.88);
+  border-bottom-color: var(--border-light);
+  color: var(--text-dark);
+}
+
+.nav-header.nav-light .nav-brand-logo {
+  color: var(--text-dark);
+}
+
+.nav-header.nav-light .nav-left {
+  color: var(--text-dark-muted);
+}
+
+.nav-header.nav-light .status-badge {
+  background: var(--bg-light-card);
+  border-color: var(--border-light);
+  color: var(--text-dark-muted);
+}
+
+.nav-header.nav-light .nav-toggle span {
+  background: var(--text-dark);
 }
 
 .nav-container {
@@ -240,7 +287,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 /* Giant Magazine Header */
 .editorial-title-wrap {
-  border-bottom: 2px solid var(--text-dark);
+  border-bottom: 2px solid var(--border-dark);
   padding-bottom: 10px;
   margin-bottom: 40px;
   text-align: center;
@@ -252,7 +299,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 0.85;
-  color: var(--text-dark);
+  color: var(--text-light);
   text-transform: uppercase;
 }
 
@@ -274,7 +321,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  color: var(--text-dark-muted);
+  color: var(--text-light-muted);
   margin-bottom: 4px;
 }
 
@@ -283,7 +330,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: clamp(2.4rem, 4vw, 3.2rem);
   font-weight: 800;
   line-height: 1.05;
-  color: var(--text-dark);
+  color: var(--text-light);
   margin-bottom: 10px;
 }
 
@@ -298,7 +345,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 .hero-description {
   font-size: 0.96rem;
-  color: var(--text-dark-muted);
+  color: var(--text-light-muted);
   margin-bottom: 20px;
   line-height: 1.7;
 }
@@ -321,21 +368,21 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: var(--text-dark);
-  color: var(--bg-light);
+  background: var(--accent-copper);
+  color: #FFFFFF;
   padding: 14px 26px;
   border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   transition: transform 0.22s, background 0.22s, box-shadow 0.22s;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .btn-editorial:hover {
-  background: var(--accent-copper);
+  background: var(--accent-copper-hover);
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(200, 101, 59, 0.3);
+  box-shadow: 0 8px 24px rgba(200, 101, 59, 0.4);
 }
 
 .btn-editorial-ghost {
@@ -343,11 +390,11 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   align-items: center;
   padding: 14px 24px;
   border-radius: 999px;
-  border: 1.5px solid var(--border-light);
+  border: 1.5px solid var(--border-dark);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--text-dark);
+  color: var(--text-light);
   transition: border-color 0.2s, color 0.2s;
 }
 
@@ -380,7 +427,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .mascot-orbit {
   position: absolute;
   border-radius: 50%;
-  border: 1.5px dashed var(--border-light);
+  border: 1.5px dashed var(--border-dark);
   pointer-events: none;
 }
 .char-orbit-1 {
@@ -491,15 +538,15 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 /* Floating Tech Badges */
 .m-badge {
   position: absolute;
-  background: var(--bg-light);
-  border: 1px solid var(--border-light);
+  background: var(--bg-dark-card);
+  border: 1px solid var(--border-dark);
   padding: 6px 14px;
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent-copper);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   z-index: 5;
   transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
@@ -551,16 +598,16 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-serif);
   font-size: 0.9rem;
   font-weight: 800;
-  color: var(--text-dark);
-  background: var(--bg-light);
+  color: var(--text-light);
+  background: var(--bg-dark-card);
   width: 50px;
   height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-light);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 /* Right Column: Pillars */
@@ -591,13 +638,13 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--text-dark);
+  color: var(--text-light);
   margin-bottom: 4px;
 }
 
 .pillar-text p {
   font-size: 0.88rem;
-  color: var(--text-dark-muted);
+  color: var(--text-light-muted);
   line-height: 1.55;
 }
 
@@ -653,8 +700,99 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 /* ============ FEATURED PROJECTS (DARK ESPRESSO) ============ */
 .projects-section {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.projects-section .section-header-editorial {
+  border-bottom: 2px solid var(--text-dark);
+}
+
+.projects-section .section-title-serif {
+  color: var(--text-dark);
+}
+
+.projects-section .proj-card-editorial {
+  background: var(--bg-light-card);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.projects-section .proj-card-editorial:hover {
+  transform: translateY(-8px);
+  border-color: var(--accent-copper);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), 0 0 25px rgba(200, 101, 59, 0.15);
+}
+
+.projects-section .proj-card-media {
+  background: #DFD9CE;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.projects-section .proj-code-preview {
+  color: var(--text-dark-muted);
+}
+
+.projects-section .proj-num {
+  color: var(--panel-light);
+}
+
+.projects-section .proj-title {
+  color: var(--text-dark);
+}
+
+.projects-section .proj-description {
+  color: var(--text-dark-muted);
+}
+
+.projects-section .proj-description code {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-dark);
+}
+
+.projects-section .proj-tags span {
+  background: var(--panel-light);
+  border: 1px solid var(--border-light);
+  color: var(--text-dark-muted);
+}
+
+.projects-section .proj-metric {
+  background: rgba(200, 101, 59, 0.08);
+  color: var(--text-dark);
+}
+
+.projects-section .proj-actions {
+  border-top: 1px solid var(--border-light);
+}
+
+.projects-section .proj-btn {
+  background: var(--panel-light);
+  border: 1px solid var(--border-light);
+  color: var(--text-dark);
+}
+
+.projects-section .proj-btn:hover {
+  background: var(--accent-copper);
+  border-color: var(--accent-copper);
+  color: #FFF;
+}
+
+.projects-section .sec-proj-card {
+  background: var(--bg-light-card);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.projects-section .sec-proj-card h4 {
+  color: var(--text-dark);
+}
+
+.projects-section .sec-proj-sub {
+  color: var(--text-dark-muted);
+}
+
+.projects-section .sec-proj-card p {
+  color: var(--text-dark-muted);
 }
 
 .projects-editorial-grid {
@@ -883,8 +1021,79 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 /* ============ PROCESS & SKILLS SECTION ============ */
 .process-skills-section {
-  background-color: var(--bg-light);
-  color: var(--text-dark);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+}
+
+.process-skills-section .section-header-editorial {
+  border-bottom: 2px solid var(--border-dark);
+}
+
+.process-skills-section .section-title-serif {
+  color: var(--text-light);
+}
+
+.process-skills-section .process-intro {
+  color: var(--text-light-muted);
+}
+
+.process-skills-section .process-step {
+  background: var(--bg-dark-card);
+  border: 1px solid var(--border-dark);
+}
+
+.process-skills-section .process-step:hover {
+  transform: translateX(6px);
+  border-color: var(--accent-copper);
+}
+
+.process-skills-section .step-details h4 {
+  color: var(--text-light);
+}
+
+.process-skills-section .step-details p {
+  color: var(--text-light-muted);
+}
+
+.process-skills-section .process-footer-quote {
+  color: var(--text-light-muted);
+  border-left: 3px solid var(--accent-copper);
+}
+
+.process-skills-section .skills-legend {
+  color: var(--text-light-muted);
+}
+
+.process-skills-section .skill-circle-card {
+  background: var(--bg-dark-card);
+  border: 1px solid var(--border-dark);
+  border-top-width: 3px;
+}
+
+.process-skills-section .skill-circle-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-copper);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.process-skills-section .circle-icon {
+  background: var(--panel-dark);
+  color: var(--text-light);
+  border: 1px solid var(--border-dark);
+}
+
+.process-skills-section .skill-name {
+  color: var(--text-light);
+}
+
+.process-skills-section .skill-cat {
+  color: var(--text-light-muted);
+}
+
+.process-skills-section .skill-card-empty {
+  border: 1.5px dashed var(--border-dark);
+  color: var(--text-light-muted);
+  opacity: 0.35;
 }
 
 .process-skills-grid {

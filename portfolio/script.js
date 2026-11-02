@@ -469,6 +469,36 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('scroll', updateProgress, { passive: true });
   updateProgress();
 
+  /* ============ Dynamic Nav Theme (Swaps between Dark & Light Sections) ============ */
+  const navHeader = document.querySelector('.nav-header');
+  function updateNavTheme() {
+    if (!navHeader) return;
+    const scrollY = window.scrollY + 60;
+    const projectsEl = document.getElementById('projects');
+    const processEl  = document.getElementById('process');
+    const expEl      = document.getElementById('experience');
+    const contactEl  = document.getElementById('contact');
+
+    let isLight = false;
+    // Projects (Light)
+    if (projectsEl && processEl && scrollY >= projectsEl.offsetTop && scrollY < processEl.offsetTop) {
+      isLight = true;
+    }
+    // Experience (Light)
+    else if (expEl && contactEl && scrollY >= expEl.offsetTop && scrollY < contactEl.offsetTop) {
+      isLight = true;
+    }
+
+    if (isLight) {
+      navHeader.classList.add('nav-light');
+    } else {
+      navHeader.classList.remove('nav-light');
+    }
+  }
+  document.addEventListener('scroll', updateNavTheme, { passive: true });
+  window.addEventListener('resize', updateNavTheme, { passive: true });
+  updateNavTheme();
+
   /* ============ Mobile Navigation Toggle ============ */
   const navToggle  = document.getElementById('navToggle');
   const mobileMenu = document.getElementById('mobileMenu');
