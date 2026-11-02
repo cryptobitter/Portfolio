@@ -23,13 +23,34 @@
 
 <div id="scrollProgress"></div>
 
-<!-- Page Load Intro Animation -->
+<!-- Page Load Intro Animation: 3D Gallery Tunnel (Originkit) -->
 <div class="intro-curtain" id="introCurtain" aria-hidden="true">
-  <div class="intro-content">
-    <div class="intro-logo">AR</div>
-    <div class="intro-title">ADITYA RAJPUT</div>
-    <div class="intro-sub">BACKEND &amp; AI ENGINEER</div>
-    <button class="intro-skip" id="introSkip" aria-label="Skip intro animation">SKIP ↵</button>
+  <div class="tunnel-frame" id="tunnelFrame">
+    <canvas id="tunnelCanvas"></canvas>
+    
+    <!-- Floating Interaction Pill -->
+    <div class="tunnel-cursor" id="tunnelCursor">
+      <span class="tc-text" id="tunnelCursorText">Press to Boost</span>
+    </div>
+    
+    <!-- Editorial Branding & Controls Overlay -->
+    <div class="tunnel-overlay">
+      <div class="tunnel-top-bar">
+        <div class="tunnel-brand">
+          <span class="tb-logo">AR</span>
+          <div class="tb-info">
+            <span class="tb-title">ADITYA RAJPUT</span>
+            <span class="tb-sub">BACKEND &amp; AI SYSTEMS</span>
+          </div>
+        </div>
+        <button class="intro-skip" id="introSkip" aria-label="Enter portfolio">ENTER PORTFOLIO ↵</button>
+      </div>
+
+      <div class="tunnel-bottom-bar">
+        <span class="tb-hint"><span class="hint-dot">●</span> HOLD DOWN ANYWHERE TO HYPERSPEED BOOST</span>
+        <span class="tb-tech">3D GALLERY TUNNEL · ORIGINKIT</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -469,7 +490,8 @@
   </div>
 </section>
 
-<!-- Core Application Script (Lazy loads 3D libraries after main render) -->
+<!-- Three.js 3D Engine for Gallery Tunnel Intro -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script defer src="script.js"></script>
 </body>
 </html>

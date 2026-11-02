@@ -34,33 +34,386 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ============ Page-Load Intro Animation (< 2s, Skippable) ============ */
-  const introCurtain = document.getElementById('introCurtain');
-  const introSkip    = document.getElementById('introSkip');
+  /* ============ 3D Gallery Tunnel — Originkit Page-Load Intro ============ */
+  function initGalleryTunnel() {
+    const curtain    = document.getElementById('introCurtain');
+    const frame      = document.getElementById('tunnelFrame');
+    const canvas     = document.getElementById('tunnelCanvas');
+    const cursorEl   = document.getElementById('tunnelCursor');
+    const cursorText = document.getElementById('tunnelCursorText');
+    const skipBtn    = document.getElementById('introSkip');
 
-  function closeIntro() {
-    if (!introCurtain || introCurtain.classList.contains('hidden')) return;
-    introCurtain.classList.add('hidden');
-    setTimeout(() => {
-      if (introCurtain.parentNode) {
-        introCurtain.parentNode.removeChild(introCurtain);
+    if (!curtain || !frame || !canvas || typeof THREE === 'undefined') {
+      if (curtain) {
+        curtain.classList.add('hidden');
+        setTimeout(() => curtain.remove(), 400);
       }
-    }, 500);
-  }
-
-  if (introCurtain) {
-    if (prefersReducedMotion || window.innerWidth < 768) {
-      closeIntro();
-    } else {
-      if (introSkip) {
-        introSkip.addEventListener('click', closeIntro);
-      }
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' || e.key === 'Enter') closeIntro();
-      }, { once: true });
-      setTimeout(closeIntro, 1400);
+      return;
     }
+
+    if (prefersReducedMotion) {
+      curtain.classList.add('hidden');
+      setTimeout(() => curtain.remove(), 300);
+      return;
+    }
+
+    const DEFAULT_IMAGES = [
+      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/f8b3688c-11d0-425c-0b6f-66f133322c00/w=800',
+      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/c083d83a-f5a4-4434-989f-4eaa9bbe7500/w=800',
+      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/12e8b0be-f114-4134-1ab7-53116bfc2800/w=800',
+      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/b14ae2a2-1116-4a7f-0a18-1d74c4a46f00/w=800',
+      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/babdb603-8b5b-4520-58d6-240a34463c00/w=800',
+    ];
+
+    const DEFAULTS = {
+      background: '#050505',
+      lineColor: '#A0A0A0',
+      lineOpacity: 45,
+      colors: ['#C8653B', '#FF6A00', '#AB54F7', '#EA3737', '#0072E3', '#00AA3C', '#FFB200'],
+      grid: 4,
+      speed: 100,
+      boost: 250,
+      fade: 100,
+    };
+
+    const TUNNEL_WIDTH = 2;
+    const TUNNEL_HEIGHT = 1.8;
+    const SEGMENT_DEPTH = 1;
+    const NUM_SEGMENTS = 15;
+    const LINE_RADIUS = 0.003;
+    const SCROLL_TO_Z = 0.05;
+    const CAMERA_CHASE = 0.1;
+    const FADE_IN = 1;
+    const FOG_FAR = NUM_SEGMENTS * SEGMENT_DEPTH * 0.95;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(DEFAULTS.background);
+
+    const fogNear = Math.min(
+      FOG_FAR * (1 - Math.min(100, Math.max(0, DEFAULTS.fade)) / 100),
+      FOG_FAR - 0.01
+    );
+    scene.fog = new THREE.Fog(new THREE.Color(DEFAULTS.background), fogNear, FOG_FAR);
+
+    const camera = new THREE.PerspectiveCamera(45, frame.clientWidth / frame.clientHeight, 0.1, 1000);
+    camera.position.set(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      powerPreference: 'high-performance',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(frame.clientWidth, frame.clientHeight, false);
+
+    const lineMaterial = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(DEFAULTS.lineColor),
+      transparent: true,
+      opacity: Math.min(100, Math.max(0, DEFAULTS.lineOpacity)) / 100,
+    });
+
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin('anonymous');
+    const fading = [];
+
+    let imageIndex = 0;
+    let colorIndex = 0;
+    let populateIndex = 0;
+    let scrollPos = 0;
+    let raf = 0;
+    let last = 0;
+    let pressed = false;
+    let alive = true;
+
+    const hw = TUNNEL_WIDTH / 2;
+    const hh = TUNNEL_HEIGHT / 2;
+
+    const cols = Math.max(1, Math.round(DEFAULTS.grid));
+    const rows = Math.max(1, Math.round(DEFAULTS.grid));
+    const colW = TUNNEL_WIDTH / cols;
+    const rowH = TUNNEL_HEIGHT / rows;
+
+    const geoFloor = new THREE.PlaneGeometry(colW, SEGMENT_DEPTH);
+    const geoWall  = new THREE.PlaneGeometry(SEGMENT_DEPTH, rowH);
+
+    const geoTubeZ = new THREE.TubeGeometry(
+      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -SEGMENT_DEPTH)),
+      1, LINE_RADIUS, 8
+    );
+    const geoTubeX = new THREE.TubeGeometry(
+      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(TUNNEL_WIDTH, 0, 0)),
+      1, LINE_RADIUS, 8
+    );
+    const geoTubeY = new THREE.TubeGeometry(
+      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, TUNNEL_HEIGHT, 0)),
+      1, LINE_RADIUS, 8
+    );
+
+    const colorMats = DEFAULTS.colors.map(
+      (hex) => new THREE.MeshBasicMaterial({ color: new THREE.Color(hex), side: THREE.DoubleSide })
+    );
+
+    const imageMats = DEFAULT_IMAGES.map((url) => {
+      const mat = new THREE.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+      });
+      loader.load(
+        url,
+        (tex) => {
+          if (!alive) { tex.dispose(); return; }
+          tex.minFilter = THREE.LinearFilter;
+          tex.generateMipmaps = false;
+          if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
+          mat.map = tex;
+          mat.needsUpdate = true;
+          fading.push(mat);
+        },
+        undefined,
+        () => {}
+      );
+      return mat;
+    });
+
+    const tube = (geo, x, y, z = 0) => {
+      const m = new THREE.Mesh(geo, lineMaterial);
+      m.position.set(x, y, z);
+      return m;
+    };
+
+    const SLOTS = [];
+    {
+      const z = -SEGMENT_DEPTH / 2;
+      for (let i = 0; i < cols; i++) {
+        const x = -hw + i * colW + colW / 2;
+        SLOTS.push({
+          geo: geoFloor,
+          pos: new THREE.Vector3(x, -hh, z),
+          rot: new THREE.Euler(-Math.PI / 2, 0, 0),
+        });
+        SLOTS.push({
+          geo: geoFloor,
+          pos: new THREE.Vector3(x, hh, z),
+          rot: new THREE.Euler(Math.PI / 2, 0, 0),
+        });
+      }
+      for (let i = 0; i < rows; i++) {
+        const y = -hh + i * rowH + rowH / 2;
+        SLOTS.push({
+          geo: geoWall,
+          pos: new THREE.Vector3(-hw, y, z),
+          rot: new THREE.Euler(0, Math.PI / 2, 0),
+        });
+        SLOTS.push({
+          geo: geoWall,
+          pos: new THREE.Vector3(hw, y, z),
+          rot: new THREE.Euler(0, -Math.PI / 2, 0),
+        });
+      }
+    }
+
+    function populate(group) {
+      const takesSlabs = populateIndex % 2 === 0;
+      populateIndex++;
+      const slabs = group.userData.slabs;
+      if (!slabs) return;
+
+      for (const slab of slabs) {
+        if (!takesSlabs || Math.random() > 0.5) {
+          slab.visible = false;
+          continue;
+        }
+        slab.visible = true;
+        if (Math.random() > 0.5) {
+          slab.material = colorMats[(5 * colorIndex) % colorMats.length];
+          colorIndex++;
+        } else {
+          slab.material = imageMats[(3 * imageIndex) % imageMats.length];
+          imageIndex++;
+        }
+      }
+    }
+
+    function createSegment(z) {
+      const group = new THREE.Group();
+      group.position.z = z;
+
+      for (let i = 0; i <= cols; i++) {
+        const x = -hw + i * colW;
+        group.add(tube(geoTubeZ, x, -hh));
+        group.add(tube(geoTubeZ, x, hh));
+      }
+      for (let i = 1; i < rows; i++) {
+        const y = -hh + i * rowH;
+        group.add(tube(geoTubeZ, -hw, y));
+        group.add(tube(geoTubeZ, hw, y));
+      }
+      group.add(tube(geoTubeX, -hw, -hh));
+      group.add(tube(geoTubeX, -hw, hh));
+      group.add(tube(geoTubeY, -hw, -hh));
+      group.add(tube(geoTubeY, hw, -hh));
+
+      const slabs = SLOTS.map((slot) => {
+        const m = new THREE.Mesh(slot.geo, colorMats[0]);
+        m.position.copy(slot.pos);
+        m.rotation.copy(slot.rot);
+        m.visible = false;
+        group.add(m);
+        return m;
+      });
+      group.userData.slabs = slabs;
+
+      populate(group);
+      return group;
+    }
+
+    const segments = [];
+    for (let i = 0; i < NUM_SEGMENTS; i++) {
+      const g = createSegment(-i * SEGMENT_DEPTH);
+      scene.add(g);
+      segments.push(g);
+    }
+
+    const resize = () => {
+      if (!frame || !canvas) return;
+      const w = Math.max(1, frame.clientWidth);
+      const h = Math.max(1, frame.clientHeight);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    };
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+
+    const speedVal = DEFAULTS.speed / 100;
+    const boostVal = DEFAULTS.boost / 10;
+
+    const animate = (now) => {
+      if (!alive) return;
+      raf = requestAnimationFrame(animate);
+      const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
+      last = now;
+
+      scrollPos += pressed ? boostVal : speedVal;
+
+      const want = -SCROLL_TO_Z * scrollPos;
+      camera.position.z += CAMERA_CHASE * (want - camera.position.z);
+
+      const span = NUM_SEGMENTS * SEGMENT_DEPTH;
+      const z = camera.position.z;
+      for (const seg of segments) {
+        if (seg.position.z > z + SEGMENT_DEPTH) {
+          let min = 0;
+          for (const s of segments) min = Math.min(min, s.position.z);
+          seg.position.z = min - SEGMENT_DEPTH;
+          populate(seg);
+        } else if (seg.position.z < z - span - SEGMENT_DEPTH) {
+          let max = -999999;
+          for (const s of segments) max = Math.max(max, s.position.z);
+          seg.position.z = max + SEGMENT_DEPTH;
+          populate(seg);
+        }
+      }
+
+      for (let i = fading.length - 1; i >= 0; i--) {
+        const m = fading[i];
+        m.opacity = Math.min(1, m.opacity + dt / FADE_IN);
+        if (m.opacity >= 1) fading.splice(i, 1);
+      }
+
+      renderer.render(scene, camera);
+    };
+    raf = requestAnimationFrame(animate);
+
+    // Interactive pointer & cursor pill
+    const onMove = (e) => {
+      if (!cursorEl) return;
+      const rect = frame.getBoundingClientRect();
+      const sx = rect.width > 0 ? frame.clientWidth / rect.width : 1;
+      const sy = rect.height > 0 ? frame.clientHeight / rect.height : 1;
+      cursorEl.style.left = ((e.clientX - rect.left) * sx) + 'px';
+      cursorEl.style.top  = ((e.clientY - rect.top) * sy) + 'px';
+    };
+    const onEnter = () => {
+      if (cursorEl) cursorEl.style.opacity = '1';
+    };
+    const onLeave = () => {
+      pressed = false;
+      if (cursorEl) {
+        cursorEl.style.opacity = '0';
+        cursorEl.classList.remove('boosting');
+        if (cursorText) cursorText.textContent = 'Press to Boost';
+      }
+    };
+    const onDown = (e) => {
+      if (e.target && e.target.closest('#introSkip')) return;
+      pressed = true;
+      if (cursorEl) {
+        cursorEl.classList.add('boosting');
+        if (cursorText) cursorText.textContent = 'HYPERSPEED >>';
+      }
+    };
+    const onUp = () => {
+      pressed = false;
+      if (cursorEl) {
+        cursorEl.classList.remove('boosting');
+        if (cursorText) cursorText.textContent = 'Press to Boost';
+      }
+    };
+
+    frame.addEventListener('pointermove', onMove);
+    frame.addEventListener('pointerenter', onEnter);
+    frame.addEventListener('pointerleave', onLeave);
+    frame.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointerup', onUp);
+
+    // Clean exit function
+    function closeIntro() {
+      if (!alive || !curtain || curtain.classList.contains('hidden')) return;
+      alive = false;
+      cancelAnimationFrame(raf);
+
+      curtain.classList.add('hidden');
+
+      setTimeout(() => {
+        window.removeEventListener('resize', resize);
+        frame.removeEventListener('pointermove', onMove);
+        frame.removeEventListener('pointerenter', onEnter);
+        frame.removeEventListener('pointerleave', onLeave);
+        frame.removeEventListener('pointerdown', onDown);
+        window.removeEventListener('pointerup', onUp);
+
+        geoFloor.dispose();
+        geoWall.dispose();
+        geoTubeZ.dispose();
+        geoTubeX.dispose();
+        geoTubeY.dispose();
+        colorMats.forEach((m) => m.dispose());
+        imageMats.forEach((m) => {
+          if (m.map) m.map.dispose();
+          m.dispose();
+        });
+        lineMaterial.dispose();
+        renderer.dispose();
+
+        if (curtain.parentNode) {
+          curtain.parentNode.removeChild(curtain);
+        }
+      }, 750);
+    }
+
+    if (skipBtn) {
+      skipBtn.addEventListener('click', closeIntro);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' || e.key === 'Enter') closeIntro();
+    }, { once: true });
   }
+
+  initGalleryTunnel();
+
 
   /* ============ Scroll Progress Indicator ============ */
   const progress = document.getElementById('scrollProgress');
