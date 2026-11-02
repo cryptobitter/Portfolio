@@ -293,8 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const speedVal = DEFAULTS.speed / 100;
     const boostVal = DEFAULTS.boost / 10;
-    const AUTO_EXIT_SECONDS = 3.5;
+    const AUTO_EXIT_SECONDS = 6.5; // 6 to 7 seconds total duration
     let startTime = null;
+    let endingBlurApplied = false;
 
     const animate = (now) => {
       if (!alive) return;
@@ -305,20 +306,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
       last = now;
 
-      // Starts gliding slow (speedMultiplier ~0.45), progressively accelerates up fast
-      const normTime = Math.min(elapsed / 3.1, 1);
+      // 6 to 7 second timeline:
+      // Starts gliding in slow (0 to ~3s), builds up, and then turns up fast into warp speed
+      const normTime = Math.min(elapsed / 5.8, 1);
       const accelCurve = Math.pow(normTime, 3.2); // exponential acceleration curve
-      const speedMultiplier = 0.45 + accelCurve * 15.0;
+      const speedMultiplier = 0.4 + accelCurve * 16.0;
 
       const activeSpeed = pressed ? Math.max(boostVal, speedVal * speedMultiplier * 1.4) : (speedVal * speedMultiplier);
       scrollPos += activeSpeed * (dt * 60);
 
       // Camera FOV dynamically widens as acceleration surges
       const targetFov = 45 + accelCurve * 16;
-      camera.fov += (targetFov - camera.fov) * 0.12;
+      camera.fov += (targetFov - camera.fov) * 0.1;
       camera.updateProjectionMatrix();
 
-      // Automatically remove intro within 3-4s and transition into portfolio
+      // When the animation nears the end (~5.6s), make it a bit blurry
+      if (elapsed >= 5.6 && !endingBlurApplied) {
+        endingBlurApplied = true;
+        if (curtain) curtain.classList.add('ending-blur');
+      }
+
+      // Automatically exit at ~6.5s (within 6-7s) and transition into portfolio
       if (elapsed >= AUTO_EXIT_SECONDS && !closing) {
         closeIntro();
       }
@@ -400,9 +408,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (closing || !curtain || curtain.classList.contains('hidden')) return;
       closing = true;
 
-      // Smoothly unveil portfolio and trigger blur-out on intro curtain
+      // Keep portfolio in blurry mode initially so it appears blurry underneath
+      document.body.classList.add('portfolio-blur');
       document.body.classList.remove('intro-active');
+
+      // Curtain dissolves with deep blur
       curtain.classList.add('hidden');
+
+      // Shortly after curtain dissolves and blurry portfolio appears,
+      // smoothly de-blur the portfolio into crisp focus
+      setTimeout(() => {
+        document.body.classList.remove('portfolio-blur');
+      }, 450);
 
       setTimeout(() => {
         alive = false;
@@ -431,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (curtain.parentNode) {
           curtain.parentNode.removeChild(curtain);
         }
-      }, 850);
+      }, 1200);
     }
 
     if (skipBtn) {

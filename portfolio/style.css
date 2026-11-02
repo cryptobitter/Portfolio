@@ -1490,16 +1490,19 @@ body.intro-active {
 
 body.intro-active main,
 body.intro-active header,
-body.intro-active footer {
-  filter: blur(14px);
-  transform: scale(0.97);
-  opacity: 0.75;
+body.intro-active footer,
+body.portfolio-blur main,
+body.portfolio-blur header,
+body.portfolio-blur footer {
+  filter: blur(16px);
+  transform: scale(0.98);
+  opacity: 0.88;
 }
 
 main, header, footer {
-  transition: filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: filter 1.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.3s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .intro-curtain {
@@ -1509,19 +1512,25 @@ main, header, footer {
   background: #000000;
   color: var(--text-light);
   overflow: hidden;
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.85s;
+  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 1.1s;
   pointer-events: auto;
   filter: blur(0px);
   transform: scale(1);
   will-change: opacity, filter, transform;
 }
 
+/* As animation nears its end, the 3D scene turns a bit blurry */
+.intro-curtain.ending-blur {
+  filter: blur(8px);
+  transition: filter 0.8s ease-out;
+}
+
 .intro-curtain.hidden {
   opacity: 0;
-  filter: blur(32px) brightness(1.2);
+  filter: blur(36px) brightness(1.2);
   transform: scale(1.12);
   visibility: hidden;
   pointer-events: none;
@@ -1763,7 +1772,10 @@ main, header, footer {
   }
   body.intro-active main,
   body.intro-active header,
-  body.intro-active footer {
+  body.intro-active footer,
+  body.portfolio-blur main,
+  body.portfolio-blur header,
+  body.portfolio-blur footer {
     filter: none !important;
     transform: none !important;
     opacity: 1 !important;
