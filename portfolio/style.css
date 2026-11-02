@@ -1728,7 +1728,7 @@ body.intro-complete footer {
   position: fixed;
   inset: 0;
   z-index: 100000;
-  background: #000000;
+  background: #121110;
   color: var(--text-light);
   overflow: hidden;
   opacity: 1;
@@ -1756,7 +1756,7 @@ body.intro-complete footer {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #000000;
+  background: #121110;
   cursor: crosshair;
 }
 
