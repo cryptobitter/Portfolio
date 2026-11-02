@@ -1498,11 +1498,11 @@ body.intro-active footer {
   pointer-events: none;
 }
 
-/* 4.5s continuous cross-dissolve switch transition for portfolio */
+/* 4.0s continuous cross-dissolve switch transition (whole sequence ~10s total) */
 main, header, footer {
-  transition: opacity 4.5s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 4.5s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 4.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 4.0s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 4.0s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 4.0s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.intro-complete main,
@@ -1527,22 +1527,16 @@ body.intro-complete footer {
   transform: scale(1);
   pointer-events: auto;
   will-change: opacity, filter, transform;
-  transition: opacity 4.5s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 4.5s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 4.5s cubic-bezier(0.4, 0, 0.2, 1),
-              visibility 4.5s;
+  transition: opacity 4.0s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 4.0s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 4.0s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 4.0s;
 }
 
-/* As animation nears switch point, 3D scene smoothly gains dreamy blur */
-.intro-curtain.ending-blur {
-  filter: blur(8px);
-  transition: filter 1.2s ease-out;
-}
-
-/* 4.5s switch: animation fades to 0% and deeply blurs while portfolio reaches 100% */
+/* Switch at 6s: animation blurs out bit by bit (100% -> 0%) as portfolio reaches 100% */
 .intro-curtain.hidden {
   opacity: 0;
-  filter: blur(34px) brightness(1.15);
+  filter: blur(36px) brightness(1.15);
   transform: scale(1.1);
   visibility: hidden;
   pointer-events: none;

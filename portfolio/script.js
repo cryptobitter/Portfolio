@@ -293,7 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const speedVal = DEFAULTS.speed / 100;
     const boostVal = DEFAULTS.boost / 10;
-    const START_SWITCH_SECONDS = 2.0; // Solo animation for 2s, then 4.5s cross-dissolve switch
+    const START_SWITCH_SECONDS = 6.0; // Whole 3D animation runs for 6s, then blurs out bit by bit
+    const SWITCH_DURATION_MS = 4000;  // 4s cross-dissolve -> whole transition is ~10s total
     let startTime = null;
 
     const animate = (now) => {
@@ -305,9 +306,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
       last = now;
 
-      // Glides in slow (0 to ~2s), and steadily accelerates as the switch unfolds
-      const normTime = Math.min(elapsed / 6.0, 1);
-      const accelCurve = Math.pow(normTime, 3.0);
+      // 10s total timeline:
+      // 0 to 3.5s: Glides in slow
+      // 3.5s to 6.0s: Accelerates smoothly
+      // 6.0s to 10.0s: Blurs out bit by bit as speed surges and portfolio reveals
+      const normTime = Math.min(elapsed / 9.5, 1);
+      const accelCurve = Math.pow(normTime, 2.8);
       const speedMultiplier = 0.45 + accelCurve * 15.0;
 
       const activeSpeed = pressed ? Math.max(boostVal, speedVal * speedMultiplier * 1.4) : (speedVal * speedMultiplier);
@@ -318,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
       camera.fov += (targetFov - camera.fov) * 0.1;
       camera.updateProjectionMatrix();
 
-      // Begin the 4-5 second switch between animation (100% -> 0%) and portfolio (0% -> 100%)
+      // At 6.0s: Whole animation is for 6s, now begins blurring out bit by bit
       if (elapsed >= START_SWITCH_SECONDS && !closing) {
         closeIntro(false);
       }
@@ -394,13 +398,13 @@ document.addEventListener('DOMContentLoaded', () => {
     frame.addEventListener('pointerdown', onDown);
     window.addEventListener('pointerup', onUp);
 
-    // Clean exit function with smooth 4.5s cross-dissolve switch
+    // Clean exit function with 4s cross-dissolve (whole sequence ~10s total)
     let closing = false;
     function closeIntro(immediate = false) {
       if (closing || !curtain || curtain.classList.contains('hidden')) return;
       closing = true;
 
-      const durationMs = immediate ? 350 : 4500;
+      const durationMs = immediate ? 350 : SWITCH_DURATION_MS;
 
       if (immediate) {
         curtain.style.transition = 'opacity 0.35s ease, filter 0.35s ease';
