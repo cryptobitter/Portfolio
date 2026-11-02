@@ -18,8 +18,20 @@
 </noscript>
 
 <link rel="stylesheet" href="style.css">
+<noscript>
+  <style>
+    body.intro-active main, body.intro-active header, body.intro-active footer {
+      filter: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+    .intro-curtain {
+      display: none !important;
+    }
+  </style>
+</noscript>
 </head>
-<body class="light-theme">
+<body class="light-theme intro-active">
 
 <div id="scrollProgress"></div>
 

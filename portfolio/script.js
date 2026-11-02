@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const skipBtn    = document.getElementById('introSkip');
 
     if (!curtain || !frame || !canvas || typeof THREE === 'undefined') {
+      document.body.classList.remove('intro-active');
       if (curtain) {
         curtain.classList.add('hidden');
         setTimeout(() => curtain.remove(), 400);
@@ -52,10 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (prefersReducedMotion) {
+      document.body.classList.remove('intro-active');
       curtain.classList.add('hidden');
       setTimeout(() => curtain.remove(), 300);
       return;
     }
+
+    document.body.classList.add('intro-active');
 
     const DEFAULT_IMAGES = [
       'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/f8b3688c-11d0-425c-0b6f-66f133322c00/w=800',
@@ -289,14 +293,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const speedVal = DEFAULTS.speed / 100;
     const boostVal = DEFAULTS.boost / 10;
+    const AUTO_EXIT_SECONDS = 3.5;
+    let startTime = null;
 
     const animate = (now) => {
       if (!alive) return;
       raf = requestAnimationFrame(animate);
+
+      if (startTime === null) startTime = now;
+      const elapsed = (now - startTime) / 1000;
       const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
       last = now;
 
-      scrollPos += pressed ? boostVal : speedVal;
+      // Starts gliding slow (speedMultiplier ~0.45), progressively accelerates up fast
+      const normTime = Math.min(elapsed / 3.1, 1);
+      const accelCurve = Math.pow(normTime, 3.2); // exponential acceleration curve
+      const speedMultiplier = 0.45 + accelCurve * 15.0;
+
+      const activeSpeed = pressed ? Math.max(boostVal, speedVal * speedMultiplier * 1.4) : (speedVal * speedMultiplier);
+      scrollPos += activeSpeed * (dt * 60);
+
+      // Camera FOV dynamically widens as acceleration surges
+      const targetFov = 45 + accelCurve * 16;
+      camera.fov += (targetFov - camera.fov) * 0.12;
+      camera.updateProjectionMatrix();
+
+      // Automatically remove intro within 3-4s and transition into portfolio
+      if (elapsed >= AUTO_EXIT_SECONDS && !closing) {
+        closeIntro();
+      }
 
       const want = -SCROLL_TO_Z * scrollPos;
       camera.position.z += CAMERA_CHASE * (want - camera.position.z);
@@ -369,15 +394,20 @@ document.addEventListener('DOMContentLoaded', () => {
     frame.addEventListener('pointerdown', onDown);
     window.addEventListener('pointerup', onUp);
 
-    // Clean exit function
+    // Clean exit function with smooth blur transition
+    let closing = false;
     function closeIntro() {
-      if (!alive || !curtain || curtain.classList.contains('hidden')) return;
-      alive = false;
-      cancelAnimationFrame(raf);
+      if (closing || !curtain || curtain.classList.contains('hidden')) return;
+      closing = true;
 
+      // Smoothly unveil portfolio and trigger blur-out on intro curtain
+      document.body.classList.remove('intro-active');
       curtain.classList.add('hidden');
 
       setTimeout(() => {
+        alive = false;
+        cancelAnimationFrame(raf);
+
         window.removeEventListener('resize', resize);
         frame.removeEventListener('pointermove', onMove);
         frame.removeEventListener('pointerenter', onEnter);
@@ -401,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (curtain.parentNode) {
           curtain.parentNode.removeChild(curtain);
         }
-      }, 750);
+      }, 850);
     }
 
     if (skipBtn) {
