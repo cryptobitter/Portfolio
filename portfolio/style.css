@@ -1488,21 +1488,31 @@ body.intro-active {
   overflow: hidden;
 }
 
+/* Starting state: animation is 100%, portfolio is 0% and blurry */
 body.intro-active main,
 body.intro-active header,
-body.intro-active footer,
-body.portfolio-blur main,
-body.portfolio-blur header,
-body.portfolio-blur footer {
-  filter: blur(16px);
-  transform: scale(0.98);
-  opacity: 0.88;
+body.intro-active footer {
+  opacity: 0;
+  filter: blur(20px);
+  transform: scale(0.97);
+  pointer-events: none;
 }
 
+/* 4.5s continuous cross-dissolve switch transition for portfolio */
 main, header, footer {
-  transition: filter 1.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1.3s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 4.5s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 4.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 4.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.intro-complete main,
+body.intro-complete header,
+body.intro-complete footer {
+  transition: none;
+  filter: none;
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 
 .intro-curtain {
@@ -1512,26 +1522,28 @@ main, header, footer {
   background: #000000;
   color: var(--text-light);
   overflow: hidden;
-  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 1.1s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 1.1s;
-  pointer-events: auto;
+  opacity: 1;
   filter: blur(0px);
   transform: scale(1);
+  pointer-events: auto;
   will-change: opacity, filter, transform;
+  transition: opacity 4.5s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 4.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 4.5s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 4.5s;
 }
 
-/* As animation nears its end, the 3D scene turns a bit blurry */
+/* As animation nears switch point, 3D scene smoothly gains dreamy blur */
 .intro-curtain.ending-blur {
   filter: blur(8px);
-  transition: filter 0.8s ease-out;
+  transition: filter 1.2s ease-out;
 }
 
+/* 4.5s switch: animation fades to 0% and deeply blurs while portfolio reaches 100% */
 .intro-curtain.hidden {
   opacity: 0;
-  filter: blur(36px) brightness(1.2);
-  transform: scale(1.12);
+  filter: blur(34px) brightness(1.15);
+  transform: scale(1.1);
   visibility: hidden;
   pointer-events: none;
 }
@@ -1772,13 +1784,11 @@ main, header, footer {
   }
   body.intro-active main,
   body.intro-active header,
-  body.intro-active footer,
-  body.portfolio-blur main,
-  body.portfolio-blur header,
-  body.portfolio-blur footer {
+  body.intro-active footer {
     filter: none !important;
     transform: none !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
   }
   * {
     animation-duration: 0.001ms !important;

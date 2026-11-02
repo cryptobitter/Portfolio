@@ -293,9 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const speedVal = DEFAULTS.speed / 100;
     const boostVal = DEFAULTS.boost / 10;
-    const AUTO_EXIT_SECONDS = 6.5; // 6 to 7 seconds total duration
+    const START_SWITCH_SECONDS = 2.0; // Solo animation for 2s, then 4.5s cross-dissolve switch
     let startTime = null;
-    let endingBlurApplied = false;
 
     const animate = (now) => {
       if (!alive) return;
@@ -306,11 +305,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
       last = now;
 
-      // 6 to 7 second timeline:
-      // Starts gliding in slow (0 to ~3s), builds up, and then turns up fast into warp speed
-      const normTime = Math.min(elapsed / 5.8, 1);
-      const accelCurve = Math.pow(normTime, 3.2); // exponential acceleration curve
-      const speedMultiplier = 0.4 + accelCurve * 16.0;
+      // Glides in slow (0 to ~2s), and steadily accelerates as the switch unfolds
+      const normTime = Math.min(elapsed / 6.0, 1);
+      const accelCurve = Math.pow(normTime, 3.0);
+      const speedMultiplier = 0.45 + accelCurve * 15.0;
 
       const activeSpeed = pressed ? Math.max(boostVal, speedVal * speedMultiplier * 1.4) : (speedVal * speedMultiplier);
       scrollPos += activeSpeed * (dt * 60);
@@ -320,15 +318,9 @@ document.addEventListener('DOMContentLoaded', () => {
       camera.fov += (targetFov - camera.fov) * 0.1;
       camera.updateProjectionMatrix();
 
-      // When the animation nears the end (~5.6s), make it a bit blurry
-      if (elapsed >= 5.6 && !endingBlurApplied) {
-        endingBlurApplied = true;
-        if (curtain) curtain.classList.add('ending-blur');
-      }
-
-      // Automatically exit at ~6.5s (within 6-7s) and transition into portfolio
-      if (elapsed >= AUTO_EXIT_SECONDS && !closing) {
-        closeIntro();
+      // Begin the 4-5 second switch between animation (100% -> 0%) and portfolio (0% -> 100%)
+      if (elapsed >= START_SWITCH_SECONDS && !closing) {
+        closeIntro(false);
       }
 
       const want = -SCROLL_TO_Z * scrollPos;
@@ -402,28 +394,29 @@ document.addEventListener('DOMContentLoaded', () => {
     frame.addEventListener('pointerdown', onDown);
     window.addEventListener('pointerup', onUp);
 
-    // Clean exit function with smooth blur transition
+    // Clean exit function with smooth 4.5s cross-dissolve switch
     let closing = false;
-    function closeIntro() {
+    function closeIntro(immediate = false) {
       if (closing || !curtain || curtain.classList.contains('hidden')) return;
       closing = true;
 
-      // Keep portfolio in blurry mode initially so it appears blurry underneath
-      document.body.classList.add('portfolio-blur');
+      const durationMs = immediate ? 350 : 4500;
+
+      if (immediate) {
+        curtain.style.transition = 'opacity 0.35s ease, filter 0.35s ease';
+        document.querySelectorAll('main, header, footer').forEach((el) => {
+          el.style.transition = 'opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease';
+        });
+      }
+
+      // Both switch continuously: animation 100% -> 0%, portfolio 0% -> 100%
       document.body.classList.remove('intro-active');
-
-      // Curtain dissolves with deep blur
       curtain.classList.add('hidden');
-
-      // Shortly after curtain dissolves and blurry portfolio appears,
-      // smoothly de-blur the portfolio into crisp focus
-      setTimeout(() => {
-        document.body.classList.remove('portfolio-blur');
-      }, 450);
 
       setTimeout(() => {
         alive = false;
         cancelAnimationFrame(raf);
+        document.body.classList.add('intro-complete');
 
         window.removeEventListener('resize', resize);
         frame.removeEventListener('pointermove', onMove);
@@ -448,14 +441,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (curtain.parentNode) {
           curtain.parentNode.removeChild(curtain);
         }
-      }, 1200);
+      }, durationMs + 100);
     }
 
     if (skipBtn) {
-      skipBtn.addEventListener('click', closeIntro);
+      skipBtn.addEventListener('click', () => closeIntro(true));
     }
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' || e.key === 'Enter') closeIntro();
+      if (e.key === 'Escape' || e.key === 'Enter') closeIntro(true);
     }, { once: true });
   }
 
