@@ -70,10 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const DEFAULTS = {
-      background: '#121110',
+      background: '#261812',
       lineColor: '#A0A0A0',
       lineOpacity: 45,
-      colors: ['#C8653B', '#FF6A00', '#AB54F7', '#EA3737', '#0072E3', '#00AA3C', '#FFB200'],
+      colors: ['#C8653B', '#D97706', '#E0784B', '#A0522D', '#B86D43', '#D48C5E', '#FFB200'],
       grid: 4,
       speed: 100,
       boost: 250,

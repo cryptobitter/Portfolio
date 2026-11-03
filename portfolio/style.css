@@ -12,10 +12,10 @@
   --text-dark-muted: #70685F;
   --border-light: rgba(24, 22, 20, 0.15);
 
-  /* Dark Charcoal Palette (Featured Projects & Contact) */
-  --bg-dark: #121110;
-  --bg-dark-card: #1C1A18;
-  --panel-dark: #24211E;
+  /* Warm Roasted Coffee Palette (Hero, Process & Skills, Contact) */
+  --bg-dark: #261812;
+  --bg-dark-card: #32211A;
+  --panel-dark: #3E2920;
   --text-light: #F5F2EC;
   --text-light-muted: #9E948A;
   --border-dark: rgba(245, 242, 236, 0.14);
@@ -127,7 +127,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   left: 0;
   right: 0;
   z-index: 900;
-  background: rgba(18, 17, 16, 0.88);
+  background: rgba(38, 24, 18, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-dark);
   padding: 16px 4vw;
@@ -478,7 +478,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .mascot-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(18, 17, 16, 0.4) 100%);
+  background: linear-gradient(180deg, transparent 60%, rgba(38, 24, 18, 0.4) 100%);
   pointer-events: none;
 }
 
@@ -1728,7 +1728,7 @@ body.intro-complete footer {
   position: fixed;
   inset: 0;
   z-index: 100000;
-  background: #121110;
+  background: #261812;
   color: var(--text-light);
   overflow: hidden;
   opacity: 1;
@@ -1756,7 +1756,7 @@ body.intro-complete footer {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #121110;
+  background: #261812;
   cursor: crosshair;
 }
 
