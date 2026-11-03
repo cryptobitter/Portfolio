@@ -183,7 +183,7 @@
   </div>
 </section>
 
-<!-- ============ FEATURED PROJECTS SECTION (DARK ESPRESSO) ============ -->
+<!-- ============ FEATURED PROJECTS SECTION (3D BOOKS SHOWCASE) ============ -->
 <section class="projects-section" id="projects">
   <div class="section-container">
     <div class="section-header-editorial dark-header reveal">
@@ -191,103 +191,77 @@
         <span class="section-number">01 / PROJECTS</span>
         <h2 class="section-title-serif">FEATURED PROJECTS</h2>
       </div>
-      <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="link-arrow">VIEW ALL GITHUB REPOS <span class="arrow">→</span></a>
+      <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="link-arrow">VIEW ALL GITHUB REPOS <span class="arrow">&#8599;</span></a>
     </div>
 
-    <div class="projects-editorial-grid">
-      <!-- Project 01: NAYAY AI (Legal Clause Explainer) -->
-      <article class="proj-card-editorial reveal">
-        <div class="proj-card-media">
-          <div class="proj-card-badge">LIVE PRODUCT</div>
-          <div class="proj-code-preview">
-            <span class="p-lang">FASTAPI + GROQ</span>
-            <div class="p-snippet">nyaya_ai/services/groq_pipeline.py</div>
-          </div>
+    <!-- 3D Books Showcase -->
+    <div class="books-showcase-container reveal" id="booksShowcaseContainer">
+      <div id="booksShowcaseRoot" class="books-showcase-root" data-state="hero">
+        <!-- Giant background watermark -->
+        <div class="bs-hero-word">
+          <span>PROJECTS</span>
         </div>
-        <div class="proj-card-content">
-          <span class="proj-num">01</span>
-          <div class="proj-meta-group">
-            <h3 class="proj-title">NAYAY AI</h3>
-            <span class="proj-subtitle">AI-Powered Legal Clause Explainer &amp; Aid Platform</span>
-          </div>
-          <p class="proj-description">
-            Bilingual (English/Hindi) legal assistant and clause explainer for Indian citizens. Powered by Groq's <code>llama-3.3-70b</code> via FastAPI backend for low-latency guidance, with Supabase Auth &amp; PostgreSQL.
-          </p>
-          <!-- TODO: Add verified metrics for Nayay AI (e.g. latency, query volume, or active users) -->
-          <div class="proj-metric"></div>
-          <div class="proj-tags">
-            <span>FastAPI</span><span>Groq API</span><span>Supabase</span><span>PostgreSQL</span>
-          </div>
-          <div class="proj-actions">
-            <a href="https://github.com/cryptobitter/nayay-ai-legal-clause-explainer" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
-            <!-- TODO: Set Live Demo URL when ready -->
-            <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
-          </div>
-        </div>
-      </article>
 
-      <!-- Project 02: NIRNAY (On-Chain Policy Decision Auditor) -->
-      <article class="proj-card-editorial reveal" style="transition-delay: 0.1s">
-        <div class="proj-card-media">
-          <div class="proj-card-badge">IN DEVELOPMENT</div>
-          <div class="proj-code-preview">
-            <span class="p-lang">RAG + LLM + BLOCKCHAIN</span>
-            <div class="p-snippet">nirnay/auditor/policy_engine.py</div>
+        <!-- Top Navigation -->
+        <div class="bs-nav-bar">
+          <div class="bs-nav-title">Interactive 3D Books Showcase</div>
+          <div class="bs-nav-hint">
+            <span class="bs-hint-dot"></span>
+            <span>Click any project book to open &amp; explore</span>
           </div>
         </div>
-        <div class="proj-card-content">
-          <span class="proj-num">02</span>
-          <div class="proj-meta-group">
-            <h3 class="proj-title">NIRNAY</h3>
-            <span class="proj-subtitle">On-Chain Policy Decision Auditor</span>
-          </div>
-          <p class="proj-description">
-            RAG and LLM system that audits policy decisions and records an immutable audit trail on the blockchain. Verifies institutional compliance while preserving transparent, verifiable decision histories.
-          </p>
-          <!-- TODO: Add verified metrics for NIRNAY (e.g. audit throughput, retrieval accuracy) -->
-          <div class="proj-metric"></div>
-          <div class="proj-tags">
-            <span>RAG</span><span>LLM</span><span>Blockchain</span><span>FastAPI</span><span>Vector DB</span>
-          </div>
-          <div class="proj-actions">
-            <a href="https://github.com/cryptobitter/Nirnay" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
-            <!-- TODO: Set Live Demo URL when ready -->
-            <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
-          </div>
-        </div>
-      </article>
 
-      <!-- Project 03: FRACTOES (AI Fracture X-Ray Analysis) -->
-      <article class="proj-card-editorial reveal" style="transition-delay: 0.2s">
-        <div class="proj-card-media">
-          <div class="proj-card-badge">PRODUCTION SHIPPED</div>
-          <div class="proj-code-preview">
-            <span class="p-lang">FASTAPI + REPORTLAB</span>
-            <div class="p-snippet">fractoes/radiology/generator.py</div>
-          </div>
-        </div>
-        <div class="proj-card-content">
-          <span class="proj-num">03</span>
-          <div class="proj-meta-group">
-            <h3 class="proj-title">FRACTOES</h3>
-            <span class="proj-subtitle">AI Fracture X-Ray Analysis &amp; Radiology PDF</span>
-          </div>
-          <!-- TODO: Confirm whether FRACTOES integrates Groq API or Grok model in backend code; keeping Grok with TODO for user verification -->
-          <p class="proj-description">
-            Sole backend engineer on a 5-person team. FastAPI backend on Render with JWT auth &amp; OTP email verification. Feeds X-ray detection models into Grok-generated radiology PDF reports.
+        <!-- WebGL Canvas for 3D Books -->
+        <canvas id="booksCanvas"></canvas>
+
+        <!-- Hover Pill Button -->
+        <button id="booksOpenBtn" class="bs-open-pill" aria-label="Open Project">
+          <span>Explore Architecture</span>
+          <svg viewBox="0 0 24 24" class="bs-pill-arrow" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Close Button (✕) -->
+        <button id="booksCloseBtn" class="bs-close-btn" aria-label="Close Project View">&#10005;</button>
+
+        <!-- Detail Overlay Panel (Opens when a book is selected) -->
+        <div id="booksDetailPanel" class="bs-detail-panel" aria-live="polite">
+          <div class="bs-dp-badge" id="bsDpCategory">LIVE PRODUCT</div>
+          <h1 class="bs-dp-title" id="bsDpTitle">NAYAY AI</h1>
+          <p class="bs-dp-desc" id="bsDpDesc">
+            Bilingual (English/Hindi) legal assistant and clause explainer for Indian citizens. Powered by Groq's llama-3.3-70b via FastAPI backend for low-latency guidance, with Supabase Auth &amp; PostgreSQL.
           </p>
-          <!-- TODO: Add verified metrics for FRACTOES (e.g. PDF generation time, auth verification latency) -->
-          <div class="proj-metric"></div>
-          <div class="proj-tags">
-            <span>FastAPI</span><span>SQLAlchemy</span><span>Supabase</span><span>ReportLab</span>
+
+          <div class="bs-dp-meta">
+            <div class="bs-dp-stars">
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+            </div>
+            <div class="bs-dp-divider"></div>
+            <div class="bs-dp-author" id="bsDpAuthor">FastAPI &bull; Groq API</div>
+            <div class="bs-dp-year" id="bsDpYear">2026</div>
           </div>
-          <div class="proj-actions">
-            <a href="https://github.com/cryptobitter/FRACTOES" target="_blank" rel="noopener" class="proj-btn">GitHub ↗</a>
-            <!-- TODO: Set Live Demo URL when ready -->
-            <a href="" target="_blank" rel="noopener" class="proj-btn proj-btn--demo">Live demo ↗</a>
+
+          <div class="bs-dp-tags" id="bsDpTags">
+            <span class="bs-dp-tag">FastAPI</span>
+            <span class="bs-dp-tag">Groq API</span>
+            <span class="bs-dp-tag">Supabase</span>
+          </div>
+
+          <div class="bs-dp-actions">
+            <a id="bsGithubBtn" href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="bs-btn bs-btn-primary">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              <span>GitHub Code</span>
+            </a>
+            <a id="bsDemoBtn" href="#" target="_blank" rel="noopener" class="bs-btn bs-btn-secondary">
+              <span>Live Demo</span>
+              <span class="bs-arrow">&#8599;</span>
+            </a>
           </div>
         </div>
-      </article>
+      </div>
     </div>
   </div>
 </section>
@@ -505,6 +479,7 @@
 
 <!-- Three.js 3D Engine for Gallery Tunnel Intro -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="books-showcase.js"></script>
 <script defer src="script.js"></script>
 </body>
 </html>
