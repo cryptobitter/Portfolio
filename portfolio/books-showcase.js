@@ -609,7 +609,7 @@
     const blockGeo = new THREE.BoxGeometry(W - 0.015, H, BLOCK_D);
     const pageGeo = new THREE.PlaneGeometry(PW, PH);
     const spineGeo = new THREE.BoxGeometry(0.028, H + OV * 2, T + CT * 2 + 0.006);
-    const hitGeo = new THREE.BoxGeometry(1.85, 2.55, 1.2);
+    const hitGeo = new THREE.BoxGeometry(1.42, 2.2, 0.42);
     const blobGeo = new THREE.PlaneGeometry(1, 1);
     const hitMat = new THREE.MeshBasicMaterial({ visible: false });
 
@@ -877,14 +877,14 @@
 
       SLOTS.hero = portrait
         ? [
-            { p: [-1.36, -0.58, -0.12], r: [-0.045, 0.4, 0.185], s: 1.25 },
-            { p: [0.2, -0.22, 0.6], r: [-0.05, -0.1, -0.035], s: 1.35 },
-            { p: [1.62, -0.62, -0.34], r: [-0.045, -0.42, -0.17], s: 1.25 },
+            { p: [-1.45, -0.42, 0], r: [-0.04, 0.32, 0.14], s: 1.15 },
+            { p: [0, -0.32, 0.3], r: [-0.04, 0, 0], s: 1.25 },
+            { p: [1.45, -0.42, 0], r: [-0.04, -0.32, -0.14], s: 1.15 },
           ]
         : [
-            { p: [-2.05, -0.58, -0.12], r: [-0.045, 0.4, 0.185], s: 1.22 },
-            { p: [0.25, -0.36, 0.6], r: [-0.05, -0.1, -0.035], s: 1.32 },
-            { p: [2.15, -0.62, -0.34], r: [-0.045, -0.42, -0.17], s: 1.22 },
+            { p: [-2.25, -0.42, 0.05], r: [-0.04, 0.28, 0.12], s: 1.2 },
+            { p: [0, -0.34, 0.28], r: [-0.04, 0, 0], s: 1.28 },
+            { p: [2.25, -0.42, 0.05], r: [-0.04, -0.28, -0.12], s: 1.2 },
           ];
 
       SLOTS.detail = portrait
@@ -894,7 +894,7 @@
 
     function applyMode() {
       computeSlots();
-      if (state.mode === 'hero') {
+      if (state.mode === 'hero' || state.mode === 'closing') {
         bookInstances.forEach((b, i) => {
           const s = SLOTS.hero[i] || SLOTS.hero[1];
           b.slotScale = s.s;
@@ -905,6 +905,8 @@
           b.springs.ry.t = s.r[1];
           b.springs.rz.t = s.r[2];
           b.springs.sc.t = s.s;
+          b.springs.cover.t = 0;
+          b.springs.coverB.t = 0;
           b.root.visible = true;
         });
       } else if (state.mode === 'opening' || state.mode === 'detail') {
@@ -976,10 +978,10 @@
       const s = SLOTS.hero[slotIdx] || SLOTS.hero[1];
       const enterDir = slotIdx === 0 ? -1 : 1;
       setT(() => {
-        b.springs.px.set(s.p[0] + enterDir * 3.5);
-        b.springs.py.set(s.p[1] + 1.2);
-        b.springs.pz.set(s.p[2] - 1.5);
-        b.springs.sc.set(0.6);
+        b.springs.px.set(s.p[0] + enterDir * 2.4);
+        b.springs.py.set(s.p[1] + 0.8);
+        b.springs.pz.set(s.p[2] - 0.9);
+        b.springs.sc.set(s.s * 0.85);
         b.slotScale = s.s;
         b.springs.px.t = s.p[0];
         b.springs.py.t = s.p[1];
@@ -988,6 +990,9 @@
         b.springs.ry.t = s.r[1];
         b.springs.rz.t = s.r[2];
         b.springs.sc.t = s.s;
+        b.springs.cover.t = 0;
+        b.springs.coverB.t = 0;
+        b.float.rotation.set(0, 0, 0);
         b.exit = null;
       }, delay * 1000);
     }
@@ -1081,28 +1086,56 @@
 
       const b = state.selected;
       if (b) {
-        b.orbTarget = Math.round(b.orbY / 6.2832) * 6.2832 + 6.2832;
-        b.orbYv = Math.max(b.orbYv, 3);
+        b.orbTarget = 0;
+        b.orbYv = 0;
         b.orbPhase = 'return';
         b.orbXs.t = 0;
+        b.orbY = 0;
+        b.springs.cover.t = 0;
+        b.springs.coverB.t = 0;
+
+        const s = SLOTS.hero[b.index] || SLOTS.hero[1];
+        b.slotScale = s.s;
+        b.springs.px.t = s.p[0];
+        b.springs.py.t = s.p[1];
+        b.springs.pz.t = s.p[2];
+        b.springs.rx.t = s.r[0];
+        b.springs.ry.t = s.r[1];
+        b.springs.rz.t = s.r[2];
+        b.springs.sc.t = s.s;
       }
 
-      setT(() => {
-        applyMode();
-        camTo('hero');
-        let back = 0;
-        bookInstances.forEach((bk, i) => {
-          if (bk !== b) bringBack(bk, i, 0.85 + back++ * 0.1);
-        });
-      }, 250);
+      camTo('hero');
+      let back = 0;
+      bookInstances.forEach((bk, i) => {
+        if (bk !== b) bringBack(bk, i, 0.15 + back++ * 0.08);
+      });
 
       setT(() => {
         if (state.mode === 'closing') {
           state.mode = 'hero';
           root.setAttribute('data-state', 'hero');
           state.selected = null;
+          state.hovered = null;
+          hidePill();
+          bookInstances.forEach((bk, i) => {
+            const s = SLOTS.hero[i] || SLOTS.hero[1];
+            bk.slotScale = s.s;
+            bk.springs.px.t = s.p[0];
+            bk.springs.py.t = s.p[1];
+            bk.springs.pz.t = s.p[2];
+            bk.springs.rx.t = s.r[0];
+            bk.springs.ry.t = s.r[1];
+            bk.springs.rz.t = s.r[2];
+            bk.springs.sc.t = s.s;
+            bk.springs.cover.t = 0;
+            bk.springs.coverB.t = 0;
+            bk.float.rotation.set(0, 0, 0);
+            bk.root.visible = true;
+            bk.exit = null;
+          });
         }
-      }, 1600);
+      }, 900);
     }
 
     if (closeBtn) closeBtn.addEventListener('click', close);

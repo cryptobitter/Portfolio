@@ -34,398 +34,306 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-    /* ============ 3D Gallery Tunnel — Warp Gateway before Connect ============ */
-  function initGalleryTunnel() {
-    const gateway    = document.getElementById('tunnelGateway');
-    const frame      = document.getElementById('tunnelFrame');
-    const canvas     = document.getElementById('tunnelCanvas');
-    const cursorEl   = document.getElementById('tunnelCursor');
-    const cursorText = document.getElementById('tunnelCursorText');
-    const skipBtn    = document.getElementById('introSkip');
-    const timerText  = document.getElementById('tunnelTimerText');
-    const meterFill  = document.getElementById('tunnelMeterFill');
-    const clockText  = document.getElementById('tunnelClock');
+  /* ============ Animated Footer Gateway (Vengeance UI ASCII Hands) ============ */
+  function initAnimatedFooter() {
+    const gateway    = document.getElementById('animatedFooterGateway');
+    const leftWrap   = document.getElementById('afLeftWrap');
+    const rightWrap  = document.getElementById('afRightWrap');
+    const leftCanvas = document.getElementById('afLeftCanvas');
+    const rightCanvas= document.getElementById('afRightCanvas');
+    const timerText  = document.getElementById('afTimerText');
+    const meterFill  = document.getElementById('afMeterFill');
+    const proceedBtn = document.getElementById('afProceedBtn');
 
-    if (!gateway || !frame || !canvas || typeof THREE === 'undefined') {
+    if (!gateway || !leftWrap || !rightWrap || !leftCanvas || !rightCanvas) {
       return;
     }
 
-    const DEFAULT_IMAGES = [
-      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/f8b3688c-11d0-425c-0b6f-66f133322c00/w=800',
-      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/c083d83a-f5a4-4434-989f-4eaa9bbe7500/w=800',
-      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/12e8b0be-f114-4134-1ab7-53116bfc2800/w=800',
-      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/b14ae2a2-1116-4a7f-0a18-1d74c4a46f00/w=800',
-      'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/babdb603-8b5b-4520-58d6-240a34463c00/w=800',
-    ];
+    const ASCII_CHARS = "........:::=+xX#0369";
+    const CHAR_COLOR = "#C8653B";
+    const HOVER_COLOR = "#FF8C42";
+    const HOVER_CHAR_COLOR = "#FAF7F2";
+    const HIGHLIGHT_LIFETIME = 350; // ms hovered cell stays lit
+    const CLUSTER_SIZE = 10;
+    const PARALLAX_EASE = 0.06;
+    const PARALLAX_STRENGTH = 24;
+    const HOVER_RADIUS = 8;
+    const TOTAL_DURATION = 5.5; // 5.5 seconds duration (5-6 sec as requested)
 
-    const DEFAULTS = {
-      background: '#261812',
-      lineColor: '#A0A0A0',
-      lineOpacity: 45,
-      colors: ['#C8653B', '#D97706', '#E0784B', '#A0522D', '#B86D43', '#D48C5E', '#FFB200'],
-      grid: 4,
-      speed: 100,
-      boost: 250,
-      fade: 100,
-    };
+    const columns = window.innerWidth < 768 ? 48 : 74;
+    const cellSize = window.innerWidth < 768 ? 13 : 16;
+    const fontSize = window.innerWidth < 768 ? 12 : 15;
 
-    const TUNNEL_DURATION = 5.5; // 5 to 6 seconds duration
-    const TUNNEL_WIDTH = 2;
-    const TUNNEL_HEIGHT = 1.8;
-    const SEGMENT_DEPTH = 1;
-    const NUM_SEGMENTS = 15;
-    const LINE_RADIUS = 0.003;
-    const SCROLL_TO_Z = 0.05;
-    const CAMERA_CHASE = 0.1;
-    const FADE_IN = 1;
-    const FOG_FAR = NUM_SEGMENTS * SEGMENT_DEPTH * 0.95;
+    const hands = [];
+    const wrappers = [leftWrap, rightWrap];
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(DEFAULTS.background);
+    function buildHandCells(image, cols, chars) {
+      const rows = Math.max(1, Math.round(cols / (image.naturalWidth / image.naturalHeight || 1)));
+      const sampler = document.createElement('canvas');
+      sampler.width = cols;
+      sampler.height = rows;
+      const sampleCtx = sampler.getContext('2d');
+      const cells = new Map();
+      if (!sampleCtx) return { rows, cells };
 
-    const fogNear = Math.min(
-      FOG_FAR * (1 - Math.min(100, Math.max(0, DEFAULTS.fade)) / 100),
-      FOG_FAR - 0.01
-    );
-    scene.fog = new THREE.Fog(new THREE.Color(DEFAULTS.background), fogNear, FOG_FAR);
+      sampleCtx.drawImage(image, 0, 0, cols, rows);
+      const pixels = sampleCtx.getImageData(0, 0, cols, rows).data;
+      const bgCharIdx = chars.lastIndexOf('.');
 
-    const camera = new THREE.PerspectiveCamera(45, frame.clientWidth / frame.clientHeight, 0.1, 1000);
-    camera.position.set(0, 0, 0);
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const offset = (row * cols + col) * 4;
+          const brightness = (pixels[offset] * 0.299 + pixels[offset + 1] * 0.587 + pixels[offset + 2] * 0.114) / 255;
+          const charIndex = Math.min(chars.length - 1, Math.floor((1 - brightness) * chars.length));
+          if (charIndex <= bgCharIdx) continue;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: false,
-      powerPreference: 'high-performance',
-    });
-    renderer.setSize(frame.clientWidth, frame.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          cells.set(`${col},${row}`, {
+            col,
+            row,
+            char: chars[charIndex],
+            highlightEndTime: 0
+          });
+        }
+      }
+      return { rows, cells };
+    }
 
-    const colorMats = DEFAULTS.colors.map(
-      (c) => new THREE.MeshBasicMaterial({ color: new THREE.Color(c), side: THREE.DoubleSide })
-    );
+    function highlightCluster(cells, startCell) {
+      const now = Date.now();
+      startCell.highlightEndTime = now + HIGHLIGHT_LIFETIME;
+      const steps = Math.floor(Math.random() * CLUSTER_SIZE) + 1;
+      const litCells = [startCell];
+      let current = startCell;
 
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.setCrossOrigin('anonymous');
-    const imageMats = DEFAULT_IMAGES.map((url) => {
-      const mat = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        side: THREE.DoubleSide,
-        transparent: false,
-        opacity: 1,
+      for (let step = 0; step < steps; step++) {
+        const neighbours = [];
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            if (dx === 0 && dy === 0) continue;
+            const nb = cells.get(`${current.col + dx},${current.row + dy}`);
+            if (nb && !litCells.includes(nb)) neighbours.push(nb);
+          }
+        }
+        if (neighbours.length === 0) break;
+        const next = neighbours[Math.floor(Math.random() * neighbours.length)];
+        next.highlightEndTime = now + HIGHLIGHT_LIFETIME + step * 12;
+        litCells.push(next);
+        current = next;
+      }
+    }
+
+    function setupHand(image, canvas, direction) {
+      const { rows, cells } = buildHandCells(image, columns, ASCII_CHARS);
+      if (cells.size === 0) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = columns * cellSize * dpr;
+      canvas.height = rows * cellSize * dpr;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.font = `${fontSize}px 'Space Mono', monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+
+      const metrics = ctx.measureText('X');
+      const glyphHeight = (metrics.actualBoundingBoxAscent || fontSize * 0.8) + (metrics.actualBoundingBoxDescent || fontSize * 0.2);
+      const baselineOffset = cellSize / 2 + glyphHeight / 2 - (metrics.actualBoundingBoxDescent || 2);
+
+      hands.push({
+        canvas,
+        ctx,
+        cells,
+        cellList: [...cells.values()],
+        rows,
+        columns,
+        cellSize,
+        baselineOffset,
+        direction
       });
-      textureLoader.load(
-        url,
-        (tex) => {
-          tex.wrapS = THREE.ClampToEdgeWrapping;
-          tex.wrapT = THREE.ClampToEdgeWrapping;
-          tex.minFilter = THREE.LinearFilter;
-          mat.map = tex;
-          mat.needsUpdate = true;
-        },
-        undefined,
-        () => {
-          mat.color = new THREE.Color('#C8653B');
-          mat.needsUpdate = true;
+    }
+
+    function loadHand(src, canvas, direction) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      let done = false;
+      const onDone = () => {
+        if (done) return;
+        done = true;
+        setupHand(img, canvas, direction);
+      };
+      img.onload = onDone;
+      img.src = src;
+      if (img.complete && img.naturalWidth) onDone();
+    }
+
+    loadHand('assets/hand-left.jpg', leftCanvas, 1);
+    loadHand('assets/hand-right.jpg', rightCanvas, -1);
+
+    function renderHand(hand, now) {
+      const { ctx, cellList, cellSize: cs, baselineOffset, columns: cols, rows } = hand;
+      ctx.clearRect(0, 0, cols * cs, rows * cs);
+
+      for (let i = 0; i < cellList.length; i++) {
+        const cell = cellList[i];
+        const x = cell.col * cs;
+        const y = cell.row * cs;
+        const isLit = cell.highlightEndTime > now;
+
+        if (isLit) {
+          ctx.fillStyle = HOVER_COLOR;
+          ctx.fillRect(x, y, cs, cs);
         }
-      );
-      return mat;
-    });
-
-    const lineMaterial = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(DEFAULTS.lineColor),
-      transparent: true,
-      opacity: (DEFAULTS.lineOpacity / 100) * 0.45,
-    });
-
-    const hw = TUNNEL_WIDTH / 2;
-    const hh = TUNNEL_HEIGHT / 2;
-
-    const cols = Math.max(1, Math.round(DEFAULTS.grid));
-    const rows = Math.max(1, Math.round(DEFAULTS.grid));
-    const colW = TUNNEL_WIDTH / cols;
-    const rowH = TUNNEL_HEIGHT / rows;
-
-    const geoFloor = new THREE.PlaneGeometry(colW, SEGMENT_DEPTH);
-    const geoWall = new THREE.PlaneGeometry(rowH, SEGMENT_DEPTH);
-
-    const geoTubeZ = new THREE.TubeGeometry(
-      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, SEGMENT_DEPTH)),
-      1, LINE_RADIUS, 8
-    );
-    const geoTubeX = new THREE.TubeGeometry(
-      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(TUNNEL_WIDTH, 0, 0)),
-      1, LINE_RADIUS, 8
-    );
-    const geoTubeY = new THREE.TubeGeometry(
-      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, TUNNEL_HEIGHT, 0)),
-      1, LINE_RADIUS, 8
-    );
-
-    const fading = [];
-    let imageIndex = 0;
-
-    function populate(seg) {
-      while (seg.children.length > 0) {
-        seg.remove(seg.children[0]);
-      }
-
-      const rx = (c) => -hw + c * colW + colW / 2;
-      const ry = (r) => -hh + r * rowH + rowH / 2;
-
-      for (let c = 0; c < cols; c++) {
-        if (Math.random() < 0.65) {
-          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
-          const mesh = new THREE.Mesh(geoFloor, mat.clone());
-          mesh.material.transparent = true;
-          mesh.material.opacity = 0;
-          mesh.position.set(rx(c), -hh, 0);
-          mesh.rotation.x = -Math.PI / 2;
-          seg.add(mesh);
-          fading.push(mesh.material);
-        }
-      }
-
-      for (let c = 0; c < cols; c++) {
-        if (Math.random() < 0.65) {
-          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
-          const mesh = new THREE.Mesh(geoFloor, mat.clone());
-          mesh.material.transparent = true;
-          mesh.material.opacity = 0;
-          mesh.position.set(rx(c), hh, 0);
-          mesh.rotation.x = Math.PI / 2;
-          seg.add(mesh);
-          fading.push(mesh.material);
-        }
-      }
-
-      for (let r = 0; r < rows; r++) {
-        if (Math.random() < 0.65) {
-          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
-          const mesh = new THREE.Mesh(geoWall, mat.clone());
-          mesh.material.transparent = true;
-          mesh.material.opacity = 0;
-          mesh.position.set(-hw, ry(r), 0);
-          mesh.rotation.y = Math.PI / 2;
-          seg.add(mesh);
-          fading.push(mesh.material);
-        }
-      }
-
-      for (let r = 0; r < rows; r++) {
-        if (Math.random() < 0.65) {
-          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
-          const mesh = new THREE.Mesh(geoWall, mat.clone());
-          mesh.material.transparent = true;
-          mesh.material.opacity = 0;
-          mesh.position.set(hw, ry(r), 0);
-          mesh.rotation.y = -Math.PI / 2;
-          seg.add(mesh);
-          fading.push(mesh.material);
-        }
-      }
-
-      if (imageMats.length > 0 && Math.random() < 0.5) {
-        const mat = imageMats[imageIndex % imageMats.length];
-        imageIndex++;
-        const side = Math.floor(Math.random() * 4);
-        let mesh;
-        if (side === 0) {
-          mesh = new THREE.Mesh(geoFloor, mat);
-          mesh.position.set(rx(Math.floor(Math.random() * cols)), -hh + 0.001, 0);
-          mesh.rotation.x = -Math.PI / 2;
-        } else if (side === 1) {
-          mesh = new THREE.Mesh(geoFloor, mat);
-          mesh.position.set(rx(Math.floor(Math.random() * cols)), hh - 0.001, 0);
-          mesh.rotation.x = Math.PI / 2;
-        } else if (side === 2) {
-          mesh = new THREE.Mesh(geoWall, mat);
-          mesh.position.set(-hw + 0.001, ry(Math.floor(Math.random() * rows)), 0);
-          mesh.rotation.y = Math.PI / 2;
-        } else {
-          mesh = new THREE.Mesh(geoWall, mat);
-          mesh.position.set(hw - 0.001, ry(Math.floor(Math.random() * rows)), 0);
-          mesh.rotation.y = -Math.PI / 2;
-        }
-        seg.add(mesh);
-      }
-
-      const edges = [
-        new THREE.Vector3(-hw, -hh, -SEGMENT_DEPTH / 2),
-        new THREE.Vector3(hw, -hh, -SEGMENT_DEPTH / 2),
-        new THREE.Vector3(hw, hh, -SEGMENT_DEPTH / 2),
-        new THREE.Vector3(-hw, hh, -SEGMENT_DEPTH / 2),
-      ];
-      for (const pos of edges) {
-        const mesh = new THREE.Mesh(geoTubeZ, lineMaterial);
-        mesh.position.copy(pos);
-        seg.add(mesh);
+        ctx.fillStyle = isLit ? HOVER_CHAR_COLOR : CHAR_COLOR;
+        ctx.fillText(cell.char, x + cs / 2, y + baselineOffset);
       }
     }
 
-    const segments = [];
-    for (let i = 0; i < NUM_SEGMENTS; i++) {
-      const seg = new THREE.Group();
-      seg.position.z = -i * SEGMENT_DEPTH;
-      scene.add(seg);
-      populate(seg);
-      segments.push(seg);
-    }
-
-    let scrollPos = 0;
-    let speedVal = DEFAULTS.speed;
-    let boostVal = DEFAULTS.boost;
-    let pressed = false;
-    let alive = true;
+    const pointer = { x: 0, y: 0 };
+    const drift = { x: 0, y: 0 };
+    const curtain = { offset: 125 };
     let isStarted = false;
     let isCompleted = false;
-    let startTime = null;
-    let last = null;
-    let raf = null;
+    let startTime = 0;
 
-    const resize = () => {
-      const w = frame.clientWidth;
-      const h = frame.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', resize);
+    function hoverHand(hand, clientX, clientY) {
+      const rect = hand.canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const mouseCol = ((clientX - rect.left) / rect.width) * hand.columns;
+      const mouseRow = ((clientY - rect.top) / rect.height) * hand.rows;
 
-    const animate = (now) => {
-      if (!alive) return;
-      raf = requestAnimationFrame(animate);
-
-      if (startTime === null) startTime = now;
-      const elapsed = (now - startTime) / 1000;
-      const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
-      last = now;
-
-      const remaining = Math.max(0, TUNNEL_DURATION - elapsed);
-      const secs = Math.ceil(remaining);
-      if (clockText) clockText.textContent = `0${secs}s`;
-      if (timerText) timerText.textContent = `WARP TRANSIT • 0${secs}s`;
-      if (meterFill) meterFill.style.width = `${(remaining / TUNNEL_DURATION) * 100}%`;
-
-      const normTime = Math.min(elapsed / TUNNEL_DURATION, 1);
-      const accelCurve = Math.pow(normTime, 2.5);
-      const speedMultiplier = 0.5 + accelCurve * 12.0;
-
-      const activeSpeed = pressed ? Math.max(boostVal, speedVal * speedMultiplier * 1.5) : (speedVal * speedMultiplier);
-      scrollPos += activeSpeed * (dt * 60);
-
-      const targetFov = 45 + accelCurve * 15;
-      camera.fov += (targetFov - camera.fov) * 0.1;
-      camera.updateProjectionMatrix();
-
-      // At 5.5s, trigger completion & blur:
-      if (elapsed >= TUNNEL_DURATION && !isCompleted) {
-        completeTransition();
-      }
-
-      const want = -SCROLL_TO_Z * scrollPos;
-      camera.position.z += CAMERA_CHASE * (want - camera.position.z);
-
-      const span = NUM_SEGMENTS * SEGMENT_DEPTH;
-      const z = camera.position.z;
-      for (const seg of segments) {
-        if (seg.position.z > z + SEGMENT_DEPTH) {
-          let min = 0;
-          for (const s of segments) min = Math.min(min, s.position.z);
-          seg.position.z = min - SEGMENT_DEPTH;
-          populate(seg);
-        } else if (seg.position.z < z - span - SEGMENT_DEPTH) {
-          let max = -999999;
-          for (const s of segments) max = Math.max(max, s.position.z);
-          seg.position.z = max + SEGMENT_DEPTH;
-          populate(seg);
+      let closest = null;
+      let closestDist = Infinity;
+      const list = hand.cellList;
+      for (let i = 0; i < list.length; i++) {
+        const cell = list[i];
+        const dx = mouseCol - cell.col;
+        const dy = mouseRow - cell.row;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = cell;
         }
       }
-
-      for (let i = fading.length - 1; i >= 0; i--) {
-        const m = fading[i];
-        m.opacity = Math.min(1, m.opacity + dt / FADE_IN);
-        if (m.opacity >= 1) fading.splice(i, 1);
+      if (closest && closestDist <= HOVER_RADIUS) {
+        highlightCluster(hand.cells, closest);
       }
+    }
 
-      renderer.render(scene, camera);
-    };
+    function onMouseMove(e) {
+      const rect = gateway.getBoundingClientRect();
+      const w = rect.width || 1;
+      const h = rect.height || 1;
+      pointer.x = ((e.clientX - rect.left) / w - 0.5) * PARALLAX_STRENGTH * 2;
+      pointer.y = ((e.clientY - rect.top) / h - 0.5) * PARALLAX_STRENGTH * 2;
+      for (let i = 0; i < hands.length; i++) {
+        hoverHand(hands[i], e.clientX, e.clientY);
+      }
+    }
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-    function completeTransition(immediate = false) {
+    // Heading chars
+    const chars = gateway.querySelectorAll('[data-af-char]');
+
+    function animateIn() {
+      // Ease curtain in
+      const startCurtain = curtain.offset;
+      const startTimeCurtain = performance.now();
+      const curtainDur = 1100;
+
+      function stepCurtain(t) {
+        const prog = Math.min(1, (t - startTimeCurtain) / curtainDur);
+        const ease = 1 - Math.pow(1 - prog, 3);
+        curtain.offset = startCurtain * (1 - ease);
+        if (prog < 1) requestAnimationFrame(stepCurtain);
+      }
+      requestAnimationFrame(stepCurtain);
+
+      // Stagger chars unmasking from center
+      const center = (chars.length - 1) / 2;
+      chars.forEach((ch, idx) => {
+        const dist = Math.abs(idx - center);
+        const delay = dist * 55;
+        setTimeout(() => {
+          ch.style.transform = 'translateY(0%)';
+        }, delay);
+      });
+    }
+
+    function completeGatewayTransition(immediate = false) {
       if (isCompleted) return;
       isCompleted = true;
-      frame.classList.add('tunnel-blurring');
+
+      gateway.classList.add('af-dismissed');
 
       setTimeout(() => {
+        gateway.style.display = 'none';
         const contactSec = document.getElementById('contact');
         if (contactSec) {
           contactSec.scrollIntoView({ behavior: 'smooth' });
         }
-      }, immediate ? 50 : 800);
+      }, immediate ? 50 : 750);
     }
 
-    if (skipBtn) {
-      skipBtn.addEventListener('click', (e) => {
+    if (proceedBtn) {
+      proceedBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        completeTransition(true);
+        completeGatewayTransition(true);
       });
     }
 
-    const onMove = (e) => {
-      if (!cursorEl) return;
-      const rect = frame.getBoundingClientRect();
-      const sx = rect.width > 0 ? frame.clientWidth / rect.width : 1;
-      const sy = rect.height > 0 ? frame.clientHeight / rect.height : 1;
-      cursorEl.style.left = ((e.clientX - rect.left) * sx) + 'px';
-      cursorEl.style.top  = ((e.clientY - rect.top) * sy) + 'px';
-    };
-    const onEnter = () => {
-      if (cursorEl) cursorEl.style.opacity = '1';
-    };
-    const onLeave = () => {
-      pressed = false;
-      if (cursorEl) {
-        cursorEl.style.opacity = '0';
-        cursorEl.classList.remove('boosting');
-        if (cursorText) cursorText.textContent = 'Press to Boost';
+    // Animation & timer loop
+    let rafId = 0;
+    function frame(t) {
+      const now = Date.now();
+      for (let i = 0; i < hands.length; i++) {
+        renderHand(hands[i], now);
       }
-    };
-    const onDown = (e) => {
-      if (e.target && e.target.closest('#introSkip')) return;
-      pressed = true;
-      if (cursorEl) {
-        cursorEl.classList.add('boosting');
-        if (cursorText) cursorText.textContent = 'HYPERSPEED >>';
-      }
-    };
-    const onUp = () => {
-      pressed = false;
-      if (cursorEl) {
-        cursorEl.classList.remove('boosting');
-        if (cursorText) cursorText.textContent = 'Press to Boost';
-      }
-    };
 
-    frame.addEventListener('pointermove', onMove);
-    frame.addEventListener('pointerenter', onEnter);
-    frame.addEventListener('pointerleave', onLeave);
-    frame.addEventListener('pointerdown', onDown);
-    window.addEventListener('pointerup', onUp);
+      drift.x += (pointer.x - drift.x) * PARALLAX_EASE;
+      drift.y += (pointer.y - drift.y) * PARALLAX_EASE;
+      const scale = 1 + (PARALLAX_STRENGTH * 2) / 200;
 
-    // IntersectionObserver to auto-activate tunnel glide as user reaches this section
-    const gatewayObserver = new IntersectionObserver(
+      for (let i = 0; i < wrappers.length; i++) {
+        const dir = i === 0 ? 1 : -1;
+        const revealX = i === 0 ? -curtain.offset : curtain.offset;
+        const x = drift.x * dir || 0;
+        const y = -drift.y || 0;
+        wrappers[i].style.transform = `translateX(${revealX}%) translate(${x}px, ${y}px) scale(${scale})`;
+      }
+
+      // Timer countdown if activated
+      if (isStarted && !isCompleted) {
+        const elapsed = (t - startTime) / 1000;
+        const remaining = Math.max(0, TOTAL_DURATION - elapsed);
+        const secs = Math.ceil(remaining);
+        if (timerText) timerText.textContent = `CONNECT REVEAL • 0${secs}s`;
+        if (meterFill) meterFill.style.width = `${(remaining / TOTAL_DURATION) * 100}%`;
+
+        if (elapsed >= TOTAL_DURATION) {
+          completeGatewayTransition();
+        }
+      }
+
+      rafId = requestAnimationFrame(frame);
+    }
+    rafId = requestAnimationFrame(frame);
+
+    // Observer to activate on scroll
+    const afObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !isStarted && !isCompleted) {
             isStarted = true;
             startTime = performance.now();
-            raf = requestAnimationFrame(animate);
+            animateIn();
           }
         });
       },
       { threshold: 0.25 }
     );
-    gatewayObserver.observe(gateway);
+    afObserver.observe(gateway);
   }
 
   /* ============ Vertical Spotlight Navbar (Right Middle) ============ */
@@ -525,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => updateActive(0), 120);
   }
 
-  initGalleryTunnel();
+  initAnimatedFooter();
   initSpotlightNavbar();
 
 
