@@ -1106,10 +1106,22 @@
     }
 
     if (closeBtn) closeBtn.addEventListener('click', close);
-    if (openBtn) {
-      openBtn.addEventListener('click', () => {
-        if (state.hovered) open(state.hovered);
-      });
+
+    // Pill trailing springs
+    const pillX = new Spring(0, 190, 23);
+    const pillY = new Spring(0, 190, 23);
+    let pillOn = false;
+
+    function showPill() {
+      if (!openBtn || pillOn) return;
+      openBtn.classList.add('bs-pill-on');
+      pillOn = true;
+    }
+
+    function hidePill() {
+      if (!openBtn || !pillOn) return;
+      openBtn.classList.remove('bs-pill-on');
+      pillOn = false;
     }
 
     // Input handlers
@@ -1130,35 +1142,49 @@
     };
     let dragBook = null,
       rayBook = null;
+    let lastClientX = null,
+      lastClientY = null;
     const orbit = { drag: false, dxAcc: 0, dyAcc: 0 };
     const ray = new THREE.Raycaster();
     const tmpV = new THREE.Vector3();
 
     canvasEl.addEventListener('contextmenu', (e) => e.preventDefault());
 
-    const localXY = (e) => {
+    function updatePointerFromClient(clientX, clientY) {
       const r = root.getBoundingClientRect();
-      return { x: e.clientX - r.left, y: e.clientY - r.top };
-    };
-
-    const onPointerMove = (e) => {
-      if (ptr.id !== null && e.pointerId !== ptr.id) return;
-      const { x: cx, y: cy } = localXY(e);
-      const dxN = (cx - ptr.lastX) / dims.w;
-      const dyN = (cy - ptr.lastY) / dims.h;
-      ptr.lastX = cx;
-      ptr.lastY = cy;
+      if (clientX < r.left || clientX > r.right || clientY < r.top || clientY > r.bottom) {
+        ptr.seen = false;
+        state.hovered = null;
+        hidePill();
+        return false;
+      }
+      const cx = clientX - r.left;
+      const cy = clientY - r.top;
       ptr.cx = cx;
       ptr.cy = cy;
       ptr.ndcX = (cx / dims.w) * 2 - 1;
       ptr.ndcY = -(cy / dims.h) * 2 + 1;
       ptr.seen = true;
+      return true;
+    }
+
+    const onPointerMove = (e) => {
+      if (ptr.id !== null && e.pointerId !== ptr.id) return;
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+      const inside = updatePointerFromClient(e.clientX, e.clientY);
+      if (!inside) return;
+
+      const dxN = (ptr.cx - ptr.lastX) / dims.w;
+      const dyN = (ptr.cy - ptr.lastY) / dims.h;
+      ptr.lastX = ptr.cx;
+      ptr.lastY = ptr.cy;
 
       if (state.mode === 'detail') leaves.push(dxN, dyN);
 
       if (ptr.down && dragBook) {
         ptr.moved += Math.abs(dxN * dims.w) + Math.abs(dyN * dims.h);
-        dragBook.springs.drag.t = clamp(((ptr.downX - cx) / dims.w) * 3.4, 0, 1.0);
+        dragBook.springs.drag.t = clamp(((ptr.downX - ptr.cx) / dims.w) * 3.4, 0, 1.0);
       }
       if (ptr.down && orbit.drag) {
         orbit.dxAcc += dxN;
@@ -1168,24 +1194,42 @@
     };
     canvasEl.addEventListener('pointermove', onPointerMove);
 
+    const onPointerLeave = () => {
+      lastClientX = null;
+      lastClientY = null;
+      ptr.seen = false;
+      state.hovered = null;
+      hidePill();
+    };
+    canvasEl.addEventListener('pointerleave', onPointerLeave);
+    root.addEventListener('pointerleave', onPointerLeave);
+
+    // Synchronize relative pointer when page scrolls
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (lastClientX !== null && lastClientY !== null && !ptr.down) {
+          updatePointerFromClient(lastClientX, lastClientY);
+        }
+      },
+      { passive: true }
+    );
+
     const onPointerDown = (e) => {
       if (ptr.id !== null) return;
       ptr.id = e.pointerId;
-      const { x: cx, y: cy } = localXY(e);
-      ptr.cx = cx;
-      ptr.cy = cy;
-      ptr.lastX = cx;
-      ptr.lastY = cy;
-      ptr.ndcX = (cx / dims.w) * 2 - 1;
-      ptr.ndcY = -(cy / dims.h) * 2 + 1;
-      ptr.seen = true;
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+      updatePointerFromClient(e.clientX, e.clientY);
+      ptr.lastX = ptr.cx;
+      ptr.lastY = ptr.cy;
 
       castRay();
       if (state.mode === 'hero' && rayBook) {
         ptr.down = true;
         dragBook = rayBook;
-        ptr.downX = cx;
-        ptr.downY = cy;
+        ptr.downX = ptr.cx;
+        ptr.downY = ptr.cy;
         ptr.moved = 0;
         ptr.t0 = performance.now();
         canvasEl.setPointerCapture(e.pointerId);
@@ -1391,18 +1435,32 @@
       if (state.mode === 'hero') {
         castRay();
         state.hovered = rayBook;
-        if (state.hovered && openBtn) {
-          screenPos(state.hovered);
-          openBtn.style.opacity = '1';
-          openBtn.style.transform = `translate(${state.hovered.scr.x - 70}px, ${state.hovered.scr.y + 110}px) scale(1)`;
-          openBtn.style.pointerEvents = 'auto';
-        } else if (openBtn) {
-          openBtn.style.opacity = '0';
-          openBtn.style.pointerEvents = 'none';
+
+        if (state.hovered && ptr.seen && !ptr.down) {
+          canvasEl.style.cursor = 'pointer';
+          const tx = ptr.cx;
+          const ty = ptr.cy + 36;
+          if (!pillOn) {
+            pillX.set(tx);
+            pillY.set(ty);
+            showPill();
+          }
+          pillX.t = tx;
+          pillY.t = ty;
+          if (openBtn) {
+            openBtn.style.left = pillX.update(dt) + 'px';
+            openBtn.style.top = pillY.update(dt) + 'px';
+          }
+        } else {
+          canvasEl.style.cursor = 'default';
+          hidePill();
         }
-      } else if (openBtn) {
-        openBtn.style.opacity = '0';
-        openBtn.style.pointerEvents = 'none';
+      } else if (state.mode === 'detail') {
+        canvasEl.style.cursor = orbit.drag ? 'grabbing' : 'grab';
+        hidePill();
+      } else {
+        canvasEl.style.cursor = 'default';
+        hidePill();
       }
 
       bookInstances.forEach((b) => {

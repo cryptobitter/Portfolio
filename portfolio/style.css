@@ -840,7 +840,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 10px 22px;
   border-radius: 9999px;
   background: var(--bg-dark);
   color: #FFFFFF;
@@ -848,30 +848,24 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  box-shadow: 0 8px 24px rgba(38, 24, 18, 0.35);
-  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 14px rgba(200, 101, 59, 0.25);
   pointer-events: none;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.92);
-  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s, color 0.2s;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: left, top, opacity, transform;
 }
 
-.bs-open-pill:hover {
-  background: var(--accent-copper);
-  color: #FFFFFF;
-  transform: translate(-50%, -50%) scale(1.04) !important;
+.bs-open-pill.bs-pill-on {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .bs-pill-arrow {
   width: 14px;
   height: 14px;
-  transition: transform 0.2s ease;
-}
-
-.bs-open-pill:hover .bs-pill-arrow {
-  transform: translateX(3px);
 }
 
 /* Close Button (✕) */
