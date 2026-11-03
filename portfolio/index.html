@@ -32,39 +32,53 @@
   </style>
 </noscript>
 </head>
-<body class="intro-active">
+<body>
 
 <div id="scrollProgress"></div>
 
-<!-- Page Load Intro Animation: 3D Gallery Tunnel (Originkit) -->
-<div class="intro-curtain" id="introCurtain" aria-hidden="true">
-  <div class="tunnel-frame" id="tunnelFrame">
-    <canvas id="tunnelCanvas"></canvas>
-    
-    <!-- Floating Interaction Pill -->
-    <div class="tunnel-cursor" id="tunnelCursor">
-      <span class="tc-text" id="tunnelCursorText">Press to Boost</span>
-    </div>
-    
-    <!-- Editorial Branding & Controls Overlay -->
-    <div class="tunnel-overlay">
-      <div class="tunnel-top-bar">
-        <div class="tunnel-brand">
-          <span class="tb-logo">AR</span>
-          <div class="tb-info">
-            <span class="tb-title">ADITYA RAJPUT</span>
-            <span class="tb-sub">BACKEND &amp; AI SYSTEMS</span>
-          </div>
-        </div>
-        <button class="intro-skip" id="introSkip" aria-label="Enter portfolio">ENTER PORTFOLIO ↵</button>
-      </div>
+<!-- ============ VERTICAL SPOTLIGHT NAVBAR (RIGHT MIDDLE) ============ -->
+<nav class="spotlight-nav-vertical" id="spotlightNav" aria-label="Quick Navigation">
+  <div class="spotlight-nav-inner">
+    <div class="spotlight-nav-light" id="spotlightNavLight"></div>
+    <div class="spotlight-nav-ambience" id="spotlightNavAmbience"></div>
 
-      <div class="tunnel-bottom-bar">
-        <span class="tb-hint"><span class="hint-dot">●</span> HOLD DOWN ANYWHERE TO HYPERSPEED BOOST</span>
-        <span class="tb-tech">3D GALLERY TUNNEL · ORIGINKIT</span>
-      </div>
-    </div>
+    <ul class="spotlight-nav-list">
+      <li class="spotlight-nav-item">
+        <a href="#hero" class="spotlight-nav-link active" data-index="0" data-section="hero">
+          <span class="nav-dot"></span>
+          <span class="nav-label">Home</span>
+        </a>
+      </li>
+      <li class="spotlight-nav-item">
+        <a href="#projects" class="spotlight-nav-link" data-index="1" data-section="projects">
+          <span class="nav-dot"></span>
+          <span class="nav-label">Projects</span>
+        </a>
+      </li>
+      <li class="spotlight-nav-item">
+        <a href="#process" class="spotlight-nav-link" data-index="2" data-section="process">
+          <span class="nav-dot"></span>
+          <span class="nav-label">Workflow</span>
+        </a>
+      </li>
+      <li class="spotlight-nav-item">
+        <a href="#experience" class="spotlight-nav-link" data-index="3" data-section="experience">
+          <span class="nav-dot"></span>
+          <span class="nav-label">Experience</span>
+        </a>
+      </li>
+      <li class="spotlight-nav-item">
+        <a href="#contact" class="spotlight-nav-link" data-index="4" data-section="contact">
+          <span class="nav-dot"></span>
+          <span class="nav-label">Connect</span>
+        </a>
+      </li>
+    </ul>
   </div>
+</nav>
+
+
+
 </div>
 
 <!-- Custom Editorial Cursor -->
@@ -396,6 +410,47 @@
         </div>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3D TUNNEL TRANSITION GATEWAY (WARP TO CONNECT) ============ -->
+<section class="tunnel-gateway-section" id="tunnelGateway">
+  <div class="tunnel-frame" id="tunnelFrame">
+    <canvas id="tunnelCanvas"></canvas>
+
+    <!-- Floating Interaction Pill -->
+    <div class="tunnel-cursor" id="tunnelCursor">
+      <span class="tc-text" id="tunnelCursorText">Press to Boost</span>
+    </div>
+
+    <!-- Editorial Branding & Controls Overlay -->
+    <div class="tunnel-overlay">
+      <div class="tunnel-top-bar">
+        <div class="tunnel-brand">
+          <span class="tb-logo">AR</span>
+          <div class="tb-info">
+            <span class="tb-title">WARP GATEWAY</span>
+            <span class="tb-sub">3D GALLERY TUNNEL &bull; EN ROUTE TO CONNECT</span>
+          </div>
+        </div>
+        <button class="intro-skip" id="introSkip" aria-label="Skip to Connect">SKIP TO CONNECT &darr;</button>
+      </div>
+
+      <div class="tunnel-center-hud">
+        <div class="tunnel-countdown-badge">
+          <span class="pulse-beacon"></span>
+          <span id="tunnelTimerText">WARP TRANSIT &bull; 05s</span>
+        </div>
+        <div class="tunnel-meter-track">
+          <div id="tunnelMeterFill" class="tunnel-meter-fill"></div>
+        </div>
+      </div>
+
+      <div class="tunnel-bottom-bar">
+        <span class="tb-hint"><span class="hint-dot">&bull;</span> HOLD DOWN ANYWHERE TO HYPERSPEED BOOST &bull; AUTO-OPENING CONNECT</span>
+        <span class="tb-tech" id="tunnelClock">05s</span>
+      </div>
     </div>
   </div>
 </section>

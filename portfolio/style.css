@@ -120,6 +120,136 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   transition: width 0.08s linear;
 }
 
+/* ============ VERTICAL SPOTLIGHT NAVBAR (RIGHT MIDDLE) ============ */
+.spotlight-nav-vertical {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 950;
+  pointer-events: auto;
+}
+
+.spotlight-nav-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  border-radius: 9999px;
+  background: rgba(38, 24, 18, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 242, 236, 0.16);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.spotlight-nav-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    80px circle at 50% var(--spotlight-y, 0px),
+    rgba(200, 101, 59, 0.4) 0%,
+    rgba(200, 101, 59, 0.1) 45%,
+    transparent 75%
+  );
+}
+
+.spotlight-nav-inner.is-hovered .spotlight-nav-light {
+  opacity: 1;
+}
+
+.spotlight-nav-ambience {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    50px circle at 100% var(--ambience-y, 0px),
+    #C8653B 0%,
+    rgba(200, 101, 59, 0.6) 45%,
+    transparent 100%
+  );
+}
+
+.spotlight-nav-list {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.spotlight-nav-item {
+  position: relative;
+}
+
+.spotlight-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9E948A;
+  text-decoration: none;
+  transition: color 0.22s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.spotlight-nav-link .nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #70685F;
+  transition: all 0.22s ease;
+}
+
+.spotlight-nav-link:hover {
+  color: #FFFFFF;
+  transform: translateX(-2px);
+}
+
+.spotlight-nav-link:hover .nav-dot {
+  background: var(--accent-copper);
+  box-shadow: 0 0 8px var(--accent-copper);
+  transform: scale(1.3);
+}
+
+.spotlight-nav-link.active {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.spotlight-nav-link.active .nav-dot {
+  background: var(--accent-copper);
+  box-shadow: 0 0 10px var(--accent-copper);
+  transform: scale(1.4);
+}
+
+@media (max-width: 900px) {
+  .spotlight-nav-vertical {
+    display: none;
+  }
+}
+
 /* ============ NAVIGATION ============ */
 .nav-header {
   position: fixed;
@@ -1884,72 +2014,91 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
    3D & MOTION ENHANCEMENTS (GSAP, Three.js, Intro, Architecture Graph, Tilt)
    ========================================================================== */
 
-/* ============ 3D GALLERY TUNNEL (ORIGINKIT INTRO) ============ */
-body.intro-active {
-  overflow: hidden;
-}
-
-/* Starting state: animation is 100%, portfolio is 0% and blurry */
-body.intro-active main,
-body.intro-active header,
-body.intro-active footer {
-  opacity: 0;
-  filter: blur(20px);
-  transform: scale(0.97);
-  pointer-events: none;
-}
-
-/* 4.0s continuous cross-dissolve switch transition (whole sequence ~10s total) */
-main, header, footer {
-  transition: opacity 4.0s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 4.0s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 4.0s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body.intro-complete main,
-body.intro-complete header,
-body.intro-complete footer {
-  transition: none;
-  filter: none;
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
-
-.intro-curtain {
-  position: fixed;
-  inset: 0;
-  z-index: 100000;
+/* ============ 3D GALLERY TUNNEL (WARP TO CONNECT GATEWAY) ============ */
+.tunnel-gateway-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 620px;
   background: #261812;
-  color: var(--text-light);
   overflow: hidden;
-  opacity: 1;
-  filter: blur(0px);
-  transform: scale(1);
-  pointer-events: auto;
-  will-change: opacity, filter, transform;
-  transition: opacity 4.0s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 4.0s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 4.0s cubic-bezier(0.4, 0, 0.2, 1),
-              visibility 4.0s;
-}
-
-/* Switch at 6s: animation blurs out bit by bit (100% -> 0%) as portfolio reaches 100% */
-.intro-curtain.hidden {
-  opacity: 0;
-  filter: blur(36px) brightness(1.15);
-  transform: scale(1.1);
-  visibility: hidden;
-  pointer-events: none;
+  border-top: 1px solid var(--border-dark);
+  border-bottom: 1px solid var(--border-dark);
 }
 
 .tunnel-frame {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   background: #261812;
   cursor: crosshair;
+  transition: filter 1.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.6s ease;
+}
+
+.tunnel-frame.tunnel-blurring {
+  filter: blur(32px) brightness(1.15);
+  opacity: 0.15;
+}
+
+.tunnel-center-hud {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.tunnel-countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(38, 24, 18, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--accent-copper);
+  padding: 8px 20px;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.pulse-beacon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-copper);
+  box-shadow: 0 0 10px var(--accent-copper);
+  animation: beaconPulse 1.2s infinite alternate;
+}
+
+@keyframes beaconPulse {
+  from { transform: scale(0.8); opacity: 0.6; }
+  to { transform: scale(1.3); opacity: 1; }
+}
+
+.tunnel-meter-track {
+  width: 220px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.tunnel-meter-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-copper), #FFB200);
+  border-radius: 9999px;
+  transition: width 0.1s linear;
 }
 
 #tunnelCanvas {

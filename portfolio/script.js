@@ -34,32 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ============ 3D Gallery Tunnel — Originkit Page-Load Intro ============ */
+    /* ============ 3D Gallery Tunnel — Warp Gateway before Connect ============ */
   function initGalleryTunnel() {
-    const curtain    = document.getElementById('introCurtain');
+    const gateway    = document.getElementById('tunnelGateway');
     const frame      = document.getElementById('tunnelFrame');
     const canvas     = document.getElementById('tunnelCanvas');
     const cursorEl   = document.getElementById('tunnelCursor');
     const cursorText = document.getElementById('tunnelCursorText');
     const skipBtn    = document.getElementById('introSkip');
+    const timerText  = document.getElementById('tunnelTimerText');
+    const meterFill  = document.getElementById('tunnelMeterFill');
+    const clockText  = document.getElementById('tunnelClock');
 
-    if (!curtain || !frame || !canvas || typeof THREE === 'undefined') {
-      document.body.classList.remove('intro-active');
-      if (curtain) {
-        curtain.classList.add('hidden');
-        setTimeout(() => curtain.remove(), 400);
-      }
+    if (!gateway || !frame || !canvas || typeof THREE === 'undefined') {
       return;
     }
-
-    if (prefersReducedMotion) {
-      document.body.classList.remove('intro-active');
-      curtain.classList.add('hidden');
-      setTimeout(() => curtain.remove(), 300);
-      return;
-    }
-
-    document.body.classList.add('intro-active');
 
     const DEFAULT_IMAGES = [
       'https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/f8b3688c-11d0-425c-0b6f-66f133322c00/w=800',
@@ -80,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fade: 100,
     };
 
+    const TUNNEL_DURATION = 5.5; // 5 to 6 seconds duration
     const TUNNEL_WIDTH = 2;
     const TUNNEL_HEIGHT = 1.8;
     const SEGMENT_DEPTH = 1;
@@ -108,27 +98,45 @@ document.addEventListener('DOMContentLoaded', () => {
       alpha: false,
       powerPreference: 'high-performance',
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(frame.clientWidth, frame.clientHeight, false);
+    renderer.setSize(frame.clientWidth, frame.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const colorMats = DEFAULTS.colors.map(
+      (c) => new THREE.MeshBasicMaterial({ color: new THREE.Color(c), side: THREE.DoubleSide })
+    );
+
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.setCrossOrigin('anonymous');
+    const imageMats = DEFAULT_IMAGES.map((url) => {
+      const mat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide,
+        transparent: false,
+        opacity: 1,
+      });
+      textureLoader.load(
+        url,
+        (tex) => {
+          tex.wrapS = THREE.ClampToEdgeWrapping;
+          tex.wrapT = THREE.ClampToEdgeWrapping;
+          tex.minFilter = THREE.LinearFilter;
+          mat.map = tex;
+          mat.needsUpdate = true;
+        },
+        undefined,
+        () => {
+          mat.color = new THREE.Color('#C8653B');
+          mat.needsUpdate = true;
+        }
+      );
+      return mat;
+    });
 
     const lineMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color(DEFAULTS.lineColor),
       transparent: true,
-      opacity: Math.min(100, Math.max(0, DEFAULTS.lineOpacity)) / 100,
+      opacity: (DEFAULTS.lineOpacity / 100) * 0.45,
     });
-
-    const loader = new THREE.TextureLoader();
-    loader.setCrossOrigin('anonymous');
-    const fading = [];
-
-    let imageIndex = 0;
-    let colorIndex = 0;
-    let populateIndex = 0;
-    let scrollPos = 0;
-    let raf = 0;
-    let last = 0;
-    let pressed = false;
-    let alive = true;
 
     const hw = TUNNEL_WIDTH / 2;
     const hh = TUNNEL_HEIGHT / 2;
@@ -139,10 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const rowH = TUNNEL_HEIGHT / rows;
 
     const geoFloor = new THREE.PlaneGeometry(colW, SEGMENT_DEPTH);
-    const geoWall  = new THREE.PlaneGeometry(SEGMENT_DEPTH, rowH);
+    const geoWall = new THREE.PlaneGeometry(rowH, SEGMENT_DEPTH);
 
     const geoTubeZ = new THREE.TubeGeometry(
-      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -SEGMENT_DEPTH)),
+      new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, SEGMENT_DEPTH)),
       1, LINE_RADIUS, 8
     );
     const geoTubeX = new THREE.TubeGeometry(
@@ -154,148 +162,135 @@ document.addEventListener('DOMContentLoaded', () => {
       1, LINE_RADIUS, 8
     );
 
-    const colorMats = DEFAULTS.colors.map(
-      (hex) => new THREE.MeshBasicMaterial({ color: new THREE.Color(hex), side: THREE.DoubleSide })
-    );
+    const fading = [];
+    let imageIndex = 0;
 
-    const imageMats = DEFAULT_IMAGES.map((url) => {
-      const mat = new THREE.MeshBasicMaterial({
-        transparent: true,
-        opacity: 0,
-        side: THREE.DoubleSide,
-      });
-      loader.load(
-        url,
-        (tex) => {
-          if (!alive) { tex.dispose(); return; }
-          tex.minFilter = THREE.LinearFilter;
-          tex.generateMipmaps = false;
-          if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
-          mat.map = tex;
-          mat.needsUpdate = true;
-          fading.push(mat);
-        },
-        undefined,
-        () => {}
-      );
-      return mat;
-    });
-
-    const tube = (geo, x, y, z = 0) => {
-      const m = new THREE.Mesh(geo, lineMaterial);
-      m.position.set(x, y, z);
-      return m;
-    };
-
-    const SLOTS = [];
-    {
-      const z = -SEGMENT_DEPTH / 2;
-      for (let i = 0; i < cols; i++) {
-        const x = -hw + i * colW + colW / 2;
-        SLOTS.push({
-          geo: geoFloor,
-          pos: new THREE.Vector3(x, -hh, z),
-          rot: new THREE.Euler(-Math.PI / 2, 0, 0),
-        });
-        SLOTS.push({
-          geo: geoFloor,
-          pos: new THREE.Vector3(x, hh, z),
-          rot: new THREE.Euler(Math.PI / 2, 0, 0),
-        });
+    function populate(seg) {
+      while (seg.children.length > 0) {
+        seg.remove(seg.children[0]);
       }
-      for (let i = 0; i < rows; i++) {
-        const y = -hh + i * rowH + rowH / 2;
-        SLOTS.push({
-          geo: geoWall,
-          pos: new THREE.Vector3(-hw, y, z),
-          rot: new THREE.Euler(0, Math.PI / 2, 0),
-        });
-        SLOTS.push({
-          geo: geoWall,
-          pos: new THREE.Vector3(hw, y, z),
-          rot: new THREE.Euler(0, -Math.PI / 2, 0),
-        });
-      }
-    }
 
-    function populate(group) {
-      const takesSlabs = populateIndex % 2 === 0;
-      populateIndex++;
-      const slabs = group.userData.slabs;
-      if (!slabs) return;
+      const rx = (c) => -hw + c * colW + colW / 2;
+      const ry = (r) => -hh + r * rowH + rowH / 2;
 
-      for (const slab of slabs) {
-        if (!takesSlabs || Math.random() > 0.5) {
-          slab.visible = false;
-          continue;
+      for (let c = 0; c < cols; c++) {
+        if (Math.random() < 0.65) {
+          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
+          const mesh = new THREE.Mesh(geoFloor, mat.clone());
+          mesh.material.transparent = true;
+          mesh.material.opacity = 0;
+          mesh.position.set(rx(c), -hh, 0);
+          mesh.rotation.x = -Math.PI / 2;
+          seg.add(mesh);
+          fading.push(mesh.material);
         }
-        slab.visible = true;
-        if (Math.random() > 0.5) {
-          slab.material = colorMats[(5 * colorIndex) % colorMats.length];
-          colorIndex++;
+      }
+
+      for (let c = 0; c < cols; c++) {
+        if (Math.random() < 0.65) {
+          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
+          const mesh = new THREE.Mesh(geoFloor, mat.clone());
+          mesh.material.transparent = true;
+          mesh.material.opacity = 0;
+          mesh.position.set(rx(c), hh, 0);
+          mesh.rotation.x = Math.PI / 2;
+          seg.add(mesh);
+          fading.push(mesh.material);
+        }
+      }
+
+      for (let r = 0; r < rows; r++) {
+        if (Math.random() < 0.65) {
+          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
+          const mesh = new THREE.Mesh(geoWall, mat.clone());
+          mesh.material.transparent = true;
+          mesh.material.opacity = 0;
+          mesh.position.set(-hw, ry(r), 0);
+          mesh.rotation.y = Math.PI / 2;
+          seg.add(mesh);
+          fading.push(mesh.material);
+        }
+      }
+
+      for (let r = 0; r < rows; r++) {
+        if (Math.random() < 0.65) {
+          const mat = colorMats[Math.floor(Math.random() * colorMats.length)];
+          const mesh = new THREE.Mesh(geoWall, mat.clone());
+          mesh.material.transparent = true;
+          mesh.material.opacity = 0;
+          mesh.position.set(hw, ry(r), 0);
+          mesh.rotation.y = -Math.PI / 2;
+          seg.add(mesh);
+          fading.push(mesh.material);
+        }
+      }
+
+      if (imageMats.length > 0 && Math.random() < 0.5) {
+        const mat = imageMats[imageIndex % imageMats.length];
+        imageIndex++;
+        const side = Math.floor(Math.random() * 4);
+        let mesh;
+        if (side === 0) {
+          mesh = new THREE.Mesh(geoFloor, mat);
+          mesh.position.set(rx(Math.floor(Math.random() * cols)), -hh + 0.001, 0);
+          mesh.rotation.x = -Math.PI / 2;
+        } else if (side === 1) {
+          mesh = new THREE.Mesh(geoFloor, mat);
+          mesh.position.set(rx(Math.floor(Math.random() * cols)), hh - 0.001, 0);
+          mesh.rotation.x = Math.PI / 2;
+        } else if (side === 2) {
+          mesh = new THREE.Mesh(geoWall, mat);
+          mesh.position.set(-hw + 0.001, ry(Math.floor(Math.random() * rows)), 0);
+          mesh.rotation.y = Math.PI / 2;
         } else {
-          slab.material = imageMats[(3 * imageIndex) % imageMats.length];
-          imageIndex++;
+          mesh = new THREE.Mesh(geoWall, mat);
+          mesh.position.set(hw - 0.001, ry(Math.floor(Math.random() * rows)), 0);
+          mesh.rotation.y = -Math.PI / 2;
         }
+        seg.add(mesh);
       }
-    }
 
-    function createSegment(z) {
-      const group = new THREE.Group();
-      group.position.z = z;
-
-      for (let i = 0; i <= cols; i++) {
-        const x = -hw + i * colW;
-        group.add(tube(geoTubeZ, x, -hh));
-        group.add(tube(geoTubeZ, x, hh));
+      const edges = [
+        new THREE.Vector3(-hw, -hh, -SEGMENT_DEPTH / 2),
+        new THREE.Vector3(hw, -hh, -SEGMENT_DEPTH / 2),
+        new THREE.Vector3(hw, hh, -SEGMENT_DEPTH / 2),
+        new THREE.Vector3(-hw, hh, -SEGMENT_DEPTH / 2),
+      ];
+      for (const pos of edges) {
+        const mesh = new THREE.Mesh(geoTubeZ, lineMaterial);
+        mesh.position.copy(pos);
+        seg.add(mesh);
       }
-      for (let i = 1; i < rows; i++) {
-        const y = -hh + i * rowH;
-        group.add(tube(geoTubeZ, -hw, y));
-        group.add(tube(geoTubeZ, hw, y));
-      }
-      group.add(tube(geoTubeX, -hw, -hh));
-      group.add(tube(geoTubeX, -hw, hh));
-      group.add(tube(geoTubeY, -hw, -hh));
-      group.add(tube(geoTubeY, hw, -hh));
-
-      const slabs = SLOTS.map((slot) => {
-        const m = new THREE.Mesh(slot.geo, colorMats[0]);
-        m.position.copy(slot.pos);
-        m.rotation.copy(slot.rot);
-        m.visible = false;
-        group.add(m);
-        return m;
-      });
-      group.userData.slabs = slabs;
-
-      populate(group);
-      return group;
     }
 
     const segments = [];
     for (let i = 0; i < NUM_SEGMENTS; i++) {
-      const g = createSegment(-i * SEGMENT_DEPTH);
-      scene.add(g);
-      segments.push(g);
+      const seg = new THREE.Group();
+      seg.position.z = -i * SEGMENT_DEPTH;
+      scene.add(seg);
+      populate(seg);
+      segments.push(seg);
     }
 
+    let scrollPos = 0;
+    let speedVal = DEFAULTS.speed;
+    let boostVal = DEFAULTS.boost;
+    let pressed = false;
+    let alive = true;
+    let isStarted = false;
+    let isCompleted = false;
+    let startTime = null;
+    let last = null;
+    let raf = null;
+
     const resize = () => {
-      if (!frame || !canvas) return;
-      const w = Math.max(1, frame.clientWidth);
-      const h = Math.max(1, frame.clientHeight);
+      const w = frame.clientWidth;
+      const h = frame.clientHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
+      renderer.setSize(w, h);
     };
-    window.addEventListener('resize', resize, { passive: true });
-    resize();
-
-    const speedVal = DEFAULTS.speed / 100;
-    const boostVal = DEFAULTS.boost / 10;
-    const START_SWITCH_SECONDS = 6.0; // Whole 3D animation runs for 6s, then blurs out bit by bit
-    const SWITCH_DURATION_MS = 4000;  // 4s cross-dissolve -> whole transition is ~10s total
-    let startTime = null;
+    window.addEventListener('resize', resize);
 
     const animate = (now) => {
       if (!alive) return;
@@ -306,25 +301,26 @@ document.addEventListener('DOMContentLoaded', () => {
       const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
       last = now;
 
-      // 10s total timeline:
-      // 0 to 3.5s: Glides in slow
-      // 3.5s to 6.0s: Accelerates smoothly
-      // 6.0s to 10.0s: Blurs out bit by bit as speed surges and portfolio reveals
-      const normTime = Math.min(elapsed / 9.5, 1);
-      const accelCurve = Math.pow(normTime, 2.8);
-      const speedMultiplier = 0.45 + accelCurve * 15.0;
+      const remaining = Math.max(0, TUNNEL_DURATION - elapsed);
+      const secs = Math.ceil(remaining);
+      if (clockText) clockText.textContent = `0${secs}s`;
+      if (timerText) timerText.textContent = `WARP TRANSIT • 0${secs}s`;
+      if (meterFill) meterFill.style.width = `${(remaining / TUNNEL_DURATION) * 100}%`;
 
-      const activeSpeed = pressed ? Math.max(boostVal, speedVal * speedMultiplier * 1.4) : (speedVal * speedMultiplier);
+      const normTime = Math.min(elapsed / TUNNEL_DURATION, 1);
+      const accelCurve = Math.pow(normTime, 2.5);
+      const speedMultiplier = 0.5 + accelCurve * 12.0;
+
+      const activeSpeed = pressed ? Math.max(boostVal, speedVal * speedMultiplier * 1.5) : (speedVal * speedMultiplier);
       scrollPos += activeSpeed * (dt * 60);
 
-      // Camera FOV dynamically widens as acceleration surges
-      const targetFov = 45 + accelCurve * 16;
+      const targetFov = 45 + accelCurve * 15;
       camera.fov += (targetFov - camera.fov) * 0.1;
       camera.updateProjectionMatrix();
 
-      // At 6.0s: Whole animation is for 6s, now begins blurring out bit by bit
-      if (elapsed >= START_SWITCH_SECONDS && !closing) {
-        closeIntro(false);
+      // At 5.5s, trigger completion & blur:
+      if (elapsed >= TUNNEL_DURATION && !isCompleted) {
+        completeTransition();
       }
 
       const want = -SCROLL_TO_Z * scrollPos;
@@ -354,9 +350,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
       renderer.render(scene, camera);
     };
-    raf = requestAnimationFrame(animate);
 
-    // Interactive pointer & cursor pill
+    function completeTransition(immediate = false) {
+      if (isCompleted) return;
+      isCompleted = true;
+      frame.classList.add('tunnel-blurring');
+
+      setTimeout(() => {
+        const contactSec = document.getElementById('contact');
+        if (contactSec) {
+          contactSec.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, immediate ? 50 : 800);
+    }
+
+    if (skipBtn) {
+      skipBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        completeTransition(true);
+      });
+    }
+
     const onMove = (e) => {
       if (!cursorEl) return;
       const rect = frame.getBoundingClientRect();
@@ -398,65 +412,121 @@ document.addEventListener('DOMContentLoaded', () => {
     frame.addEventListener('pointerdown', onDown);
     window.addEventListener('pointerup', onUp);
 
-    // Clean exit function with 4s cross-dissolve (whole sequence ~10s total)
-    let closing = false;
-    function closeIntro(immediate = false) {
-      if (closing || !curtain || curtain.classList.contains('hidden')) return;
-      closing = true;
-
-      const durationMs = immediate ? 350 : SWITCH_DURATION_MS;
-
-      if (immediate) {
-        curtain.style.transition = 'opacity 0.35s ease, filter 0.35s ease';
-        document.querySelectorAll('main, header, footer').forEach((el) => {
-          el.style.transition = 'opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease';
+    // IntersectionObserver to auto-activate tunnel glide as user reaches this section
+    const gatewayObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isStarted && !isCompleted) {
+            isStarted = true;
+            startTime = performance.now();
+            raf = requestAnimationFrame(animate);
+          }
         });
+      },
+      { threshold: 0.25 }
+    );
+    gatewayObserver.observe(gateway);
+  }
+
+  /* ============ Vertical Spotlight Navbar (Right Middle) ============ */
+  function initSpotlightNavbar() {
+    const nav = document.getElementById('spotlightNav');
+    const inner = nav ? nav.querySelector('.spotlight-nav-inner') : null;
+    const links = nav ? nav.querySelectorAll('.spotlight-nav-link') : [];
+    if (!nav || !inner || !links.length) return;
+
+    let activeIndex = 0;
+    let isHovered = false;
+
+    class NavSpring {
+      constructor(v, k = 190, d = 22) {
+        this.v = v;
+        this.t = v;
+        this.vel = 0;
+        this.k = k;
+        this.d = d;
       }
+      update(dt) {
+        const a = this.k * (this.t - this.v) - this.d * this.vel;
+        this.vel += a * dt;
+        this.v += this.vel * dt;
+        return this.v;
+      }
+    }
 
-      // Both switch continuously: animation 100% -> 0%, portfolio 0% -> 100%
-      document.body.classList.remove('intro-active');
-      curtain.classList.add('hidden');
+    const ambienceSpring = new NavSpring(20, 190, 22);
 
-      setTimeout(() => {
-        alive = false;
-        cancelAnimationFrame(raf);
-        document.body.classList.add('intro-complete');
+    function updateActive(idx) {
+      if (idx < 0 || idx >= links.length) return;
+      activeIndex = idx;
+      links.forEach((l, i) => l.classList.toggle('active', i === idx));
 
-        window.removeEventListener('resize', resize);
-        frame.removeEventListener('pointermove', onMove);
-        frame.removeEventListener('pointerenter', onEnter);
-        frame.removeEventListener('pointerleave', onLeave);
-        frame.removeEventListener('pointerdown', onDown);
-        window.removeEventListener('pointerup', onUp);
+      const activeEl = links[idx];
+      const navR = inner.getBoundingClientRect();
+      const elR = activeEl.getBoundingClientRect();
+      const targetY = (elR.top - navR.top) + elR.height / 2;
+      ambienceSpring.t = targetY;
+    }
 
-        geoFloor.dispose();
-        geoWall.dispose();
-        geoTubeZ.dispose();
-        geoTubeX.dispose();
-        geoTubeY.dispose();
-        colorMats.forEach((m) => m.dispose());
-        imageMats.forEach((m) => {
-          if (m.map) m.map.dispose();
-          m.dispose();
-        });
-        lineMaterial.dispose();
-        renderer.dispose();
+    inner.addEventListener('mousemove', (e) => {
+      const r = inner.getBoundingClientRect();
+      const y = e.clientY - r.top;
+      inner.style.setProperty('--spotlight-y', `${y}px`);
+      if (!isHovered) {
+        isHovered = true;
+        inner.classList.add('is-hovered');
+      }
+    });
 
-        if (curtain.parentNode) {
-          curtain.parentNode.removeChild(curtain);
+    inner.addEventListener('mouseleave', () => {
+      isHovered = false;
+      inner.classList.remove('is-hovered');
+    });
+
+    links.forEach((link, idx) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        updateActive(idx);
+        const href = link.getAttribute('href');
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
         }
-      }, durationMs + 100);
-    }
+      });
+    });
 
-    if (skipBtn) {
-      skipBtn.addEventListener('click', () => closeIntro(true));
+    // ScrollSpy to sync active link as page scrolls
+    const sectionIds = ['hero', 'projects', 'process', 'experience', 'contact'];
+    function onScrollSpy() {
+      const scrollY = window.scrollY + window.innerHeight * 0.4;
+      let cur = 0;
+      sectionIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollY) {
+          cur = i;
+        }
+      });
+      if (cur !== activeIndex) {
+        updateActive(cur);
+      }
     }
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' || e.key === 'Enter') closeIntro(true);
-    }, { once: true });
+    window.addEventListener('scroll', onScrollSpy, { passive: true });
+
+    let lastT = performance.now();
+    function navLoop(now) {
+      const dt = Math.min((now - lastT) / 1000, 0.1);
+      lastT = now;
+      const cy = ambienceSpring.update(dt);
+      inner.style.setProperty('--ambience-y', `${cy}px`);
+      requestAnimationFrame(navLoop);
+    }
+    requestAnimationFrame(navLoop);
+
+    setTimeout(() => updateActive(0), 120);
   }
 
   initGalleryTunnel();
+  initSpotlightNavbar();
 
 
   /* ============ Scroll Progress Indicator ============ */
