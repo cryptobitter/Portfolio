@@ -332,7 +332,30 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   max-width: 1450px;
   margin: 0 auto;
   position: relative;
-  z-index: 3;
+  z-index: 5;
+}
+
+.hero-col-pillars {
+  position: relative;
+  z-index: 6;
+}
+
+.pillar-text h3 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #181614;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.7);
+}
+
+.pillar-text p {
+  font-size: 0.9rem;
+  color: #322C28;
+  line-height: 1.6;
+  font-weight: 500;
+  text-shadow: 0 1px 6px rgba(255, 255, 255, 0.6);
 }
 
 /* Hero Sky Backdrop (Clouds, Sparkles & Cherry Blossom Tree) */
@@ -2697,6 +2720,7 @@ body.intro-complete footer {
 }
 
 .blossom-tree {
+  display: none !important;
   position: absolute;
   top: -10px;
   width: clamp(260px, 34vw, 500px);

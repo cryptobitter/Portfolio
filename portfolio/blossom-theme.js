@@ -19,10 +19,10 @@ window.BLOSSOM_CONFIG = {
     opacity: 0.95,
   },
   petals: {
-    maxDesktop: 65,      // 40-80 on desktop
-    maxMobile: 20,       // 15-25 on mobile (< 768px)
-    gravity: 0.42,       // Gentle downward drift
-    baseDrift: 0.5,      // Natural lateral flutter
+    maxDesktop: 140,     // Increased density of leaves & petals blowing out
+    maxMobile: 48,       // Increased for mobile
+    gravity: 0.44,       // Gentle downward drift
+    baseDrift: 0.75,     // Active lateral flutter
     gustDecay: 0.94,     // Friction on wind gusts
     fpsThreshold: 45,    // Auto-throttle if frame rate drops
   },
@@ -111,8 +111,8 @@ function initBlossomEngine() {
     scrollDelta = sy - lastScrollY;
     lastScrollY = sy;
 
-    // Add scroll velocity to wind gust
-    scrollGust += (Math.abs(scrollDelta) * 0.14) * (activeSide === 'right' ? -1 : 1);
+    // Add enhanced scroll velocity to wind gusts (blowing leaves & petals across)
+    scrollGust += (Math.abs(scrollDelta) * 0.24) * (activeSide === 'right' ? -1 : 1);
 
     if (treeRight && treeLeft) {
       const shift = (sy * 0.035) % 40;
@@ -194,9 +194,17 @@ function initBlossomEngine() {
       this.wobbleSpeed = 0.02 + Math.random() * 0.03;
       this.opacity = 0.6 + Math.random() * 0.35;
       
+      // 40% are fresh green spring leaves, 60% are sakura blossom petals
+      this.isLeaf = Math.random() < 0.42;
+      
       const colorRatio = Math.random();
-      this.colorA = colorRatio < 0.6 ? '#F2C9CF' : '#D98C9B';
-      this.colorB = colorRatio < 0.6 ? '#D98C9B' : '#E8AAB6';
+      if (this.isLeaf) {
+        this.colorA = colorRatio < 0.5 ? '#557A3C' : '#6A914E';
+        this.colorB = colorRatio < 0.5 ? '#7FA860' : '#93BB76';
+      } else {
+        this.colorA = colorRatio < 0.6 ? '#F9D3DC' : '#EB8B9E';
+        this.colorB = colorRatio < 0.6 ? '#EB8B9E' : '#FCE4EA';
+      }
     }
 
     applyGust(direction, strength) {
@@ -234,24 +242,50 @@ function initBlossomEngine() {
 
       const scaleX = Math.cos(this.rotX);
       const scaleY = Math.sin(this.rotY);
-      ctx.scale(Math.max(0.12, Math.abs(scaleX)), Math.max(0.12, Math.abs(scaleY)));
+      ctx.scale(Math.max(0.14, Math.abs(scaleX)), Math.max(0.14, Math.abs(scaleY)));
       ctx.globalAlpha = this.opacity;
 
       const s = this.size;
-      ctx.beginPath();
-      ctx.moveTo(0, s * 0.5);
-      ctx.bezierCurveTo(-s * 0.65, s * 0.2, -s * 0.6, -s * 0.35, -s * 0.15, -s * 0.5);
-      ctx.lineTo(0, -s * 0.38);
-      ctx.lineTo(s * 0.15, -s * 0.5);
-      ctx.bezierCurveTo(s * 0.6, -s * 0.35, s * 0.65, s * 0.2, 0, s * 0.5);
-      ctx.closePath();
+      
+      if (this.isLeaf) {
+        // Botanical spring leaf
+        ctx.beginPath();
+        ctx.moveTo(0, s * 0.58);
+        ctx.bezierCurveTo(-s * 0.48, s * 0.2, -s * 0.42, -s * 0.3, 0, -s * 0.58);
+        ctx.bezierCurveTo(s * 0.42, -s * 0.3, s * 0.48, s * 0.2, 0, s * 0.58);
+        ctx.closePath();
 
-      const grad = ctx.createLinearGradient(0, s * 0.5, 0, -s * 0.5);
-      grad.addColorStop(0, this.colorA);
-      grad.addColorStop(0.7, this.colorB);
-      grad.addColorStop(1, '#FFF0F2');
-      ctx.fillStyle = grad;
-      ctx.fill();
+        const lGrad = ctx.createLinearGradient(0, s * 0.55, 0, -s * 0.55);
+        lGrad.addColorStop(0, this.colorA);
+        lGrad.addColorStop(0.65, this.colorB);
+        lGrad.addColorStop(1, '#A8D28B');
+        ctx.fillStyle = lGrad;
+        ctx.fill();
+
+        // Subtle leaf vein
+        ctx.strokeStyle = '#436130';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(0, s * 0.48);
+        ctx.lineTo(0, -s * 0.48);
+        ctx.stroke();
+      } else {
+        // Notched sakura petal
+        ctx.beginPath();
+        ctx.moveTo(0, s * 0.5);
+        ctx.bezierCurveTo(-s * 0.65, s * 0.2, -s * 0.6, -s * 0.35, -s * 0.15, -s * 0.5);
+        ctx.lineTo(0, -s * 0.38);
+        ctx.lineTo(s * 0.15, -s * 0.5);
+        ctx.bezierCurveTo(s * 0.6, -s * 0.35, s * 0.65, s * 0.2, 0, s * 0.5);
+        ctx.closePath();
+
+        const grad = ctx.createLinearGradient(0, s * 0.5, 0, -s * 0.5);
+        grad.addColorStop(0, this.colorA);
+        grad.addColorStop(0.7, this.colorB);
+        grad.addColorStop(1, '#FFF5F7');
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
 
       ctx.restore();
     }
