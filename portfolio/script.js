@@ -383,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (immediate) {
         curtain.style.transition = 'opacity 0.35s ease, filter 0.35s ease';
-        document.querySelectorAll('main, header, footer, .spotlight-nav-vertical').forEach((el) => {
+        document.querySelectorAll('main, header, footer').forEach((el) => {
           el.style.transition = 'opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease';
         });
       }
@@ -737,106 +737,10 @@ document.addEventListener('DOMContentLoaded', () => {
     afObserver.observe(gateway);
   }
 
-  /* ============ Vertical Spotlight Navbar (Right Middle) ============ */
-  function initSpotlightNavbar() {
-    const nav = document.getElementById('spotlightNav');
-    const inner = nav ? nav.querySelector('.spotlight-nav-inner') : null;
-    const links = nav ? nav.querySelectorAll('.spotlight-nav-link') : [];
-    if (!nav || !inner || !links.length) return;
 
-    let activeIndex = 0;
-    let isHovered = false;
-
-    class NavSpring {
-      constructor(v, k = 190, d = 22) {
-        this.v = v;
-        this.t = v;
-        this.vel = 0;
-        this.k = k;
-        this.d = d;
-      }
-      update(dt) {
-        const a = this.k * (this.t - this.v) - this.d * this.vel;
-        this.vel += a * dt;
-        this.v += this.vel * dt;
-        return this.v;
-      }
-    }
-
-    const ambienceSpring = new NavSpring(20, 190, 22);
-
-    function updateActive(idx) {
-      if (idx < 0 || idx >= links.length) return;
-      activeIndex = idx;
-      links.forEach((l, i) => l.classList.toggle('active', i === idx));
-
-      const activeEl = links[idx];
-      const navR = inner.getBoundingClientRect();
-      const elR = activeEl.getBoundingClientRect();
-      const targetY = (elR.top - navR.top) + elR.height / 2;
-      ambienceSpring.t = targetY;
-    }
-
-    inner.addEventListener('mousemove', (e) => {
-      const r = inner.getBoundingClientRect();
-      const y = e.clientY - r.top;
-      inner.style.setProperty('--spotlight-y', `${y}px`);
-      if (!isHovered) {
-        isHovered = true;
-        inner.classList.add('is-hovered');
-      }
-    });
-
-    inner.addEventListener('mouseleave', () => {
-      isHovered = false;
-      inner.classList.remove('is-hovered');
-    });
-
-    links.forEach((link, idx) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        updateActive(idx);
-        const href = link.getAttribute('href');
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
-
-    // ScrollSpy to sync active link as page scrolls
-    const sectionIds = ['hero', 'projects', 'process', 'experience', 'contact'];
-    function onScrollSpy() {
-      const scrollY = window.scrollY + window.innerHeight * 0.4;
-      let cur = 0;
-      sectionIds.forEach((id, i) => {
-        const el = document.getElementById(id);
-        if (el && el.offsetTop <= scrollY) {
-          cur = i;
-        }
-      });
-      if (cur !== activeIndex) {
-        updateActive(cur);
-      }
-    }
-    window.addEventListener('scroll', onScrollSpy, { passive: true });
-
-    let lastT = performance.now();
-    function navLoop(now) {
-      const dt = Math.min((now - lastT) / 1000, 0.1);
-      lastT = now;
-      const cy = ambienceSpring.update(dt);
-      inner.style.setProperty('--ambience-y', `${cy}px`);
-      requestAnimationFrame(navLoop);
-    }
-    requestAnimationFrame(navLoop);
-
-    setTimeout(() => updateActive(0), 120);
-  }
 
   initGalleryTunnel();
   initAnimatedFooter();
-  initSpotlightNavbar();
 
 
   /* ============ Scroll Progress Indicator ============ */

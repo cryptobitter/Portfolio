@@ -35,7 +35,7 @@ window.BLOSSOM_CONFIG = {
   ]
 };
 
-(function initBlossomEngine() {
+function initBlossomEngine() {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.innerWidth < 768;
 
@@ -317,5 +317,10 @@ window.BLOSSOM_CONFIG = {
       requestAnimationFrame(loop);
     }
   });
+}
 
-})();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initBlossomEngine);
+} else {
+  initBlossomEngine();
+}
