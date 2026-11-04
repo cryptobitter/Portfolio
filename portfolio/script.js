@@ -34,8 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ============ 3D Gallery Tunnel — Originkit Page-Load Intro ============ */
+  /* ============ Direct Landing Page (Intro Animation Removed per user request) ============ */
   function initGalleryTunnel() {
+    document.body.classList.remove('intro-active');
+    return;
+  }
+  function _unusedGalleryTunnel() {
     const curtain    = document.getElementById('introCurtain');
     const frame      = document.getElementById('tunnelFrame');
     const canvas     = document.getElementById('tunnelCanvas');
@@ -45,10 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!curtain || !frame || !canvas || typeof THREE === 'undefined') {
       document.body.classList.remove('intro-active');
-      if (curtain) {
-        curtain.classList.add('hidden');
-        setTimeout(() => curtain.remove(), 400);
-      }
       return;
     }
 
