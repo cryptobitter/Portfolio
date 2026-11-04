@@ -2046,6 +2046,62 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   background: var(--accent-copper-hover);
 }
 
+.btn-editorial-dark:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Form Status Alert Notifications */
+.form-status {
+  display: none;
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  animation: formStatusIn 0.35s ease forwards;
+}
+
+@keyframes formStatusIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-status.info {
+  display: block;
+  background: rgba(30, 60, 90, 0.08);
+  color: #1f3958;
+  border: 1px solid rgba(30, 60, 90, 0.18);
+}
+
+.form-status.success {
+  display: block;
+  background: rgba(46, 125, 50, 0.12);
+  color: #1b5e20;
+  border: 1px solid rgba(46, 125, 50, 0.28);
+}
+
+.form-status.error {
+  display: block;
+  background: rgba(211, 47, 47, 0.12);
+  color: #b71c1c;
+  border: 1px solid rgba(211, 47, 47, 0.28);
+}
+
+.form-status a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .lets-talk-card {
   background: var(--accent-copper-soft);
   border: 1px solid rgba(200, 101, 59, 0.3);

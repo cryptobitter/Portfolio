@@ -1130,19 +1130,78 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(startDeferredMotion, 350);
   }
 
-  /* ============ Contact Form Handler (Mailto Fallback) ============ */
-  const form = document.getElementById('contactForm');
-  if (form) {
-    form.addEventListener('submit', (e) => {
+  /* ============ Contact Form Handler (Direct Delivery via Web3Forms API) ============ */
+  const contactForm = document.getElementById('contactForm');
+  const submitBtn   = document.getElementById('cfSubmitBtn');
+  const formStatus  = document.getElementById('formStatus');
+
+  if (contactForm && submitBtn && formStatus) {
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name    = document.getElementById('cf-name').value;
-      const email   = document.getElementById('cf-email').value;
-      const message = document.getElementById('cf-message').value;
 
-      const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
-      const body    = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+      const btnText = submitBtn.querySelector('.btn-text');
+      const arrow   = submitBtn.querySelector('.arrow');
+      const originalText = btnText ? btnText.textContent : 'SEND MESSAGE';
 
-      window.location.href = `mailto:adityarajput.86046@gmail.com?subject=${subject}&body=${body}`;
+      // Set sending UI state
+      submitBtn.disabled = true;
+      if (btnText) btnText.textContent = 'SENDING...';
+      if (arrow) arrow.style.display = 'none';
+
+      formStatus.className = 'form-status info';
+      formStatus.textContent = 'Transmitting message to Aditya...';
+
+      const formData = new FormData(contactForm);
+      const name     = (formData.get('name') || '').toString().trim();
+      const email    = (formData.get('email') || '').toString().trim();
+      const message  = (formData.get('message') || '').toString().trim();
+      const accessKey = (formData.get('access_key') || '').toString().trim();
+
+      // Check if user has entered their Web3Forms key
+      const isPlaceholderKey = !accessKey || accessKey === 'YOUR_ACCESS_KEY_HERE';
+
+      if (isPlaceholderKey) {
+        // Safe automatic fallback: trigger email client with populated details
+        setTimeout(() => {
+          const subject = encodeURIComponent(`Portfolio Inquiry from ${name || 'Visitor'}`);
+          const body    = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+          window.location.href = `mailto:adityarajput.86046@gmail.com?subject=${subject}&body=${body}`;
+
+          formStatus.className = 'form-status success';
+          formStatus.innerHTML = `✓ Form ready! Opening your email client to dispatch to <strong>adityarajput.86046@gmail.com</strong>.<br><small style="opacity:0.85;">(To enable background 1-click delivery without opening mail client, add your free Web3Forms access key in index.html)</small>`;
+          submitBtn.disabled = false;
+          if (btnText) btnText.textContent = originalText;
+          if (arrow) arrow.style.display = '';
+        }, 500);
+        return;
+      }
+
+      try {
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.status === 200 && data.success) {
+          formStatus.className = 'form-status success';
+          formStatus.innerHTML = `✓ Thank you, <strong>${name || 'there'}</strong>! Your message has been dispatched directly to Aditya's inbox. Expect a response within 24h.`;
+          contactForm.reset();
+        } else {
+          throw new Error(data.message || 'Transmission failed');
+        }
+      } catch (err) {
+        console.warn('Direct delivery fallback:', err);
+        formStatus.className = 'form-status error';
+        const fallbackSub = encodeURIComponent(`Portfolio Inquiry from ${name || 'Visitor'}`);
+        const fallbackBody = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+        formStatus.innerHTML = `⚠️ Direct transmission encountered a network block. <a href="mailto:adityarajput.86046@gmail.com?subject=${fallbackSub}&body=${fallbackBody}">Click here to dispatch directly via email →</a>`;
+      } finally {
+        submitBtn.disabled = false;
+        if (btnText) btnText.textContent = originalText;
+        if (arrow) arrow.style.display = '';
+      }
     });
   }
 

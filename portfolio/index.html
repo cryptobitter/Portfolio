@@ -475,26 +475,39 @@
 
       <!-- Right Column: Direct Form & Action Card -->
       <div class="contact-col-form reveal" style="transition-delay: 0.15s">
-        <form class="editorial-form" id="contactForm">
+        <form class="editorial-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+          <!-- Web3Forms API Configuration -->
+          <input type="hidden" name="access_key" id="cfAccessKey" value="YOUR_ACCESS_KEY_HERE">
+          <input type="hidden" name="subject" value="New Portfolio Inquiry - Aditya Rajput">
+          <input type="hidden" name="from_name" value="Aditya Portfolio Contact">
+          <!-- Honeypot Anti-Spam (hidden from real users) -->
+          <input type="checkbox" name="botcheck" class="botcheck-field" style="display: none;">
+
           <h3 class="form-title">LET'S COLLABORATE</h3>
           <p class="form-sub">Available for backend internships, AI systems roles, and freelance backend work.</p>
 
           <div class="form-group">
             <label for="cf-name">YOUR NAME</label>
-            <input type="text" id="cf-name" placeholder="Jane Doe" required>
+            <input type="text" id="cf-name" name="name" placeholder="Jane Doe" required autocomplete="name">
           </div>
 
           <div class="form-group">
             <label for="cf-email">YOUR EMAIL</label>
-            <input type="email" id="cf-email" placeholder="jane@company.com" required>
+            <input type="email" id="cf-email" name="email" placeholder="jane@company.com" required autocomplete="email">
           </div>
 
           <div class="form-group">
             <label for="cf-message">YOUR MESSAGE</label>
-            <textarea id="cf-message" rows="4" placeholder="Let's build something scalable together..." required></textarea>
+            <textarea id="cf-message" name="message" rows="4" placeholder="Let's build something scalable together..." required></textarea>
           </div>
 
-          <button type="submit" class="btn-editorial btn-editorial-dark">SEND MESSAGE <span class="arrow">→</span></button>
+          <button type="submit" id="cfSubmitBtn" class="btn-editorial btn-editorial-dark">
+            <span class="btn-text">SEND MESSAGE</span>
+            <span class="arrow">→</span>
+          </button>
+
+          <!-- Status Message Container -->
+          <div id="formStatus" class="form-status" aria-live="polite"></div>
         </form>
 
         <div class="lets-talk-card">
