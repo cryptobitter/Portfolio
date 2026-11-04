@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ADITYA RAJPUT — EDITORIAL MAGAZINE PORTFOLIO (TECH ADAPTATION)
+   ADITYA RAJPUT â€” EDITORIAL MAGAZINE PORTFOLIO (TECH ADAPTATION)
    Option A: Warm Cream (#F5F2EC) + Dark Charcoal (#121110) + Copper Accent
    ========================================================================== */
 
@@ -437,20 +437,50 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 .hero-tree-wrap {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
   z-index: 2;
-  overflow: visible;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
 }
 
-.hero-tree-svg {
-  width: 100%;
+.hero-tree-img {
+  position: absolute;
+  top: 0;
+  right: 0;
   height: 100%;
-  display: block;
-  overflow: visible;
-  filter: drop-shadow(0 8px 24px rgba(20, 45, 75, 0.12));
+  width: auto;
+  max-width: 65vw;
+  object-fit: contain;
+  object-position: right top;
+  filter: drop-shadow(0 14px 32px rgba(25, 45, 70, 0.12));
+  transform-origin: 90% 90%;
+  animation: heroTreeBreeze 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes heroTreeBreeze {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(-0.5deg) scale(1.008);
+  }
+  100% {
+    transform: rotate(0.3deg) scale(1.003);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-tree-img {
+    max-width: 85vw;
+    opacity: 0.8;
+  }
 }
 
 /* Giant Magazine Header */
@@ -1092,7 +1122,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   height: 14px;
 }
 
-/* Close Button (✕) */
+/* Close Button (âœ•) */
 .bs-close-btn {
   position: absolute;
   top: 28px;
