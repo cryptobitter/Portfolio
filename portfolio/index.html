@@ -20,9 +20,199 @@
 <link rel="stylesheet" href="style.css">
 
 </head>
-<body>
+<body class="intro-active">
 
 <div id="scrollProgress"></div>
+
+<!-- Page Load Intro Animation: 3D Gallery Tunnel (Originkit) -->
+<div class="intro-curtain" id="introCurtain" aria-hidden="true">
+  <div class="tunnel-frame" id="tunnelFrame">
+    <canvas id="tunnelCanvas"></canvas>
+    
+    <!-- Floating Interaction Pill -->
+    <div class="tunnel-cursor" id="tunnelCursor">
+      <span class="tc-text" id="tunnelCursorText">Press to Boost</span>
+    </div>
+    
+    <!-- Editorial Branding & Controls Overlay -->
+    <div class="tunnel-overlay">
+      <div class="tunnel-top-bar">
+        <div class="tunnel-brand">
+          <span class="tb-logo">AR</span>
+          <div class="tb-info">
+            <span class="tb-title">ADITYA RAJPUT</span>
+            <span class="tb-sub">BACKEND &amp; AI SYSTEMS</span>
+          </div>
+        </div>
+        <button class="intro-skip" id="introSkip" aria-label="Enter portfolio">ENTER PORTFOLIO &#8629;</button>
+      </div>
+
+      <div class="tunnel-bottom-bar">
+        <span class="tb-hint"><span class="hint-dot">&#9679;</span> HOLD DOWN ANYWHERE TO HYPERSPEED BOOST</span>
+        <span class="tb-tech">3D GALLERY TUNNEL &bull; ORIGINKIT</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ BLOSSOM TREE & PETALS BACKGROUND LAYER ============ -->
+<div class="blossom-background-layer" id="blossomBgLayer" aria-hidden="true">
+  <!-- Dynamic Petal Canvas -->
+  <canvas id="blossomPetalsCanvas"></canvas>
+
+  <!-- Stylized Cherry Blossom Tree (Right Side - Default / Hero) -->
+  <div class="blossom-tree blossom-tree-right is-active" id="blossomTreeRight">
+    <svg viewBox="0 0 520 680" fill="none" xmlns="http://www.w3.org/2000/svg" class="blossom-tree-svg">
+      <!-- Main trunk & sweeping branches -->
+      <path d="M520 0 C450 60 410 120 380 200 C350 280 320 310 260 350 C210 380 140 400 80 410 C100 400 160 370 200 340 C250 300 290 260 320 180 C350 100 420 30 520 0 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.95"/>
+      <path d="M380 200 C340 180 280 185 220 220 C180 245 130 280 90 320 C110 300 160 260 210 235 C260 210 320 195 365 210 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.9"/>
+      <path d="M260 350 C240 370 200 410 150 450 C110 480 50 510 0 530 C40 505 100 470 140 435 C180 400 230 365 255 355 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.9"/>
+      <path d="M320 180 C300 130 250 90 190 70 C140 55 80 55 30 65 C75 58 135 60 180 75 C235 95 285 130 305 175 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.85"/>
+      <path d="M430 80 C390 60 340 45 280 45 C330 50 375 65 415 82 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.8"/>
+      
+      <!-- Blossom Clusters (Stylized flat editorial 5-petal cherry blossoms) -->
+      <g class="blossom-cluster" transform="translate(260, 340)">
+        <circle cx="0" cy="0" r="16" fill="var(--blush-deep, #D98C9B)" opacity="0.4"/>
+        <circle cx="-10" cy="-6" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="10" cy="-6" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-6" cy="10" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="6" cy="10" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-12" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="5" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(210, 360) scale(0.75)">
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(190, 75) scale(0.9)">
+        <circle cx="0" cy="0" r="14" fill="var(--blush-deep, #D98C9B)" opacity="0.35"/>
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4.5" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(120, 60) scale(0.7)">
+        <circle cx="-8" cy="-5" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="8" cy="-5" r="9" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="-5" cy="8" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="8" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-9" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="3.5" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(45, 65) scale(0.55)">
+        <circle cx="0" cy="0" r="8" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="0" r="5" fill="var(--blush-deep, #D98C9B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(150, 240) scale(0.85)">
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(85, 315) scale(0.65)">
+        <circle cx="-8" cy="-5" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="8" cy="-5" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-5" cy="8" r="9" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="5" cy="8" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-9" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="3.5" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(100, 440) scale(0.8)">
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(30, 520) scale(0.6)">
+        <circle cx="-8" cy="-4" r="8" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="8" cy="-4" r="8" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="0" cy="7" r="8" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="3" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <circle cx="340" cy="240" r="6" fill="var(--blush-deep, #D98C9B)" opacity="0.9"/>
+      <circle cx="310" cy="270" r="5" fill="var(--blush-soft, #F2C9CF)" opacity="0.85"/>
+      <circle cx="280" cy="180" r="7" fill="var(--blush-soft, #F2C9CF)" opacity="0.9"/>
+      <circle cx="240" cy="130" r="5.5" fill="var(--blush-deep, #D98C9B)" opacity="0.9"/>
+      <circle cx="410" cy="120" r="6.5" fill="var(--blush-soft, #F2C9CF)" opacity="0.8"/>
+    </svg>
+  </div>
+
+  <!-- Stylized Cherry Blossom Tree (Left Side - Alternating Sections) -->
+  <div class="blossom-tree blossom-tree-left is-inactive" id="blossomTreeLeft">
+    <svg viewBox="0 0 520 680" fill="none" xmlns="http://www.w3.org/2000/svg" class="blossom-tree-svg">
+      <path d="M0 0 C70 60 110 120 140 200 C170 280 200 310 260 350 C310 380 380 400 440 410 C420 400 360 370 320 340 C270 300 230 260 200 180 C170 100 100 30 0 0 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.95"/>
+      <path d="M140 200 C180 180 240 185 300 220 C340 245 390 280 430 320 C410 300 360 260 310 235 C260 210 200 195 155 210 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.9"/>
+      <path d="M260 350 C280 370 320 410 370 450 C410 480 470 510 520 530 C480 505 420 470 380 435 C340 400 290 365 265 355 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.9"/>
+      <path d="M200 180 C220 130 270 90 330 70 C380 55 440 55 490 65 C445 58 385 60 340 75 C285 95 235 130 215 175 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.85"/>
+      <path d="M90 80 C130 60 180 45 240 45 C190 50 145 65 105 82 Z" fill="var(--bark-brown, #4A3A33)" opacity="0.8"/>
+      
+      <g class="blossom-cluster" transform="translate(260, 340)">
+        <circle cx="0" cy="0" r="16" fill="var(--blush-deep, #D98C9B)" opacity="0.4"/>
+        <circle cx="-10" cy="-6" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="10" cy="-6" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-6" cy="10" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="6" cy="10" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-12" r="11" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="5" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(310, 360) scale(0.75)">
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(330, 75) scale(0.9)">
+        <circle cx="0" cy="0" r="14" fill="var(--blush-deep, #D98C9B)" opacity="0.35"/>
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4.5" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(400, 60) scale(0.7)">
+        <circle cx="-8" cy="-5" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="8" cy="-5" r="9" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="-5" cy="8" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="8" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-9" r="9" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="3.5" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(370, 240) scale(0.85)">
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <g class="blossom-cluster" transform="translate(420, 440) scale(0.8)">
+        <circle cx="-9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="9" cy="-5" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="-5" cy="9" r="10" fill="var(--blush-deep, #D98C9B)"/>
+        <circle cx="5" cy="9" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="-10" r="10" fill="var(--blush-soft, #F2C9CF)"/>
+        <circle cx="0" cy="0" r="4" fill="var(--accent-copper, #C8653B)"/>
+      </g>
+      <circle cx="180" cy="240" r="6" fill="var(--blush-deep, #D98C9B)" opacity="0.9"/>
+      <circle cx="210" cy="270" r="5" fill="var(--blush-soft, #F2C9CF)" opacity="0.85"/>
+      <circle cx="240" cy="180" r="7" fill="var(--blush-soft, #F2C9CF)" opacity="0.9"/>
+      <circle cx="280" cy="130" r="5.5" fill="var(--blush-deep, #D98C9B)" opacity="0.9"/>
+    </svg>
+  </div>
+</div>
 
 <!-- ============ VERTICAL SPOTLIGHT NAVBAR (RIGHT MIDDLE) ============ -->
 <nav class="spotlight-nav-vertical" id="spotlightNav" aria-label="Quick Navigation">
@@ -532,6 +722,7 @@
 <!-- Three.js 3D Engine for 3D Books Showcase -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script defer src="books-showcase.js"></script>
+<script defer src="blossom-theme.js"></script>
 <script defer src="script.js"></script>
 </body>
 </html>
