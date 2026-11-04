@@ -437,29 +437,26 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 .hero-tree-wrap {
   position: absolute;
-  top: 0;
-  right: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
   z-index: 2;
   overflow: hidden;
-  display: flex;
-  justify-content: flex-end;
-  align-items: stretch;
 }
 
 .hero-tree-img {
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
-  height: 100%;
+  height: 102%;
+  min-height: 100%;
   width: auto;
-  max-width: 65vw;
+  max-width: none;
   object-fit: contain;
-  object-position: right top;
+  object-position: right bottom;
   filter: drop-shadow(0 14px 32px rgba(25, 45, 70, 0.12));
-  transform-origin: 90% 90%;
+  transform-origin: 85% 98%;
   animation: heroTreeBreeze 9s ease-in-out infinite alternate;
   pointer-events: none;
 }
@@ -478,8 +475,11 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 @media (max-width: 768px) {
   .hero-tree-img {
-    max-width: 85vw;
-    opacity: 0.8;
+    height: 90%;
+    min-height: 90%;
+    bottom: 0;
+    right: -15vw;
+    opacity: 0.75;
   }
 }
 
