@@ -51,8 +51,8 @@ html {
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
+  background-color: var(--bg-light);
+  color: var(--text-dark);
   font-family: var(--font-sans);
   line-height: 1.6;
   overflow-x: hidden;
@@ -284,8 +284,10 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   .nav-toggle { display: flex; }
 }
 
-/* ============ HERO SECTION ============ */
+/* ============ HERO SECTION (WHITE / WARM CREAM) ============ */
 .hero-section {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
   padding: 130px 4vw 80px;
   max-width: 1450px;
   margin: 0 auto;
@@ -293,7 +295,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 /* Giant Magazine Header */
 .editorial-title-wrap {
-  border-bottom: 2px solid var(--border-dark);
+  border-bottom: 2px solid var(--border-light);
   padding-bottom: 10px;
   margin-bottom: 40px;
   text-align: center;
@@ -305,7 +307,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 0.85;
-  color: var(--text-light);
+  color: var(--text-dark);
   text-transform: uppercase;
 }
 
@@ -327,7 +329,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
   margin-bottom: 4px;
 }
 
@@ -336,7 +338,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: clamp(2.4rem, 4vw, 3.2rem);
   font-weight: 800;
   line-height: 1.05;
-  color: var(--text-light);
+  color: var(--text-dark);
   margin-bottom: 10px;
 }
 
@@ -351,7 +353,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 .hero-description {
   font-size: 0.96rem;
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
   margin-bottom: 20px;
   line-height: 1.7;
 }
@@ -396,11 +398,11 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   align-items: center;
   padding: 14px 24px;
   border-radius: 999px;
-  border: 1.5px solid var(--border-dark);
+  border: 1.5px solid var(--border-light);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--text-light);
+  color: var(--text-dark);
   transition: border-color 0.2s, color 0.2s;
 }
 
@@ -433,7 +435,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .mascot-orbit {
   position: absolute;
   border-radius: 50%;
-  border: 1.5px dashed var(--border-dark);
+  border: 1.5px dashed var(--border-light);
   pointer-events: none;
 }
 .char-orbit-1 {
@@ -444,7 +446,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .char-orbit-2 {
   width: 280px;
   height: 280px;
-  border-color: rgba(200, 101, 59, 0.2);
+  border-color: rgba(200, 101, 59, 0.25);
   animation: rotateStamp 20s linear infinite reverse;
 }
 
@@ -452,13 +454,13 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .mascot-card {
   width: 290px;
   height: 340px;
-  background: var(--bg-dark);
+  background: var(--bg-light-card);
   border: 2px solid var(--border-light);
   border-radius: 28px;
   overflow: hidden;
   position: relative;
   z-index: 2;
-  box-shadow: 0 20px 45px rgba(0,0,0,0.18), 0 0 30px rgba(200, 101, 59, 0.12);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.08), 0 0 30px rgba(200, 101, 59, 0.12);
   transition: transform 0.22s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.22s, border-color 0.22s;
   cursor: pointer;
   transform-style: preserve-3d;
@@ -544,15 +546,15 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 /* Floating Tech Badges */
 .m-badge {
   position: absolute;
-  background: var(--bg-dark-card);
-  border: 1px solid var(--border-dark);
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
   padding: 6px 14px;
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--accent-copper);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   z-index: 5;
   transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
@@ -604,16 +606,16 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-serif);
   font-size: 0.9rem;
   font-weight: 800;
-  color: var(--text-light);
-  background: var(--bg-dark-card);
+  color: var(--text-dark);
+  background: #FFFFFF;
   width: 50px;
   height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-dark);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 /* Right Column: Pillars */
@@ -644,13 +646,13 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--text-light);
+  color: var(--text-dark);
   margin-bottom: 4px;
 }
 
 .pillar-text p {
   font-size: 0.88rem;
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
   line-height: 1.55;
 }
 
@@ -704,21 +706,29 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 }
 .link-arrow:hover { transform: translateX(5px); }
 
-/* ============ FEATURED PROJECTS (3D BOOKS SHOWCASE) ============ */
+/* ============ FEATURED PROJECTS (3D BOOKS SHOWCASE - DARK COFFEE) ============ */
 .projects-section {
-  background-color: var(--bg-light);
-  color: var(--text-dark);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
   position: relative;
   overflow: hidden;
 }
 
 .projects-section .section-header-editorial {
-  border-bottom: 2px solid var(--text-dark);
+  border-bottom: 2px solid var(--border-dark);
   margin-bottom: 30px;
 }
 
 .projects-section .section-title-serif {
-  color: var(--text-dark);
+  color: var(--text-light);
+}
+
+.projects-section .section-number {
+  color: var(--accent-copper);
+}
+
+.projects-section .section-tagline {
+  color: var(--text-light-muted);
 }
 
 .books-showcase-container {
@@ -726,9 +736,9 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   position: relative;
   border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 16px 45px rgba(24, 22, 20, 0.08), 0 0 1px rgba(24, 22, 20, 0.15);
-  border: 1px solid var(--border-light);
-  background: var(--bg-light-card);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4), 0 0 1px rgba(245, 242, 236, 0.15);
+  border: 1px solid var(--border-dark);
+  background: var(--bg-dark-card);
 }
 
 .books-showcase-root {
@@ -738,7 +748,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   min-height: 580px;
   overflow: hidden;
   user-select: none;
-  background: radial-gradient(circle at 50% 40%, #EAE5DB 0%, #DFD9CE 100%);
+  background: radial-gradient(circle at 50% 40%, #35231B 0%, #20140E 100%);
   transition: background 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -764,7 +774,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: clamp(4.5rem, 16vw, 13rem);
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: rgba(38, 24, 18, 0.06);
+  color: rgba(245, 242, 236, 0.05);
   line-height: 0.85;
 }
 
@@ -805,7 +815,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   letter-spacing: 0.06em;
-  color: var(--text-dark-muted);
+  color: var(--text-light-muted);
 }
 
 .bs-hint-dot {
@@ -1165,27 +1175,31 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 }
 
 
-/* ============ PROCESS & SKILLS SECTION ============ */
+/* ============ PROCESS & SKILLS SECTION (WHITE / WARM CREAM) ============ */
 .process-skills-section {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
+  background-color: var(--bg-light);
+  color: var(--text-dark);
 }
 
 .process-skills-section .section-header-editorial {
-  border-bottom: 2px solid var(--border-dark);
+  border-bottom: 2px solid var(--border-light);
 }
 
 .process-skills-section .section-title-serif {
-  color: var(--text-light);
+  color: var(--text-dark);
+}
+
+.process-skills-section .section-number {
+  color: var(--accent-copper);
 }
 
 .process-skills-section .process-intro {
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
 }
 
 .process-skills-section .process-step {
-  background: var(--bg-dark-card);
-  border: 1px solid var(--border-dark);
+  background: var(--bg-light-card);
+  border: 1px solid var(--border-light);
 }
 
 .process-skills-section .process-step:hover {
@@ -1194,51 +1208,51 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 }
 
 .process-skills-section .step-details h4 {
-  color: var(--text-light);
+  color: var(--text-dark);
 }
 
 .process-skills-section .step-details p {
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
 }
 
 .process-skills-section .process-footer-quote {
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
   border-left: 3px solid var(--accent-copper);
 }
 
 .process-skills-section .skills-legend {
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
 }
 
 .process-skills-section .skill-circle-card {
-  background: var(--bg-dark-card);
-  border: 1px solid var(--border-dark);
+  background: var(--bg-light-card);
+  border: 1px solid var(--border-light);
   border-top-width: 3px;
 }
 
 .process-skills-section .skill-circle-card:hover {
   transform: translateY(-5px);
   border-color: var(--accent-copper);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .process-skills-section .circle-icon {
-  background: var(--panel-dark);
-  color: var(--text-light);
-  border: 1px solid var(--border-dark);
+  background: var(--panel-light);
+  color: var(--text-dark);
+  border: 1px solid var(--border-light);
 }
 
 .process-skills-section .skill-name {
-  color: var(--text-light);
+  color: var(--text-dark);
 }
 
 .process-skills-section .skill-cat {
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
 }
 
 .process-skills-section .skill-card-empty {
-  border: 1.5px dashed var(--border-dark);
-  color: var(--text-light-muted);
+  border: 1.5px dashed var(--border-light);
+  color: var(--text-dark-muted);
   opacity: 0.35;
 }
 
@@ -1473,7 +1487,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   }
 }
 
-/* ============ EXPERIENCE & TIMELINE ============ */
+/* ============ EXPERIENCE & TIMELINE (DARK COFFEE) ============ */
 .experience-section {
   background-color: var(--bg-dark);
   color: var(--text-light);
@@ -1485,6 +1499,10 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 .experience-section .section-title-serif {
   color: var(--text-light);
+}
+
+.experience-section .section-number {
+  color: var(--accent-copper);
 }
 
 .section-tagline {
@@ -1504,12 +1522,12 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 30px;
-  background: #FAF7F2 !important;
-  border: 1px solid rgba(38, 24, 18, 0.14) !important;
+  background: var(--bg-dark-card) !important;
+  border: 1px solid var(--border-dark) !important;
   border-radius: 16px;
   padding: 24px 28px;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .timeline-row--secondary {
@@ -1527,7 +1545,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 
 .timeline-subitem {
   padding-bottom: 12px;
-  border-bottom: 1px dashed rgba(38, 24, 18, 0.14);
+  border-bottom: 1px dashed var(--border-dark);
 }
 
 .timeline-subitem:last-child {
@@ -1539,18 +1557,18 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-serif);
   font-size: 1.05rem;
   margin-bottom: 4px;
-  color: #1A120B !important;
+  color: var(--text-light) !important;
 }
 
 .timeline-subitem p {
   font-size: 0.88rem;
-  color: #4A3E38 !important;
+  color: var(--text-light-muted) !important;
 }
 
 .timeline-row:hover {
   transform: translateX(6px);
   border-color: var(--accent-copper) !important;
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.15), 0 0 16px rgba(200, 101, 59, 0.16);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45), 0 0 16px rgba(200, 101, 59, 0.25);
 }
 
 .tl-left {
@@ -1565,7 +1583,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: #4A3E38 !important;
+  color: var(--accent-copper) !important;
 }
 
 .tl-badge {
@@ -1583,7 +1601,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   border-radius: 999px;
   width: fit-content;
   border: 1px solid rgba(200, 101, 59, 0.55) !important;
-  box-shadow: 0 2px 8px rgba(38, 24, 18, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .tl-badge::before {
@@ -1600,7 +1618,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-serif);
   font-size: 1.3rem;
   font-weight: 800;
-  color: #1A120B !important;
+  color: #FAF7F2 !important;
   margin-bottom: 8px;
   line-height: 1.35;
 }
@@ -1608,26 +1626,26 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .tl-role-tag {
   font-family: var(--font-sans);
   font-size: 0.95rem;
-  color: #C8653B !important;
+  color: #E0784B !important;
   font-weight: 700;
 }
 
 .tl-right p {
   font-size: 0.95rem;
-  color: #2E2622 !important;
+  color: #DFD9CE !important;
   line-height: 1.65;
   margin-bottom: 14px;
 }
 
 .tl-right p strong {
-  color: #1A120B !important;
+  color: #FAF7F2 !important;
   font-weight: 700;
 }
 
 .timeline-row .proj-tags span {
   background: #261812 !important;
   color: #FAF7F2 !important;
-  border: 1px solid rgba(200, 101, 59, 0.35) !important;
+  border: 1px solid rgba(200, 101, 59, 0.45) !important;
   font-weight: 600;
 }
 
@@ -1635,16 +1653,16 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   .timeline-row { grid-template-columns: 1fr; }
 }
 
-/* ============ CONTACT SECTION (DARK ESPRESSO) ============ */
+/* ============ CONTACT SECTION (WHITE / WARM CREAM) ============ */
 .contact-section {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
+  background-color: var(--bg-light);
+  color: var(--text-dark);
 }
 
 .contact-banner-wrap {
   text-align: center;
   margin-bottom: 60px;
-  border-bottom: 1px solid var(--border-dark);
+  border-bottom: 1px solid var(--border-light);
   padding-bottom: 30px;
 }
 
@@ -1660,6 +1678,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: clamp(2rem, 5.5vw, 4.2rem);
   font-weight: 800;
   letter-spacing: 0.02em;
+  color: var(--text-dark);
   margin-top: 6px;
 }
 
@@ -1673,8 +1692,8 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .arch-frame {
   width: 100%;
   height: 240px;
-  background: var(--panel-dark);
-  border: 1px solid var(--border-dark);
+  background: var(--panel-light);
+  border: 1px solid var(--border-light);
   border-radius: 120px 120px 20px 20px;
   display: flex;
   align-items: center;
@@ -1695,10 +1714,11 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-serif);
   font-size: 1.2rem;
   font-weight: 700;
+  color: var(--text-dark);
 }
 .arch-sub {
   font-size: 0.8rem;
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
   font-family: var(--font-mono);
 }
 
@@ -1709,8 +1729,8 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 }
 
 .c-link {
-  background: var(--bg-dark-card);
-  border: 1px solid var(--border-dark);
+  background: var(--bg-light-card);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   padding: 16px 20px;
   display: flex;
@@ -1724,13 +1744,13 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   transform: translateX(4px);
 }
 
-.c-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-light-muted); }
+.c-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dark-muted); }
 .c-val { font-weight: 600; color: var(--accent-copper); }
 
 /* Form */
 .editorial-form {
-  background: var(--bg-dark-card);
-  border: 1px solid var(--border-dark);
+  background: var(--bg-light-card);
+  border: 1px solid var(--border-light);
   border-radius: 20px;
   padding: 36px;
   margin-bottom: 24px;
@@ -1739,12 +1759,13 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .form-title {
   font-family: var(--font-serif);
   font-size: 1.6rem;
+  color: var(--text-dark);
   margin-bottom: 4px;
 }
 
 .form-sub {
   font-size: 0.85rem;
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
   margin-bottom: 24px;
 }
 
@@ -1759,15 +1780,15 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
 }
 
 .form-group input, .form-group textarea {
-  background: var(--panel-dark);
-  border: 1px solid var(--border-dark);
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
   border-radius: 10px;
   padding: 12px 16px;
-  color: var(--text-light);
+  color: var(--text-dark);
   font-size: 0.92rem;
   transition: border-color 0.2s;
 }
@@ -1797,8 +1818,8 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   justify-content: space-between;
 }
 
-.lt-left h4 { font-family: var(--font-serif); font-size: 1.1rem; color: var(--text-light); }
-.lt-left p { font-size: 0.8rem; color: var(--text-light-muted); }
+.lt-left h4 { font-family: var(--font-serif); font-size: 1.1rem; color: var(--text-dark); }
+.lt-left p { font-size: 0.8rem; color: var(--text-dark-muted); }
 .lt-btn {
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -1881,14 +1902,14 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 }
 
 .footer-bar {
-  border-top: 1px solid var(--border-dark);
+  border-top: 1px solid var(--border-light);
   margin-top: 60px;
   padding-top: 24px;
   display: flex;
   justify-content: space-between;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--text-light-muted);
+  color: var(--text-dark-muted);
   flex-wrap: wrap;
   gap: 12px;
 }

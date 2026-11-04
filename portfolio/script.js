@@ -764,12 +764,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactEl  = document.getElementById('contact');
 
     let isLight = false;
-    // Projects (Light)
-    if (projectsEl && processEl && scrollY >= projectsEl.offsetTop && scrollY < processEl.offsetTop) {
+    // 01. Hero (White / Warm Cream)
+    if (!projectsEl || scrollY < projectsEl.offsetTop) {
       isLight = true;
     }
-    // Experience (Light)
-    else if (expEl && contactEl && scrollY >= expEl.offsetTop && scrollY < contactEl.offsetTop) {
+    // 02. Projects (Dark Roasted Coffee)
+    else if (processEl && scrollY >= projectsEl.offsetTop && scrollY < processEl.offsetTop) {
+      isLight = false;
+    }
+    // 03. Process & Skills (White / Warm Cream)
+    else if (expEl && scrollY >= processEl.offsetTop && scrollY < expEl.offsetTop) {
+      isLight = true;
+    }
+    // 04. Experience & Animated Footer (Dark Roasted Coffee)
+    else if (contactEl && scrollY >= expEl.offsetTop && scrollY < contactEl.offsetTop) {
+      isLight = false;
+    }
+    // 05. Contact Section (White / Warm Cream)
+    else if (contactEl && scrollY >= contactEl.offsetTop) {
       isLight = true;
     }
 
