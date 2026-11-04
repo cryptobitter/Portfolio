@@ -247,10 +247,106 @@
 
 <!-- ============ HERO SECTION (LIGHT EDITORIAL) ============ -->
 <section class="hero-section" id="hero">
-  <!-- Giant Editorial Header -->
-  <div class="editorial-title-wrap reveal">
-    <h1 class="editorial-title">PORTFOLIO</h1>
+  <!-- Hero Sky Backdrop: Soft clouds, sparkles, and authentic cherry blossom tree -->
+  <div class="hero-sky-backdrop" aria-hidden="true">
+    <!-- Soft cumulus cloud puffs -->
+    <div class="hero-cloud hero-cloud-1"></div>
+    <div class="hero-cloud hero-cloud-2"></div>
+    <div class="hero-cloud hero-cloud-3"></div>
+    <div class="hero-cloud hero-cloud-4"></div>
+
+    <!-- Twinkling Sparkle Stars -->
+    <div class="hero-sparkle hero-sparkle-1">&#10022;</div>
+    <div class="hero-sparkle hero-sparkle-2">&#10022;</div>
+    <div class="hero-sparkle hero-sparkle-3">&#10022;</div>
+    <div class="hero-sparkle hero-sparkle-4">&#10022;</div>
+
+    <!-- Right Side Blooming Cherry Blossom Tree Artwork -->
+    <div class="hero-tree-wrap">
+      <svg viewBox="0 0 700 900" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero-tree-svg" preserveAspectRatio="xMaxYMid slice">
+      
+      <defs>
+        <!-- Reusable Blossom Flower (5-petal cherry blossom with glow, highlights, and stamen) -->
+        <g id="blossomTypeA">
+          <circle cx="0" cy="0" r="22" fill="#D95B72" opacity="0.32"/>
+          <circle cx="0" cy="0" r="16" fill="#EE8695" opacity="0.45"/>
+          <circle cx="0" cy="-14" r="12" fill="#F9D3DC"/>
+          <circle cx="13" cy="-4" r="12" fill="#F9D3DC"/>
+          <circle cx="8" cy="12" r="12" fill="#EE8695"/>
+          <circle cx="-8" cy="12" r="12" fill="#EE8695"/>
+          <circle cx="-13" cy="-4" r="12" fill="#F9D3DC"/>
+          <!-- Inner highlights -->
+          <circle cx="0" cy="-11" r="7" fill="#FFF2F5" opacity="0.75"/>
+          <circle cx="9" cy="-3" r="7" fill="#FFF2F5" opacity="0.75"/>
+          <circle cx="6" cy="9" r="7" fill="#F9D3DC" opacity="0.75"/>
+          <circle cx="-6" cy="9" r="7" fill="#F9D3DC" opacity="0.75"/>
+          <circle cx="-9" cy="-3" r="7" fill="#FFF2F5" opacity="0.75"/>
+          <!-- Stamen center -->
+          <circle cx="0" cy="0" r="4.5" fill="#B85528"/>
+          <circle cx="0" cy="0" r="2" fill="#FFEAA7"/>
+        </g>
+
+        <!-- Blossom Type B (Deeper rose pink) -->
+        <g id="blossomTypeB">
+          <circle cx="0" cy="0" r="20" fill="#D95B72" opacity="0.4"/>
+          <circle cx="0" cy="0" r="14" fill="#F4A4B2" opacity="0.5"/>
+          <circle cx="0" cy="-13" r="11" fill="#EE8695"/>
+          <circle cx="12" cy="-4" r="11" fill="#F9D3DC"/>
+          <circle cx="7" cy="11" r="11" fill="#D95B72"/>
+          <circle cx="-7" cy="11" r="11" fill="#EE8695"/>
+          <circle cx="-12" cy="-4" r="11" fill="#F9D3DC"/>
+          <circle cx="0" cy="0" r="4" fill="#B85528"/>
+          <circle cx="0" cy="0" r="1.8" fill="#FFF"/>
+        </g>
+
+        <!-- Fresh Spring Leaf Bud -->
+        <g id="leafBud">
+          <ellipse cx="0" cy="0" rx="10" ry="4.5" fill="#7FA86E" opacity="0.9"/>
+          <path d="M-8 0 L8 0" stroke="#5C854D" stroke-width="0.8" opacity="0.7"/>
+        </g>
+
+        <!-- Drifting Petal -->
+        <g id="driftPetal">
+          <path d="M0 -9 C6 -9 11 -4 10 3 C9 9 2 12 0 14 C-2 12 -9 9 -10 3 C-11 -4 -6 -9 0 -9 Z" fill="#F9D3DC" opacity="0.95"/>
+          <path d="M0 -6 C4 -6 7 -2 6 2 C5 6 1 8 0 9 C-1 8 -5 6 -6 2 C-7 -2 -4 -6 0 -6 Z" fill="#EE8695" opacity="0.65"/>
+        </g>
+
+        <filter id="treeShadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="rgba(30, 50, 70, 0.12)"/>
+        </filter>
+      </defs>
+    
+      <g filter="url(#treeShadow)">
+        
+      <!-- Main curved trunk along right viewport edge -->
+      <path d="M680 900 C670 780 650 640 640 520 C630 420 610 350 560 280 C520 220 460 180 380 150 C300 120 220 125 140 160 C120 170 110 180 90 195 C115 180 145 168 185 160 C250 145 320 150 390 175 C450 200 500 240 535 295 C570 355 585 430 595 530 C605 640 620 770 630 900 Z" fill="#38251C"/>
+      <path d="M650 900 C640 790 625 660 615 545 C605 450 590 385 550 320 C515 265 465 230 400 205 C425 212 470 235 505 270 C540 315 565 375 580 460 C595 560 610 680 620 900 Z" fill="#4A3427" opacity="0.85"/>
+      <path d="M670 900 C662 810 648 690 638 580 C630 490 618 425 585 365 C565 330 535 295 495 270 C475 258 450 248 420 240 C445 244 475 252 505 268 C540 288 570 322 595 370 C620 425 635 500 645 595 C655 700 665 810 670 900 Z" fill="#2C1B14" opacity="0.6"/>
+      
+      <!-- Upper Arching Branches -->
+      <path d="M560 280 C540 220 490 160 410 120 C340 85 250 75 160 90 C120 98 80 115 40 140 C70 120 110 105 155 98 C235 85 315 95 380 125 C450 160 495 210 520 265 Z" fill="#3D291F"/>
+      <path d="M410 120 C370 80 310 50 230 35 C170 24 100 30 40 55 C80 40 140 35 200 42 C265 52 320 75 365 110 Z" fill="#463124"/>
+      <path d="M520 265 C480 290 420 325 350 350 C290 370 220 380 150 375 C195 372 250 365 305 350 C365 330 420 300 465 270 Z" fill="#38251C"/>
+      <path d="M465 270 C430 310 380 360 320 405 C265 445 195 480 120 500 C170 482 230 455 285 422 C340 382 390 338 430 295 Z" fill="#3D291F"/>
+      <path d="M380 175 C340 190 280 215 220 250 C170 280 120 320 80 370 C110 330 150 295 195 270 C250 240 305 218 350 202 Z" fill="#4A3427"/>
+      <path d="M350 350 C320 385 275 420 215 450 C160 478 95 498 30 510 C75 500 130 482 180 458 C235 432 275 400 305 370 Z" fill="#38251C"/>
+      <path d="M580 460 C550 490 500 530 435 565 C370 600 290 625 210 640 C265 628 330 608 385 580 C445 550 490 515 525 482 Z" fill="#38251C"/>
+      <path d="M600 340 C630 320 670 300 700 290 C675 305 640 325 615 345 Z" fill="#3D291F"/>
+    
+        <use href="#leafBud" x="45" y="35" transform="rotate(-30 45 35) scale(1.1)"/><use href="#leafBud" x="76" y="53" transform="rotate(40 76 53) scale(1.1)"/><use href="#blossomTypeB" x="60" y="45" transform="rotate(0 60 45) scale(0.97)" /><use href="#blossomTypeA" x="110" y="35" transform="rotate(23 110 35) scale(1.20)" /><use href="#blossomTypeA" x="165" y="30" transform="rotate(46 165 30) scale(1.46)" /><use href="#blossomTypeA" x="220" y="32" transform="rotate(69 220 32) scale(1.39)" /><use href="#leafBud" x="265" y="30" transform="rotate(62 265 30) scale(1.5)"/><use href="#blossomTypeB" x="280" y="40" transform="rotate(92 280 40) scale(1.67)" /><use href="#leafBud" x="356" y="58" transform="rotate(155 356 58) scale(1.4)"/><use href="#blossomTypeA" x="340" y="50" transform="rotate(115 340 50) scale(1.37)" /><use href="#blossomTypeA" x="400" y="65" transform="rotate(138 400 65) scale(1.54)" /><use href="#blossomTypeA" x="460" y="80" transform="rotate(161 460 80) scale(1.26)" /><use href="#leafBud" x="505" y="95" transform="rotate(154 505 95) scale(1.3)"/><use href="#blossomTypeB" x="520" y="105" transform="rotate(184 520 105) scale(1.42)" /><use href="#leafBud" x="565" y="125" transform="rotate(177 565 125) scale(1.2)"/><use href="#blossomTypeB" x="580" y="135" transform="rotate(207 580 135) scale(1.15)" /><use href="#leafBud" x="656" y="183" transform="rotate(270 656 183) scale(1.1)"/><use href="#blossomTypeA" x="640" y="175" transform="rotate(230 640 175) scale(1.19)" /><use href="#blossomTypeA" x="680" y="220" transform="rotate(253 680 220) scale(0.95)" /><use href="#blossomTypeA" x="40" y="85" transform="rotate(276 40 85) scale(1.07)" /><use href="#leafBud" x="80" y="65" transform="rotate(269 80 65) scale(1.2)"/><use href="#blossomTypeB" x="95" y="75" transform="rotate(299 95 75) scale(1.13)" /><use href="#leafBud" x="135" y="60" transform="rotate(292 135 60) scale(1.3)"/><use href="#blossomTypeB" x="150" y="70" transform="rotate(322 150 70) scale(1.38)" /><use href="#leafBud" x="226" y="80" transform="rotate(385 226 80) scale(1.4)"/><use href="#blossomTypeA" x="210" y="72" transform="rotate(345 210 72) scale(1.30)" /><use href="#blossomTypeA" x="270" y="80" transform="rotate(8 270 80) scale(1.58)" /><use href="#blossomTypeA" x="330" y="95" transform="rotate(31 330 95) scale(1.38)" /><use href="#leafBud" x="375" y="105" transform="rotate(24 375 105) scale(1.4)"/><use href="#blossomTypeB" x="390" y="115" transform="rotate(54 390 115) scale(1.46)" /><use href="#leafBud" x="435" y="125" transform="rotate(47 435 125) scale(1.4)"/><use href="#blossomTypeB" x="450" y="135" transform="rotate(77 450 135) scale(1.27)" /><use href="#leafBud" x="526" y="168" transform="rotate(140 526 168) scale(1.3)"/><use href="#blossomTypeA" x="510" y="160" transform="rotate(100 510 160) scale(1.34)" /><use href="#blossomTypeA" x="570" y="190" transform="rotate(123 570 190) scale(1.08)" /><use href="#blossomTypeA" x="630" y="230" transform="rotate(146 630 230) scale(1.12)" /><use href="#leafBud" x="655" y="265" transform="rotate(139 655 265) scale(1.0)"/><use href="#blossomTypeB" x="670" y="275" transform="rotate(169 670 275) scale(0.89)" /><use href="#blossomTypeA" x="75" y="135" transform="rotate(192 75 135) scale(1.11)" /><use href="#leafBud" x="146" y="133" transform="rotate(255 146 133) scale(1.3)"/><use href="#blossomTypeA" x="130" y="125" transform="rotate(215 130 125) scale(1.14)" /><use href="#blossomTypeA" x="190" y="120" transform="rotate(238 190 120) scale(1.40)" /><use href="#leafBud" x="235" y="120" transform="rotate(231 235 120) scale(1.5)"/><use href="#blossomTypeB" x="250" y="130" transform="rotate(261 250 130) scale(1.68)" /><use href="#leafBud" x="295" y="135" transform="rotate(254 295 135) scale(1.5)"/><use href="#blossomTypeB" x="310" y="145" transform="rotate(284 310 145) scale(1.48)" /><use href="#blossomTypeA" x="370" y="165" transform="rotate(307 370 165) scale(1.55)" /><use href="#leafBud" x="446" y="198" transform="rotate(370 446 198) scale(1.4)"/><use href="#blossomTypeA" x="430" y="190" transform="rotate(330 430 190) scale(1.37)" /><use href="#blossomTypeA" x="490" y="220" transform="rotate(353 490 220) scale(1.43)" /><use href="#leafBud" x="535" y="245" transform="rotate(-14 535 245) scale(1.2)"/><use href="#blossomTypeB" x="550" y="255" transform="rotate(16 550 255) scale(1.16)" /><use href="#leafBud" x="595" y="285" transform="rotate(9 595 285) scale(1.1)"/><use href="#blossomTypeB" x="610" y="295" transform="rotate(39 610 295) scale(1.20)" /><use href="#blossomTypeA" x="60" y="185" transform="rotate(62 60 185) scale(0.96)" /><use href="#leafBud" x="131" y="188" transform="rotate(125 131 188) scale(1.2)"/><use href="#blossomTypeA" x="115" y="180" transform="rotate(85 115 180) scale(1.30)" /><use href="#blossomTypeA" x="175" y="185" transform="rotate(108 175 185) scale(1.23)" /><use href="#leafBud" x="220" y="190" transform="rotate(101 220 190) scale(1.4)"/><use href="#blossomTypeB" x="235" y="200" transform="rotate(131 235 200) scale(1.50)" /><use href="#leafBud" x="280" y="210" transform="rotate(124 280 210) scale(1.3)"/><use href="#blossomTypeB" x="295" y="220" transform="rotate(154 295 220) scale(1.22)" /><use href="#blossomTypeA" x="355" y="245" transform="rotate(177 355 245) scale(1.38)" /><use href="#leafBud" x="431" y="283" transform="rotate(240 431 283) scale(1.2)"/><use href="#blossomTypeA" x="415" y="275" transform="rotate(200 415 275) scale(1.12)" /><use href="#blossomTypeA" x="475" y="310" transform="rotate(223 475 310) scale(1.26)" /><use href="#leafBud" x="520" y="340" transform="rotate(216 520 340) scale(1.1)"/><use href="#blossomTypeB" x="535" y="350" transform="rotate(246 535 350) scale(1.01)" /><use href="#blossomTypeA" x="90" y="240" transform="rotate(269 90 240) scale(0.94)" /><use href="#blossomTypeA" x="145" y="245" transform="rotate(292 145 245) scale(1.00)" /><use href="#leafBud" x="221" y="268" transform="rotate(355 221 268) scale(1.2)"/><use href="#blossomTypeA" x="205" y="260" transform="rotate(315 205 260) scale(1.24)" /><use href="#blossomTypeA" x="265" y="280" transform="rotate(338 265 280) scale(1.08)" /><use href="#leafBud" x="310" y="295" transform="rotate(-29 310 295) scale(1.2)"/><use href="#blossomTypeB" x="325" y="305" transform="rotate(1 325 305) scale(1.22)" /><use href="#blossomTypeA" x="385" y="335" transform="rotate(24 385 335) scale(0.98)" /><use href="#blossomTypeA" x="445" y="370" transform="rotate(47 445 370) scale(1.11)" /><use href="#leafBud" x="521" y="418" transform="rotate(110 521 418) scale(1.0)"/><use href="#blossomTypeA" x="505" y="410" transform="rotate(70 505 410) scale(0.88)" /><use href="#leafBud" x="105" y="300" transform="rotate(63 105 300) scale(0.85)"/><use href="#blossomTypeB" x="120" y="310" transform="rotate(93 120 310) scale(0.85)" /><use href="#leafBud" x="160" y="315" transform="rotate(86 160 315) scale(1.0)"/><use href="#blossomTypeB" x="175" y="325" transform="rotate(116 175 325) scale(1.12)" /><use href="#blossomTypeA" x="235" y="345" transform="rotate(139 235 345) scale(1.09)" /><use href="#blossomTypeA" x="295" y="370" transform="rotate(162 295 370) scale(1.22)" /><use href="#leafBud" x="371" y="408" transform="rotate(225 371 408) scale(1.0)"/><use href="#blossomTypeA" x="355" y="400" transform="rotate(185 355 400) scale(0.98)" /><use href="#leafBud" x="400" y="425" transform="rotate(178 400 425) scale(1.0)"/><use href="#blossomTypeB" x="415" y="435" transform="rotate(208 415 435) scale(1.10)" /><use href="#leafBud" x="460" y="465" transform="rotate(201 460 465) scale(0.9)"/><use href="#blossomTypeB" x="475" y="475" transform="rotate(231 475 475) scale(0.87)" /><use href="#blossomTypeA" x="150" y="390" transform="rotate(254 150 390) scale(0.87)" /><use href="#blossomTypeA" x="205" y="415" transform="rotate(277 205 415) scale(0.86)" /><use href="#leafBud" x="281" y="448" transform="rotate(340 281 448) scale(1.0)"/><use href="#blossomTypeA" x="265" y="440" transform="rotate(300 265 440) scale(1.08)" /><use href="#leafBud" x="310" y="460" transform="rotate(293 310 460) scale(0.95)"/><use href="#blossomTypeB" x="325" y="470" transform="rotate(323 325 470) scale(0.90)" /><use href="#blossomTypeA" x="385" y="505" transform="rotate(346 385 505) scale(0.96)" /><use href="#blossomTypeA" x="445" y="545" transform="rotate(9 445 545) scale(0.80)" /><use href="#blossomTypeA" x="220" y="490" transform="rotate(32 220 490) scale(0.80)" /><use href="#leafBud" x="296" y="528" transform="rotate(95 296 528) scale(0.85)"/><use href="#blossomTypeA" x="280" y="520" transform="rotate(55 280 520) scale(0.79)" /><use href="#leafBud" x="325" y="540" transform="rotate(48 325 540) scale(0.85)"/><use href="#blossomTypeB" x="340" y="550" transform="rotate(78 340 550) scale(0.89)" /><use href="#blossomTypeA" x="400" y="585" transform="rotate(101 400 585) scale(0.74)" /><use href="#blossomTypeA" x="460" y="620" transform="rotate(124 460 620) scale(0.78)" /><use href="#driftPetal" x="40" y="220" transform="rotate(-15 40 220) scale(1.0)" /><use href="#driftPetal" x="70" y="310" transform="rotate(25 70 310) scale(0.9)" /><use href="#driftPetal" x="110" y="420" transform="rotate(-30 110 420) scale(0.85)" /><use href="#driftPetal" x="160" y="520" transform="rotate(10 160 520) scale(0.9)" /><use href="#driftPetal" x="90" y="580" transform="rotate(-40 90 580) scale(0.8)" /><use href="#driftPetal" x="30" y="450" transform="rotate(35 30 450) scale(0.75)" /><use href="#driftPetal" x="20" y="350" transform="rotate(-20 20 350) scale(0.85)" /><use href="#driftPetal" x="50" y="260" transform="rotate(45 50 260) scale(0.9)" /><use href="#driftPetal" x="130" y="280" transform="rotate(-10 130 280) scale(0.8)" /><use href="#driftPetal" x="180" y="360" transform="rotate(30 180 360) scale(0.75)" /><use href="#driftPetal" x="240" y="470" transform="rotate(-25 240 470) scale(0.7)" />
+      </g>
+    </svg>
+    </div>
   </div>
+
+  <div class="hero-inner">
+    <!-- Giant Editorial Header -->
+    <div class="editorial-title-wrap reveal">
+      <h1 class="editorial-title">PORTFOLIO</h1>
+      <div class="hero-project-bubble">
+        <span>Get a project in mind? &#128161;</span>
+      </div>
+    </div>
 
   <div class="hero-grid">
     <!-- Left Column: Bio & Intro -->
@@ -330,6 +426,7 @@
       </div>
     </div>
   </div>
+  </div><!-- /.hero-inner -->
 </section>
 
 <!-- ============ FEATURED PROJECTS SECTION (3D BOOKS SHOWCASE) ============ -->

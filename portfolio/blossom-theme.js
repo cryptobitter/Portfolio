@@ -11,12 +11,12 @@
 // customize or swap the branch geometry, colors, or petal densities below:
 window.BLOSSOM_CONFIG = {
   tree: {
-    barkColor: '#4A3A33',
-    petalSoft: '#F2C9CF',
-    petalDeep: '#D98C9B',
-    petalHighlight: '#FFF0F2',
-    stamenColor: '#C8653B',
-    opacity: 0.92,
+    barkColor: '#38251C',
+    petalSoft: '#F9D3DC',
+    petalDeep: '#EB8B9E',
+    petalHighlight: '#FFF2F5',
+    stamenColor: '#B85528',
+    opacity: 0.95,
   },
   petals: {
     maxDesktop: 65,      // 40-80 on desktop
