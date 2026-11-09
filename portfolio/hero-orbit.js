@@ -70,8 +70,10 @@
   let elPillar1 = null;
   let elPillar2 = null;
   let elPillar3 = null;
-  let elChapterChips = null;
-  let elChips = [];
+  let elChapterTechStack = null;
+  let elStack1 = null;
+  let elStack2 = null;
+  let elStack3 = null;
   let elChapterCue = null;
   let stationDots = [];
 
@@ -293,11 +295,12 @@
       }
     }
 
-    // Station 2: Three Pillars Card
+    // Station 2: Dual Architectural Plaques (Features on Right, Tech Stack on Left)
+    const s2Enter = clamp((p - 0.35) / 0.12, 0, 1);
+    const s2Exit = clamp((p - 0.62) / 0.12, 0, 1);
+    const s2Opacity = s2Enter * (1 - s2Exit);
+
     if (elChapterFeatures) {
-      const s2Enter = clamp((p - 0.35) / 0.12, 0, 1);
-      const s2Exit = clamp((p - 0.62) / 0.12, 0, 1);
-      const s2Opacity = s2Enter * (1 - s2Exit);
       elChapterFeatures.style.opacity = String(s2Opacity.toFixed(3));
       elChapterFeatures.classList.toggle('interactive', s2Opacity > 0.6);
 
@@ -306,12 +309,13 @@
       if (elPillar3) elPillar3.style.opacity = String(Math.min(1, Math.max(0, (s2Opacity - 0.4) * 1.3)).toFixed(3));
     }
 
-    // Floating tech chips
-    if (elChapterChips) {
-      const chipsEnter = clamp((p - 0.40) / 0.10, 0, 1);
-      const chipsExit = clamp((p - 0.70) / 0.12, 0, 1);
-      const chipsOpacity = chipsEnter * (1 - chipsExit);
-      elChapterChips.style.opacity = String(chipsOpacity.toFixed(3));
+    if (elChapterTechStack) {
+      elChapterTechStack.style.opacity = String(s2Opacity.toFixed(3));
+      elChapterTechStack.classList.toggle('interactive', s2Opacity > 0.6);
+
+      if (elStack1) elStack1.style.opacity = String(Math.min(1, s2Opacity * 1.3).toFixed(3));
+      if (elStack2) elStack2.style.opacity = String(Math.min(1, Math.max(0, (s2Opacity - 0.2) * 1.3)).toFixed(3));
+      if (elStack3) elStack3.style.opacity = String(Math.min(1, Math.max(0, (s2Opacity - 0.4) * 1.3)).toFixed(3));
     }
 
     // Station 3: Cue Link
@@ -939,8 +943,10 @@
     elPillar1 = document.getElementById('pillarItem1');
     elPillar2 = document.getElementById('pillarItem2');
     elPillar3 = document.getElementById('pillarItem3');
-    elChapterChips = document.getElementById('heroChapterChips');
-    elChips = elChapterChips ? Array.from(elChapterChips.querySelectorAll('.orbit-chip')) : [];
+    elChapterTechStack = document.getElementById('heroChapterTechStack');
+    elStack1 = document.getElementById('stackItem1');
+    elStack2 = document.getElementById('stackItem2');
+    elStack3 = document.getElementById('stackItem3');
     elChapterCue = document.getElementById('heroChapterCue');
     stationDots = Array.from(document.querySelectorAll('.station-dot'));
 

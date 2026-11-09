@@ -3258,53 +3258,32 @@ body.intro-complete footer {
   margin: 0;
 }
 
-/* Chapter 3: Floating Tech Chips */
-.hero-chapter-chips {
-  inset: 0;
-  position: absolute;
-  pointer-events: none;
+/* Station 2: Left Tech Stack Plaque */
+.hero-chapter-tech-stack {
+  left: 4vw;
+  bottom: clamp(35px, 6.5vh, 75px);
+  max-width: 440px;
+  width: calc(100% - 8vw);
+  z-index: 5;
 }
 
-.orbit-chip {
-  position: absolute;
-  background: rgba(14, 16, 22, 0.82);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  color: #F4EFE6;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  padding: 8px 18px;
-  border-radius: 999px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  will-change: transform, opacity;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
-}
-
-.chip-fastapi {
-  top: 36%;
-  left: 32%;
-}
-.chip-python {
-  top: 34%;
-  right: 31%;
-}
-.chip-groq {
-  bottom: 42%;
-  left: 32%;
-}
-.chip-redis {
-  bottom: 26%;
-  right: 31%;
+@media (max-width: 1024px) {
+  .hero-chapter-tech-stack {
+    max-width: 380px;
+    bottom: 24px;
+    left: 4vw;
+  }
 }
 
 @media (max-width: 768px) {
-  .chip-fastapi { top: 20%; left: 8%; }
-  .chip-python { top: 20%; right: 8%; }
-  .chip-groq { bottom: 24%; left: 8%; }
-  .chip-redis { bottom: 24%; right: 8%; }
+  .hero-chapter-tech-stack {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 16px;
+  }
 }
 
 /* Chapter 4: Scroll to See My Work Cue */
