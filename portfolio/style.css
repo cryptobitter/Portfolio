@@ -5,7 +5,7 @@
 
 :root {
   /* Hero Statue Orbit & Dark Marble Palette */
-  --portfolio-word-offset: clamp(8px, 2.5vh, 30px);
+  --portfolio-word-offset: clamp(86px, 10vh, 102px);
   --hero-dark-bg: #0A0B0E;
   --hero-stone-pale: #E4E0D8;
   --hero-gold-accent: #C5A059;
@@ -508,7 +508,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   font-size: clamp(4.5rem, 14vw, 12rem);
   font-weight: 900;
   letter-spacing: -0.015em;
-  line-height: 0.88;
+  line-height: 0.92;
   color: #181614;
   text-transform: uppercase;
   text-shadow: 0 4px 24px rgba(255, 255, 255, 0.4);
@@ -3037,10 +3037,10 @@ body.intro-complete footer {
 
 .hero-wordmark-text {
   font-family: var(--font-serif);
-  font-size: clamp(3.8rem, 13.5vw, 11.5rem);
+  font-size: clamp(3.0rem, 8.2vw, 7.6rem);
   font-weight: 900;
   letter-spacing: 0.08em;
-  line-height: 0.88;
+  line-height: 0.92;
   color: var(--hero-stone-pale);
   text-transform: uppercase;
   text-shadow: 0 4px 28px rgba(0, 0, 0, 0.85), 0 1px 4px rgba(0, 0, 0, 0.95);
@@ -3284,20 +3284,20 @@ body.intro-complete footer {
 }
 
 .chip-fastapi {
-  top: 32%;
-  left: 28%;
+  top: 36%;
+  left: 32%;
 }
 .chip-python {
-  top: 24%;
-  right: 27%;
+  top: 34%;
+  right: 31%;
 }
 .chip-groq {
-  bottom: 34%;
-  left: 25%;
+  bottom: 42%;
+  left: 32%;
 }
 .chip-redis {
-  bottom: 28%;
-  right: 26%;
+  bottom: 26%;
+  right: 31%;
 }
 
 @media (max-width: 768px) {
@@ -3523,4 +3523,13 @@ body.intro-complete footer {
   .hero-film-grain {
     animation: none !important;
   }
+}
+
+.hero-chapter-intro .hero-project-bubble {
+  align-self: flex-start;
+  margin-bottom: 6px;
+  background: rgba(20, 22, 28, 0.88);
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  color: #F0ECE4;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
