@@ -58,7 +58,6 @@ try {
 // 3. Define output directories: both public/frames and portfolio/frames for dev & build
 const rootDir = path.resolve(__dirname, '..');
 const outDirs = [
-  path.resolve(rootDir, 'portfolio/public/frames'),
   path.resolve(rootDir, 'portfolio/frames')
 ];
 
