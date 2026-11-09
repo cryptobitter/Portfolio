@@ -22,6 +22,9 @@
 </head>
 <body>
 
+<!-- Accessible Skip Link (First in Tab Order) -->
+<a href="#projects" class="skip-to-projects-link">Skip to projects</a>
+
 <div id="scrollProgress"></div>
 
 <!-- ============ BLOSSOM PETALS BACKGROUND LAYER ============ -->
@@ -39,7 +42,7 @@
   <div class="nav-container">
     <div class="nav-left">
       <span class="status-indicator">●</span>
-      <span class="nav-role">BACKEND &amp; AI ENGINEER</span>
+      <span class="nav-role">FULL STACK &amp; AI ENGINEER</span>
     </div>
     <a href="#hero" class="nav-brand-logo">ADITYA RAJPUT</a>
     <div class="nav-right">
@@ -59,116 +62,90 @@
   </nav>
 </header>
 
-<!-- ============ HERO SECTION (LIGHT EDITORIAL) ============ -->
-<section class="hero-section" id="hero">
-  <!-- Hero Sky Backdrop: Soft clouds, sparkles, and authentic cherry blossom tree -->
-  <div class="hero-sky-backdrop" aria-hidden="true">
-    <!-- Soft cumulus cloud puffs -->
-    <div class="hero-cloud hero-cloud-1"></div>
-    <div class="hero-cloud hero-cloud-2"></div>
-    <div class="hero-cloud hero-cloud-3"></div>
-    <div class="hero-cloud hero-cloud-4"></div>
+<!-- ============ HERO SECTION (SCROLL-DRIVEN STATUE ORBIT) ============ -->
+<section class="hero-orbit-section" id="hero">
+  <!-- Pinned 400vh Stage -->
+  <div class="hero-orbit-stage" id="heroOrbitStage">
+    <!-- Marble Warrior-King Statue Canvas -->
+    <canvas id="heroOrbitCanvas" class="hero-orbit-canvas" role="img" aria-label="Cinematic 3D orbit of marble warrior-king statue"></canvas>
+    
+    <!-- Dark Vignette Scrim & Bottom Gradient Transition -->
+    <div class="hero-orbit-scrim" aria-hidden="true"></div>
+    <div class="hero-orbit-fade-bottom" aria-hidden="true"></div>
 
-    <!-- Twinkling Sparkle Stars -->
-    <div class="hero-sparkle hero-sparkle-1">&#10022;</div>
-    <div class="hero-sparkle hero-sparkle-2">&#10022;</div>
-    <div class="hero-sparkle hero-sparkle-3">&#10022;</div>
-    <div class="hero-sparkle hero-sparkle-4">&#10022;</div>
-
-    <!-- Right Side Blooming Cherry Blossom Tree Artwork -->
-    <div class="hero-tree-wrap">
-      <img src="assets/cherry-blossom-tree.png" alt="Blooming Cherry Blossom Tree" class="hero-tree-img" fetchpriority="high">
-    </div>
-  </div>
-
-  <div class="hero-inner">
-    <!-- Giant Editorial Header -->
-    <div class="editorial-title-wrap reveal">
-      <h1 class="editorial-title">PORTFOLIO</h1>
-      <div class="hero-project-bubble">
-        <span>Get a project in mind? &#128161;</span>
-      </div>
-    </div>
-
-  <div class="hero-grid">
-    <!-- Left Column: Bio & Intro -->
-    <div class="hero-col hero-col-bio reveal" style="transition-delay: 0.1s">
-      <p class="hero-greeting">HELLO, I'M</p>
-      <h2 class="hero-name">ADITYA<br>RAJPUT</h2>
-      <p class="hero-tagline">BACKEND &amp; AI ENGINEER</p>
-      <p class="hero-description">
-        I engineer AI-powered systems, LLM pipelines, and high-performance asynchronous backends that blend robust system architecture, speed, and engineering precision.
-      </p>
-      <div class="hero-signature">Aditya Rajput</div>
-      <div class="hero-action-row">
-        <a href="#projects" class="btn-editorial">SEE FEATURED WORK <span class="arrow">→</span></a>
-        <a href="assets/resume.pdf" target="_blank" rel="noopener" class="btn-editorial-ghost">DOWNLOAD CV</a>
-      </div>
-    </div>
-
-    <!-- Center Column: 3D Pixar Character Mascot Stage -->
-    <div class="hero-col hero-col-visual reveal" id="heroMascotStage" style="transition-delay: 0.2s">
-      <div class="mascot-wrapper">
-        <!-- Floating Tech Orbit Rings -->
-        <div class="mascot-orbit char-orbit-1"></div>
-        <div class="mascot-orbit char-orbit-2"></div>
-
-        <!-- Speech Bubble -->
-        <div class="mascot-bubble" id="mascotBubble">Hey, I'm Aditya! 👋</div>
-
-        <!-- Floating Skill Badges -->
-        <div class="m-badge m-badge-1">FastAPI</div>
-        <div class="m-badge m-badge-2">Python</div>
-        <div class="m-badge m-badge-3">Groq LLM</div>
-        <div class="m-badge m-badge-4">Redis</div>
-
-        <!-- 3D Mascot Image / Model Frame -->
-        <!-- TODO: Add 3D GLB model at assets/character.glb to enable full 3D interactive mascot with cursor-tracking bone rig. Currently falling back gracefully to 3D tilted photo frame. -->
-        <div class="mascot-card" id="mascotCard">
-          <div class="mascot-canvas-container" id="mascot3dContainer" aria-hidden="true"></div>
-          <img src="assets/character.jpg" alt="Aditya Rajput 3D Mascot" class="mascot-img" id="mascotImgFallback" width="290" height="340" loading="eager">
-          <div class="mascot-overlay"></div>
-        </div>
-
-        <!-- Rotating Stamp Badge -->
-        <div class="stamp-badge">
-          <svg class="stamp-svg" viewBox="0 0 160 160">
-            <path id="stampCircle" d="M 80, 80 m -60, 0 a 60,60 0 1,1 120,0 a 60,60 0 1,1 -120,0" fill="none"/>
-            <text class="stamp-text">
-              <textPath href="#stampCircle">AVAILABLE FOR 2027 INTERNSHIPS &amp; PROJECTS • BACKEND &amp; AI • </textPath>
-            </text>
-          </svg>
-          <div class="stamp-center">2027</div>
+    <!-- Pinned Content Layers (Chapters 0.00 to 1.00) -->
+    <div class="hero-orbit-content-wrap">
+      
+      <!-- Big Editorial Wordmark "PORTFOLIO" (Fades out by p = 0.20) -->
+      <div class="hero-wordmark-wrap" id="heroWordmarkWrap">
+        <h1 class="hero-wordmark-text">PORTFOLIO</h1>
+        <div class="hero-project-bubble">
+          <span>Get a project in mind? &#128161;</span>
         </div>
       </div>
-    </div>
 
-    <!-- Right Column: Engineering Pillars -->
-    <div class="hero-col hero-col-pillars reveal" style="transition-delay: 0.3s">
-      <div class="pillar-item">
-        <div class="pillar-bullet"></div>
-        <div class="pillar-text">
-          <h3>SYSTEM ARCHITECTURE</h3>
-          <p>Designing high-concurrency APIs, relational DB schemas &amp; async microservices.</p>
+      <!-- Chapter 1 (0.00 - 0.20): Name, Role, Bio, Signature & Buttons -->
+      <div class="hero-chapter hero-chapter-intro" id="heroChapterIntro">
+        <div class="hero-scrim-card intro-card">
+          <p class="hero-greeting">HELLO, I'M</p>
+          <h2 class="hero-name">ADITYA<br>RAJPUT</h2>
+          <p class="hero-tagline">FULL STACK &amp; AI ENGINEER</p>
+          <p class="hero-description">
+            I engineer AI-powered systems, LLM pipelines, and high-performance asynchronous backends that blend robust system architecture, speed, and engineering precision.
+          </p>
+          <div class="hero-signature">Aditya Rajput</div>
+          <div class="hero-action-row">
+            <a href="#projects" class="btn-editorial btn-orbit-gold">SEE FEATURED WORK <span class="arrow">→</span></a>
+            <a href="assets/resume.pdf" target="_blank" rel="noopener" class="btn-editorial-ghost btn-orbit-ghost">DOWNLOAD CV</a>
+          </div>
         </div>
       </div>
-      <div class="pillar-item">
-        <div class="pillar-bullet"></div>
-        <div class="pillar-text">
-          <h3>AI PIPELINES</h3>
-          <p>Building real-time Groq LLM streams, OpenCV vision tracking &amp; automated reporting.</p>
+
+      <!-- Chapter 2 (0.20 - 0.55): Three Feature Blocks on Right -->
+      <div class="hero-chapter hero-chapter-features" id="heroChapterFeatures">
+        <div class="hero-scrim-card features-card">
+          <div class="orbit-pillar-item" id="pillarItem1">
+            <div class="pillar-bullet"></div>
+            <div class="pillar-text">
+              <h3>SYSTEM ARCHITECTURE</h3>
+              <p>Designing high-concurrency APIs, relational DB schemas &amp; async microservices.</p>
+            </div>
+          </div>
+          <div class="orbit-pillar-item" id="pillarItem2">
+            <div class="pillar-bullet"></div>
+            <div class="pillar-text">
+              <h3>AI PIPELINES</h3>
+              <p>Building real-time Groq LLM streams, OpenCV vision tracking &amp; automated reporting.</p>
+            </div>
+          </div>
+          <div class="orbit-pillar-item" id="pillarItem3">
+            <div class="pillar-bullet"></div>
+            <div class="pillar-text">
+              <h3>RELIABLE SCALING</h3>
+              <p>Redis task queues, Supabase auth, offline-first sync &amp; hardware IoT integrations.</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="pillar-item">
-        <div class="pillar-bullet"></div>
-        <div class="pillar-text">
-          <h3>RELIABLE SCALING</h3>
-          <p>Redis task queues, Supabase auth, offline-first sync &amp; hardware IoT integrations.</p>
-        </div>
+
+      <!-- Chapter 3 (0.55 - 0.85): Floating Tech Chips near Statue -->
+      <div class="hero-chapter hero-chapter-chips" id="heroChapterChips">
+        <div class="orbit-chip chip-fastapi">FastAPI</div>
+        <div class="orbit-chip chip-python">Python</div>
+        <div class="orbit-chip chip-groq">Groq LLM</div>
+        <div class="orbit-chip chip-redis">Redis</div>
       </div>
-    </div>
-  </div>
-  </div><!-- /.hero-inner -->
+
+      <!-- Chapter 4 (0.85 - 1.00): Scroll to see work cue -->
+      <div class="hero-chapter hero-chapter-cue" id="heroChapterCue">
+        <a href="#projects" class="orbit-cue-link">
+          <span class="orbit-cue-text">SCROLL TO SEE MY WORK</span>
+          <span class="orbit-cue-icon">↓</span>
+        </a>
+      </div>
+
+    </div><!-- /.hero-orbit-content-wrap -->
+  </div><!-- /#heroOrbitStage -->
 </section>
 
 <!-- ============ FEATURED PROJECTS SECTION (3D BOOKS SHOWCASE) ============ -->
@@ -527,6 +504,14 @@
     </div>
   </div>
 </section>
+
+<!-- Three.js 3D Engine for 3D Books Showcase -->
+<!-- GSAP & ScrollTrigger for Hero Orbit Pinning and Scroll Animations -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<!-- Hero Orbit Canvas Controller -->
+<script defer src="hero-orbit.js"></script>
 
 <!-- Three.js 3D Engine for 3D Books Showcase -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

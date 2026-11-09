@@ -4,6 +4,15 @@
    ========================================================================== */
 
 :root {
+  /* Hero Statue Orbit & Dark Marble Palette */
+  --portfolio-word-offset: clamp(65px, 11vh, 120px);
+  --hero-dark-bg: #0A0B0E;
+  --hero-stone-pale: #E4E0D8;
+  --hero-gold-accent: #C5A059;
+  --hero-gold-hover: #D4AF37;
+  --hero-scrim-bg: rgba(10, 12, 15, 0.78);
+  --hero-scrim-border: rgba(197, 160, 89, 0.24);
+
   /* Daylight Spring Blossom Sky Palette (Hero, Process & Skills, Contact) */
   --bg-sky-top: #A4D3F7;
   --bg-sky-mid: #C2E2FA;
@@ -2888,5 +2897,447 @@ body.intro-complete footer {
     transform: none !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+  }
+}
+
+
+/* ==========================================================================
+   ACCESSIBLE SKIP LINK
+   ========================================================================== */
+.skip-to-projects-link {
+  position: fixed;
+  top: 14px;
+  left: 20px;
+  z-index: 10001;
+  background: var(--hero-gold-accent);
+  color: #0A0B0E;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, opacity 0.2s ease;
+  opacity: 0.92;
+}
+.skip-to-projects-link:hover,
+.skip-to-projects-link:focus,
+.skip-to-projects-link:focus-visible {
+  opacity: 1;
+  background: var(--hero-gold-hover);
+  outline: 2px solid #FFF;
+  outline-offset: 2px;
+  transform: translateY(2px);
+}
+
+/* ==========================================================================
+   HERO STATUE ORBIT SECTION (SCROLL-DRIVEN 400VH PIN)
+   ========================================================================== */
+.hero-orbit-section {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background: var(--hero-dark-bg);
+  color: var(--hero-stone-pale);
+  overflow: visible;
+}
+
+.hero-orbit-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hero-dark-bg);
+}
+
+.hero-orbit-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
+}
+
+/* Subtle Vignette Scrim over Canvas edges */
+.hero-orbit-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(10, 11, 14, 0.1) 40%, rgba(10, 11, 14, 0.65) 90%, rgba(10, 11, 14, 0.95) 100%);
+}
+
+/* Bottom gradient fade into page */
+.hero-orbit-fade-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgba(10, 11, 14, 0.75) 55%, #121824 100%);
+}
+
+/* Pinned Content Layer Wrap */
+.hero-orbit-content-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 100px 4vw 60px;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Big Editorial Wordmark "PORTFOLIO" (Pale Stone) */
+.hero-wordmark-wrap {
+  position: absolute;
+  top: var(--portfolio-word-offset);
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 4;
+  pointer-events: none;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+}
+
+.hero-wordmark-text {
+  font-family: var(--font-serif);
+  font-size: clamp(3.8rem, 13.5vw, 11.5rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 0.88;
+  color: var(--hero-stone-pale);
+  text-transform: uppercase;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.85), 0 1px 4px rgba(0, 0, 0, 0.95);
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.hero-orbit-section .hero-project-bubble {
+  margin-top: 10px;
+  background: rgba(20, 22, 28, 0.82);
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  color: #F0ECE4;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Chapter Base Styles */
+.hero-chapter {
+  position: absolute;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  will-change: opacity, transform;
+}
+
+.hero-chapter.interactive {
+  pointer-events: auto;
+}
+
+.hero-chapter.interactive a,
+.hero-chapter.interactive button {
+  pointer-events: auto;
+}
+
+/* Scrim Frosted Glass Cards (WCAG AA Contrast) */
+.hero-scrim-card {
+  background: var(--hero-scrim-bg);
+  border: 1px solid var(--hero-scrim-border);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Chapter 1: Intro Card */
+.hero-chapter-intro {
+  left: 4vw;
+  bottom: 80px;
+  max-width: 460px;
+  width: calc(100% - 8vw);
+}
+
+.intro-card {
+  padding: 28px 32px;
+}
+
+.intro-card .hero-greeting {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: var(--hero-gold-accent);
+  margin-bottom: 6px;
+}
+
+.intro-card .hero-name {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  color: #FFF;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.intro-card .hero-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--hero-gold-accent);
+  margin-bottom: 14px;
+}
+
+.intro-card .hero-description {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #D2CEC5;
+  margin-bottom: 18px;
+}
+
+.intro-card .hero-signature {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 1.55rem;
+  color: var(--hero-gold-accent);
+  margin-bottom: 22px;
+  opacity: 0.95;
+}
+
+.btn-orbit-gold {
+  background: var(--hero-gold-accent) !important;
+  color: #0A0B0E !important;
+  border: none !important;
+  font-weight: 700 !important;
+}
+.btn-orbit-gold:hover {
+  background: var(--hero-gold-hover) !important;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.4) !important;
+}
+
+.btn-orbit-ghost {
+  border-color: rgba(212, 175, 55, 0.45) !important;
+  color: #F0ECE4 !important;
+}
+.btn-orbit-ghost:hover {
+  border-color: var(--hero-gold-hover) !important;
+  color: var(--hero-gold-hover) !important;
+  background: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Chapter 2: Three Feature Blocks on Right */
+.hero-chapter-features {
+  right: 4vw;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 440px;
+  width: calc(100% - 8vw);
+}
+
+.features-card {
+  padding: 28px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.orbit-pillar-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.orbit-pillar-item .pillar-bullet {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--hero-gold-accent);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.orbit-pillar-item h3 {
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #FFF;
+  margin-bottom: 5px;
+}
+
+.orbit-pillar-item p {
+  font-size: 0.88rem;
+  color: #CCC7BC;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Chapter 3: Floating Tech Chips */
+.hero-chapter-chips {
+  inset: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.orbit-chip {
+  position: absolute;
+  background: rgba(14, 16, 22, 0.82);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #F4EFE6;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 8px 18px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  will-change: transform, opacity;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.chip-fastapi {
+  top: 32%;
+  left: 28%;
+}
+.chip-python {
+  top: 24%;
+  right: 27%;
+}
+.chip-groq {
+  bottom: 34%;
+  left: 25%;
+}
+.chip-redis {
+  bottom: 28%;
+  right: 26%;
+}
+
+@media (max-width: 768px) {
+  .chip-fastapi { top: 20%; left: 8%; }
+  .chip-python { top: 20%; right: 8%; }
+  .chip-groq { bottom: 24%; left: 8%; }
+  .chip-redis { bottom: 24%; right: 8%; }
+}
+
+/* Chapter 4: Scroll to See My Work Cue */
+.hero-chapter-cue {
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 6;
+}
+
+.orbit-cue-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--hero-gold-accent);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: rgba(10, 12, 16, 0.82);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+  pointer-events: auto;
+}
+.orbit-cue-link:hover,
+.orbit-cue-link:focus-visible {
+  background: rgba(212, 175, 55, 0.22);
+  border-color: var(--hero-gold-hover);
+  color: #FFF;
+  outline: 2px solid #FFF;
+  outline-offset: 2px;
+}
+.orbit-cue-icon {
+  font-size: 1.15rem;
+  animation: orbitCueBounce 1.8s ease-in-out infinite;
+}
+
+@keyframes orbitCueBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* Reduced Motion Fallback */
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit-stage {
+    height: auto !important;
+    min-height: 100vh !important;
+    padding: 100px 4vw 80px;
+    align-items: flex-start;
+  }
+  .hero-orbit-content-wrap {
+    position: relative !important;
+    inset: auto !important;
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 0;
+  }
+  .hero-wordmark-wrap {
+    position: relative !important;
+    top: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .hero-chapter {
+    position: relative !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+  .hero-chapter-features {
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+  }
+  .hero-chapter-chips {
+    position: relative !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .orbit-chip {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+  .hero-chapter-cue {
+    display: none !important;
   }
 }
