@@ -866,3 +866,133 @@ textarea:focus-visible,
   font-family: var(--font-mono) !important;
   font-size: 0.72rem !important;
 }
+
+/* ==========================================================================
+   SECTION: #animatedFooterGateway (CASTLE GATE & PORTCULLIS BARS)
+   ========================================================================== */
+.animated-footer-gateway {
+  position: relative;
+  width: 100%;
+  height: 85vh;
+  min-height: 580px;
+  max-height: 850px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(34, 31, 28, 0.7) 0%, rgba(14, 13, 12, 0.98) 75%), var(--stone-deepest) !important;
+  overflow: hidden;
+  border-top: 2px solid var(--gold-hairline) !important;
+  border-bottom: 2px solid var(--gold-hairline) !important;
+  box-shadow: inset 0 24px 60px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Subtle Portcullis Bars & Iron Grille Pattern */
+.animated-footer-gateway::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    /* Vertical Portcullis Spikes & Bars */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 52px,
+      rgba(201, 162, 75, 0.08) 52px,
+      rgba(201, 162, 75, 0.22) 54px,
+      transparent 56px
+    ),
+    /* Horizontal Iron Bracing Bands */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 80px,
+      rgba(201, 162, 75, 0.08) 80px,
+      rgba(201, 162, 75, 0.18) 82px,
+      transparent 84px
+    );
+  mask-image: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.9) 35%, rgba(0, 0, 0, 0.1) 90%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.9) 35%, rgba(0, 0, 0, 0.1) 90%);
+  z-index: 1;
+  opacity: 0.7;
+}
+
+/* Arched Opening Vignette */
+.af-container {
+  position: relative;
+  z-index: 2;
+  box-shadow: inset 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.af-top-bar {
+  border-bottom: 1px solid var(--gold-hairline) !important;
+  background: rgba(14, 13, 12, 0.75) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.af-brand-badge {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline-bright) !important;
+  color: var(--gold-highlight) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.af-brand-title {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-mono) !important;
+  letter-spacing: 0.14em !important;
+}
+
+.af-brand-sub {
+  color: var(--marble-muted) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.af-proceed-btn {
+  background: var(--gold-accent) !important;
+  color: var(--stone-deepest) !important;
+  border: 1px solid var(--gold-highlight) !important;
+  font-weight: 700 !important;
+  font-family: var(--font-mono) !important;
+  letter-spacing: 0.12em !important;
+  border-radius: 999px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+}
+.af-proceed-btn:hover {
+  background: var(--gold-highlight) !important;
+  box-shadow: 0 0 20px rgba(232, 139, 58, 0.45) !important;
+}
+
+.af-countdown-badge {
+  background: rgba(23, 21, 19, 0.9) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  color: var(--marble-secondary) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.af-pulse-beacon {
+  background: var(--ember-glow) !important;
+  box-shadow: 0 0 12px var(--ember-glow) !important;
+}
+
+.af-meter-track {
+  background: var(--stone-darker) !important;
+  border: 1px solid var(--gold-hairline) !important;
+}
+
+.af-meter-fill {
+  background: linear-gradient(90deg, var(--gold-deep) 0%, var(--gold-highlight) 50%, var(--ember-glow) 100%) !important;
+  box-shadow: 0 0 12px rgba(232, 139, 58, 0.6) !important;
+}
+
+.af-hud-hint {
+  color: var(--marble-muted) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.af-heading-word {
+  font-family: var(--font-serif) !important;
+  letter-spacing: 0.08em !important;
+}
+
+.af-char {
+  color: var(--marble-primary) !important;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 0 12px rgba(201, 162, 75, 0.35) !important;
+}
