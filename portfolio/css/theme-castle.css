@@ -996,3 +996,221 @@ textarea:focus-visible,
   color: var(--marble-primary) !important;
   text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 0 12px rgba(201, 162, 75, 0.35) !important;
 }
+
+/* ==========================================================================
+   SECTION: #contact & FOOTER (CARVED STONE PANEL & GOLD ACTIONS)
+   ========================================================================== */
+.contact-section {
+  background-color: var(--stone-deepest) !important;
+  color: var(--marble-primary) !important;
+  position: relative;
+  padding: 110px 0 60px !important;
+}
+
+/* Battlement Divider at Top of Contact */
+.contact-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-hairline) 25%, var(--gold-accent) 50%, var(--gold-hairline) 75%, transparent);
+}
+
+.contact-eyebrow {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.18em !important;
+  font-weight: 700 !important;
+}
+
+.contact-big-title {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem) !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7) !important;
+  margin-top: 8px !important;
+  margin-bottom: 48px !important;
+}
+
+/* Arch Frame Portrait */
+.arch-frame {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline-bright) !important;
+  border-radius: 120px 120px 16px 16px !important;
+  box-shadow: 
+    inset 0 16px 36px rgba(0, 0, 0, 0.7),
+    0 12px 32px rgba(0, 0, 0, 0.5) !important;
+  padding: 36px 24px !important;
+  text-align: center;
+}
+
+.arch-initials {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 2.8rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-shadow: 0 0 16px rgba(201, 162, 75, 0.4) !important;
+}
+
+.arch-name {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  margin-top: 8px !important;
+}
+
+.arch-sub {
+  color: var(--marble-muted) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Contact Links List */
+.c-link {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 12px !important;
+  color: var(--marble-primary) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.c-link:hover {
+  border-color: var(--gold-highlight) !important;
+  box-shadow: 0 0 16px rgba(201, 162, 75, 0.25), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+  transform: translateX(4px) !important;
+}
+
+.c-link .c-label {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em !important;
+}
+
+.c-link .c-val {
+  color: var(--marble-secondary) !important;
+  font-size: 0.88rem !important;
+}
+
+/* Contact Form: Stone Tablet Panel */
+.editorial-form {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 18px !important;
+  padding: 36px 40px !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.06),
+    0 16px 44px rgba(0, 0, 0, 0.6) !important;
+}
+
+.form-title {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 1.45rem !important;
+  letter-spacing: 0.03em !important;
+  margin-bottom: 6px !important;
+}
+
+.form-sub {
+  color: var(--marble-secondary) !important;
+  font-size: 0.88rem !important;
+  margin-bottom: 24px !important;
+}
+
+.form-group label {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.14em !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+  display: block;
+}
+
+/* Form Inputs & Textarea: Clear Borders & Gold Focus Ring */
+.form-group input,
+.form-group textarea {
+  background: var(--stone-darker) !important;
+  border: 1px solid rgba(201, 162, 75, 0.32) !important;
+  border-radius: 8px !important;
+  color: var(--marble-primary) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.94rem !important;
+  padding: 12px 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--marble-muted) !important;
+  opacity: 0.7;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: 2px solid var(--gold-highlight) !important;
+  outline-offset: 2px !important;
+  border-color: var(--gold-highlight) !important;
+  box-shadow: 0 0 14px rgba(232, 139, 58, 0.28) !important;
+}
+
+/* Submit Button */
+#cfSubmitBtn {
+  background: var(--gold-accent) !important;
+  color: var(--stone-deepest) !important;
+  border: 1px solid var(--gold-highlight) !important;
+  font-weight: 700 !important;
+  font-family: var(--font-mono) !important;
+  letter-spacing: 0.12em !important;
+  padding: 12px 28px !important;
+  border-radius: 999px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer !important;
+}
+
+#cfSubmitBtn:hover {
+  background: var(--gold-highlight) !important;
+  box-shadow: 0 0 20px rgba(232, 139, 58, 0.45) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Let's Talk Card */
+.lets-talk-card {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 14px !important;
+  padding: 24px 28px !important;
+  margin-top: 24px !important;
+}
+
+.lets-talk-card h4 {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+}
+
+.lets-talk-card p {
+  color: var(--marble-secondary) !important;
+}
+
+/* Castle Footer Bar */
+.footer-bar {
+  border-top: 1px solid var(--gold-hairline) !important;
+  background: var(--stone-deepest) !important;
+  color: var(--marble-muted) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.12em !important;
+  padding: 28px 0 !important;
+}
