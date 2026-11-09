@@ -711,3 +711,158 @@ textarea:focus-visible,
   box-shadow: 0 0 14px rgba(201, 162, 75, 0.3) !important;
   transform: translateY(-2px) !important;
 }
+
+/* ==========================================================================
+   SECTION: #experience (STONE WALL TIMELINE & TORCH / BANNER MARKERS)
+   ========================================================================== */
+.experience-section {
+  background-color: var(--stone-darker) !important;
+  color: var(--marble-primary) !important;
+  position: relative;
+  padding: 110px 0 130px !important;
+}
+
+/* Battlement Divider at Top of Experience */
+.experience-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-hairline) 25%, var(--gold-accent) 50%, var(--gold-hairline) 75%, transparent);
+}
+
+.experience-section .section-header-editorial {
+  border-bottom: 1px solid var(--gold-hairline) !important;
+  padding-bottom: 24px !important;
+  margin-bottom: 40px !important;
+}
+
+.experience-section .section-number {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.18em !important;
+  font-weight: 700 !important;
+}
+
+.experience-section .section-title-serif {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  letter-spacing: 0.02em !important;
+}
+
+.experience-section .section-tagline {
+  color: var(--marble-muted) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.14em !important;
+}
+
+/* The Timeline as a Stone Wall Line */
+.timeline-editorial {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 769px) {
+  .timeline-editorial::before {
+    content: "";
+    position: absolute;
+    left: 236px;
+    top: 16px;
+    bottom: 16px;
+    width: 2px;
+    background: repeating-linear-gradient(
+      180deg,
+      var(--gold-accent) 0px,
+      var(--gold-hairline) 12px,
+      var(--stone-elevated) 24px,
+      var(--gold-accent) 36px
+    );
+    opacity: 0.55;
+    z-index: 1;
+  }
+}
+
+/* Timeline Stone Plaque Cards */
+.timeline-row {
+  position: relative;
+  z-index: 2;
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 14px !important;
+  padding: 26px 32px !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    0 10px 28px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.timeline-row:hover {
+  border-color: var(--gold-hairline-bright) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 0 24px rgba(232, 139, 58, 0.22),
+    0 14px 36px rgba(0, 0, 0, 0.65) !important;
+  transform: translateY(-2px);
+}
+
+.tl-period {
+  font-family: var(--font-mono) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.12em !important;
+  color: var(--marble-muted) !important;
+  font-weight: 700 !important;
+}
+
+/* Small Torch / Heraldic Banner Marker */
+.tl-badge {
+  display: inline-block !important;
+  background: linear-gradient(180deg, var(--gold-accent) 0%, var(--gold-deep) 100%) !important;
+  color: var(--stone-deepest) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+  padding: 5px 12px 8px 12px !important;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 82%, 50% 100%, 0% 82%) !important;
+  border-radius: 2px 2px 0 0 !important;
+  box-shadow: 0 4px 12px rgba(232, 139, 58, 0.35) !important;
+  margin-top: 8px !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+}
+
+.tl-right h3 {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 1.25rem !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 8px !important;
+}
+
+.tl-role-tag {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+}
+
+.tl-right p {
+  color: var(--marble-secondary) !important;
+  font-size: 0.90rem !important;
+  line-height: 1.65 !important;
+  margin-bottom: 14px !important;
+}
+
+.tl-right .proj-tags span {
+  background: var(--stone-darker) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  color: var(--marble-secondary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+}
