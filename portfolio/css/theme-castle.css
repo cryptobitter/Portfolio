@@ -492,3 +492,222 @@ textarea:focus-visible,
   text-decoration-color: var(--gold-accent) !important;
   text-underline-offset: 4px !important;
 }
+
+/* ==========================================================================
+   SECTION: #process (WORKFLOW & CHISELING SEQUENCE / CAPABILITIES)
+   ========================================================================== */
+.process-skills-section {
+  background-color: var(--stone-deepest) !important;
+  color: var(--marble-primary) !important;
+  position: relative;
+  padding: 110px 0 130px !important;
+}
+
+/* Crenellated Battlement Transition Divider at Top */
+.process-skills-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-hairline) 20%, var(--gold-accent) 50%, var(--gold-hairline) 80%, transparent);
+}
+
+.process-skills-section .section-number {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.18em !important;
+  font-weight: 700 !important;
+}
+
+.process-skills-section .section-title-serif {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  letter-spacing: 0.02em !important;
+  margin-bottom: 12px !important;
+}
+
+.process-skills-section .process-intro {
+  color: var(--marble-secondary) !important;
+  font-size: 0.95rem !important;
+  margin-bottom: 32px !important;
+}
+
+/* Connecting Chiseling Line */
+.process-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.process-list::before {
+  content: "";
+  position: absolute;
+  left: 28px;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: linear-gradient(180deg, var(--gold-accent) 0%, var(--gold-hairline) 50%, var(--gold-deep) 100%);
+  opacity: 0.45;
+  z-index: 1;
+}
+
+/* Steps as a Staircase / Chiseling Sequence */
+.process-step {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 22px 26px !important;
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 14px !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.05),
+    0 8px 24px rgba(0, 0, 0, 0.45) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Progressive Staircase Offsets on Desktop */
+@media (min-width: 900px) {
+  .process-step:nth-child(1) { margin-left: 0px; }
+  .process-step:nth-child(2) { margin-left: 14px; }
+  .process-step:nth-child(3) { margin-left: 28px; }
+  .process-step:nth-child(4) { margin-left: 42px; }
+  .process-step:nth-child(5) { margin-left: 56px; }
+}
+
+.process-step:hover {
+  border-color: var(--gold-hairline-bright) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 0 20px rgba(232, 139, 58, 0.22),
+    0 12px 30px rgba(0, 0, 0, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+/* Decorative Gold Roman Numerals (I, II, III, IV, V) */
+.process-step .step-num {
+  font-size: 0 !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: var(--stone-darker) !important;
+  border: 1px solid var(--gold-hairline-bright) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.25s ease !important;
+}
+
+.process-step:hover .step-num {
+  border-color: var(--gold-highlight) !important;
+  box-shadow: 0 0 14px rgba(232, 139, 58, 0.45) !important;
+}
+
+.process-step:nth-child(1) .step-num::before {
+  content: "I";
+  font-size: 0.95rem;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--gold-accent);
+}
+.process-step:nth-child(2) .step-num::before {
+  content: "II";
+  font-size: 0.92rem;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--gold-accent);
+}
+.process-step:nth-child(3) .step-num::before {
+  content: "III";
+  font-size: 0.88rem;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--gold-accent);
+}
+.process-step:nth-child(4) .step-num::before {
+  content: "IV";
+  font-size: 0.88rem;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--gold-accent);
+}
+.process-step:nth-child(5) .step-num::before {
+  content: "V";
+  font-size: 0.95rem;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--gold-accent);
+}
+
+.process-step h4 {
+  font-family: var(--font-serif) !important;
+  color: var(--marble-primary) !important;
+  font-size: 1.05rem !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 6px !important;
+}
+
+.process-step p {
+  color: var(--marble-secondary) !important;
+  font-size: 0.88rem !important;
+  line-height: 1.6 !important;
+}
+
+.process-footer-quote {
+  border-left: 2px solid var(--gold-accent) !important;
+  background: rgba(23, 21, 19, 0.6) !important;
+  padding: 16px 20px !important;
+  border-radius: 0 10px 10px 0 !important;
+  color: var(--marble-muted) !important;
+  margin-top: 36px !important;
+}
+
+/* Capabilities & Skills Matrix Grid */
+.skills-col {
+  padding-left: 20px;
+}
+@media (max-width: 900px) {
+  .skills-col { padding-left: 0; margin-top: 50px; }
+}
+
+.skills-legend {
+  border-bottom: 1px solid var(--gold-hairline) !important;
+  padding-bottom: 14px !important;
+  margin-bottom: 22px !important;
+}
+
+.legend-item {
+  color: var(--marble-muted) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+.skills-matrix-grid {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  padding: 24px !important;
+}
+
+.skill-circle-card {
+  background: var(--stone-darker) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  color: var(--marble-primary) !important;
+  transition: all 0.25s ease !important;
+}
+
+.skill-circle-card:hover {
+  background: var(--stone-elevated) !important;
+  border-color: var(--gold-highlight) !important;
+  box-shadow: 0 0 14px rgba(201, 162, 75, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
