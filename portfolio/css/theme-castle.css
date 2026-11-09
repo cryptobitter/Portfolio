@@ -1214,3 +1214,234 @@ textarea:focus-visible,
   letter-spacing: 0.12em !important;
   padding: 28px 0 !important;
 }
+
+/* ============================================================================
+   VENGEANCE UI: GENERATE BUTTON (hue: 210)
+   ============================================================================ */
+:root {
+  --gen-hue: 210;
+}
+
+.gen-btn {
+  --padding: 4px;
+  --highlight-color-hue: 210deg;
+  position: relative !important;
+  outline: none !important;
+  border-radius: 9999px !important;
+  background-color: #101010 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  border: 1px solid transparent !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 2px 4px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 12px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.8),
+    inset 0 -4px 8px 0 rgba(0, 0, 0, 0.6),
+    0 2px 4px -1px rgba(0, 0, 0, 0.5),
+    0 4px 12px -2px rgba(0, 0, 0, 0.6),
+    0 10px 24px -4px rgba(0, 0, 0, 0.7) !important;
+  isolation: isolate !important;
+}
+
+/* Outer bevel ring */
+.gen-btn::before {
+  content: "";
+  position: absolute;
+  top: calc(0px - var(--padding));
+  left: calc(0px - var(--padding));
+  right: calc(0px - var(--padding));
+  bottom: calc(0px - var(--padding));
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: -1;
+  border: 1px solid hsla(var(--highlight-color-hue), 80%, 65%, 0.25);
+  background: radial-gradient(circle at 50% 0%, hsla(var(--highlight-color-hue), 90%, 65%, 0.15) 0%, transparent 70%);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.8),
+    0 0 16px -2px hsla(var(--highlight-color-hue), 90%, 60%, 0.18);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+/* Top sheen highlight gradient with mask */
+.gen-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    hsla(var(--highlight-color-hue), 100%, 75%, 0.25) 15%,
+    transparent 60%
+  );
+  -webkit-mask-image: linear-gradient(180deg, #fff 0%, transparent 70%);
+  mask-image: linear-gradient(180deg, #fff 0%, transparent 70%);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.gen-btn:hover {
+  transform: translateY(-1px) !important;
+  border-color: hsla(var(--highlight-color-hue), 90%, 65%, 0.5) !important;
+  box-shadow:
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.3),
+    inset 0 2px 6px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.9),
+    0 0 20px 2px hsla(var(--highlight-color-hue), 90%, 60%, 0.35),
+    0 8px 24px -2px rgba(0, 0, 0, 0.8) !important;
+}
+
+.gen-btn:hover::before {
+  border-color: hsla(var(--highlight-color-hue), 90%, 65%, 0.6);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.25),
+    0 0 24px 2px hsla(var(--highlight-color-hue), 90%, 60%, 0.4);
+}
+
+.gen-btn:hover::after {
+  opacity: 1;
+}
+
+.gen-btn:active {
+  transform: translateY(1px) scale(0.985) !important;
+  box-shadow:
+    inset 0 2px 6px 0 rgba(0, 0, 0, 0.8),
+    inset 0 0 10px 0 rgba(0, 0, 0, 0.6),
+    0 2px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 4-pointed Sparkle SVG */
+.gen-btn .gen-btn-svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  min-width: 1rem !important;
+  min-height: 1rem !important;
+  fill: none !important;
+  stroke: hsl(var(--highlight-color-hue), 100%, 75%) !important;
+  stroke-width: 1.6 !important;
+  filter: drop-shadow(0 0 6px hsla(var(--highlight-color-hue), 100%, 70%, 0.7)) !important;
+  animation: gen-sparkle-flicker 3s ease-in-out infinite !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+@keyframes gen-sparkle-flicker {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 4px hsla(var(--highlight-color-hue), 100%, 70%, 0.6));
+  }
+  50% {
+    transform: scale(1.12) rotate(6deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px hsla(var(--highlight-color-hue), 100%, 75%, 0.95));
+  }
+}
+
+/* Staggered letter shimmer wave */
+.gen-btn .gen-txt-wrapper {
+  display: inline-flex !important;
+  align-items: center !important;
+  position: relative !important;
+  z-index: 2 !important;
+  white-space: nowrap !important;
+}
+
+.gen-btn .gen-btn-letter {
+  display: inline-block !important;
+  color: #EDE8DF !important;
+  transition: transform 0.2s ease, color 0.2s ease, text-shadow 0.2s ease !important;
+  animation: gen-letter-wave 2.4s ease-in-out infinite !important;
+}
+
+@keyframes gen-letter-wave {
+  0%, 100% {
+    color: #EDE8DF;
+    transform: translateY(0);
+    text-shadow: none;
+  }
+  20% {
+    color: hsl(var(--highlight-color-hue), 100%, 85%);
+    transform: translateY(-1.5px);
+    text-shadow:
+      0 0 8px hsla(var(--highlight-color-hue), 100%, 70%, 0.8),
+      0 0 16px hsla(var(--highlight-color-hue), 100%, 70%, 0.4);
+  }
+  40% {
+    color: #EDE8DF;
+    transform: translateY(0);
+    text-shadow: none;
+  }
+}
+
+/* Active / Generating Burst State */
+.gen-btn[data-generating="true"] {
+  animation: gen-pulse-aura 0.7s ease-in-out infinite alternate !important;
+}
+
+.gen-btn[data-generating="true"] .gen-btn-letter {
+  animation: gen-generating-letters 0.6s ease-in-out infinite alternate !important;
+}
+
+.gen-btn[data-generating="true"] .gen-btn-svg {
+  animation: gen-generating-spin 0.8s linear infinite !important;
+}
+
+@keyframes gen-pulse-aura {
+  0% {
+    box-shadow:
+      0 0 15px 2px hsla(var(--highlight-color-hue), 90%, 60%, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    box-shadow:
+      0 0 32px 6px hsla(var(--highlight-color-hue), 100%, 65%, 0.7),
+      inset 0 1px 4px rgba(255, 255, 255, 0.6);
+  }
+}
+
+@keyframes gen-generating-letters {
+  0% {
+    transform: translateY(0) scale(1);
+    color: #fff;
+  }
+  100% {
+    transform: translateY(-2px) scale(1.08);
+    color: hsl(var(--highlight-color-hue), 100%, 85%);
+    text-shadow: 0 0 12px hsla(var(--highlight-color-hue), 100%, 75%, 0.9);
+  }
+}
+
+@keyframes gen-generating-spin {
+  0% {
+    transform: rotate(0deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.25);
+  }
+}
+
+/* Accessibility / Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .gen-btn .gen-btn-letter,
+  .gen-btn .gen-btn-svg,
+  .gen-btn[data-generating="true"] {
+    animation: none !important;
+  }
+  .gen-btn:hover {
+    transform: none !important;
+  }
+}
