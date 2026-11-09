@@ -1,15 +1,33 @@
 {
   "frameCount": 121,
-  "width": 1920,
-  "height": 1080,
+  "width": 2560,
+  "height": 1440,
   "fps": 24,
   "format": "webp",
   "prefix": "frame_",
   "digits": 4,
-  "quality": 85,
-  "totalSizeBytes": 9657800,
-  "totalSizeMB": 9.21,
+  "stations": [
+    {
+      "id": "front",
+      "frame": 120,
+      "label": "Identity & Role"
+    },
+    {
+      "id": "side",
+      "frame": 49,
+      "label": "System Architecture"
+    },
+    {
+      "id": "back",
+      "frame": 0,
+      "label": "Explore Portfolio"
+    }
+  ],
   "frontFrameIndex": 120,
+  "sideFrameIndex": 49,
   "backFrameIndex": 0,
-  "statueCutout": "statue_cutout.webp"
+  "statueCutout": "statue_cutout.webp",
+  "torchTracks": "torchTracks.json",
+  "desktopPayloadMB": 7.33,
+  "mobilePayloadMB": 3.83
 }

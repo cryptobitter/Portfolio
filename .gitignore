@@ -1,0 +1,13 @@
+# Real-ESRGAN binary and models
+scripts/bin/
+*.zip
+
+# Temporary build folders
+temp_raw_all/
+temp_upscaled_all/
+temp_test/
+
+# OS and logs
+.DS_Store
+Thumbs.db
+*.log
