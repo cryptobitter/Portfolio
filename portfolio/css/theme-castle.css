@@ -1083,12 +1083,42 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   margin-bottom: 14px !important;
 }
 
-.tl-right .proj-tags span {
-  background: var(--stone-darker) !important;
-  border: 1px solid var(--gold-hairline) !important;
-  color: var(--marble-secondary) !important;
+/* Timeline Skills Tags in #experience */
+.tl-right .proj-tags,
+.timeline-row .proj-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px 10px !important;
+  margin-top: 14px !important;
+  padding-top: 2px !important;
+}
+
+.tl-right .proj-tags span,
+.timeline-row .proj-tags span {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 5px 12px !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(201, 162, 75, 0.24) !important;
+  color: #D8CBB2 !important;
   font-family: var(--font-mono) !important;
   font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+  line-height: 1.3 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.tl-right .proj-tags span:hover,
+.timeline-row .proj-tags span:hover {
+  background: rgba(201, 162, 75, 0.14) !important;
+  border-color: rgba(201, 162, 75, 0.55) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 10px rgba(201, 162, 75, 0.25) !important;
 }
 
 /* ==========================================================================
@@ -1410,22 +1440,133 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   transform: translateY(-2px) !important;
 }
 
-/* Let's Talk Card */
+/* Let's Talk Card & Mail Button Alignment */
 .lets-talk-card {
   background: var(--stone-base) !important;
   border: 1px solid var(--gold-hairline) !important;
   border-radius: 14px !important;
-  padding: 24px 28px !important;
+  padding: 22px 28px !important;
   margin-top: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+.lets-talk-card .lt-left {
+  flex: 1 1 auto !important;
 }
 
 .lets-talk-card h4 {
   color: var(--marble-primary) !important;
   font-family: var(--font-serif) !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  margin: 0 0 4px 0 !important;
 }
 
 .lets-talk-card p {
   color: var(--marble-secondary) !important;
+  font-size: 0.84rem !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.lt-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 22px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.80rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  border-radius: 999px !important;
+  background: var(--gold-accent) !important;
+  color: var(--stone-deepest) !important;
+  border: 1px solid var(--gold-highlight) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+}
+
+.lt-btn .lt-arrow {
+  display: inline-block !important;
+  font-size: 0.95rem !important;
+  line-height: 1 !important;
+  transition: transform 0.2s ease !important;
+}
+
+.lt-btn:hover {
+  background: var(--gold-highlight) !important;
+  box-shadow: 0 0 20px rgba(232, 139, 58, 0.45), 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+  transform: translateY(-2px) !important;
+  color: var(--stone-deepest) !important;
+}
+
+.lt-btn:hover .lt-arrow {
+  transform: translate(2px, -2px) !important;
+}
+
+/* Hero Orbit Cue Link Alignment */
+.hero-chapter-cue {
+  left: 50% !important;
+  bottom: clamp(30px, 4.5vh, 46px) !important;
+  transform: translateX(-50%) !important;
+  text-align: center !important;
+  z-index: 6 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: auto !important;
+}
+
+.orbit-cue-link {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  color: #E5C378 !important;
+  text-decoration: none !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.16em !important;
+  font-weight: 700 !important;
+  padding: 11px 26px !important;
+  border-radius: 999px !important;
+  background: rgba(14, 13, 12, 0.88) !important;
+  border: 1px solid rgba(201, 162, 75, 0.45) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  pointer-events: auto !important;
+  white-space: nowrap !important;
+}
+
+.orbit-cue-link:hover,
+.orbit-cue-link:focus-visible {
+  background: rgba(201, 162, 75, 0.2) !important;
+  border-color: var(--gold-highlight, #E88B3A) !important;
+  color: #FFFFFF !important;
+  outline: none !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 24px rgba(201, 162, 75, 0.45), 0 6px 20px rgba(0, 0, 0, 0.7) !important;
+}
+
+.orbit-cue-icon {
+  font-size: 1.05rem !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  animation: orbitCueBounce 1.8s ease-in-out infinite !important;
 }
 
 /* Castle Footer Bar */
