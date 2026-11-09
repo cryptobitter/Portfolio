@@ -293,3 +293,202 @@ textarea:focus-visible,
     animation: none !important;
   }
 }
+
+/* ==========================================================================
+   SECTION: #projects (FEATURED PROJECTS & 3D BOOKS SHOWCASE)
+   ========================================================================== */
+.projects-section {
+  background-color: var(--stone-darker) !important;
+  color: var(--marble-primary) !important;
+  position: relative;
+  overflow: hidden;
+  padding: 100px 0 120px !important;
+}
+
+/* Subtle Battlement Top Border */
+.projects-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-hairline-bright) 25%, var(--gold-accent) 50%, var(--gold-hairline-bright) 75%, transparent);
+}
+
+.projects-section .section-header-editorial {
+  border-bottom: 1px solid var(--gold-hairline) !important;
+  padding-bottom: 24px !important;
+  margin-bottom: 36px !important;
+}
+
+.projects-section .section-number {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.18em !important;
+  font-weight: 700 !important;
+}
+
+.projects-section .section-title-serif {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem) !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7) !important;
+}
+
+.projects-section .link-arrow {
+  color: var(--gold-accent) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.12em !important;
+  transition: all 0.25s ease !important;
+}
+.projects-section .link-arrow:hover {
+  color: var(--gold-highlight) !important;
+  text-shadow: 0 0 10px rgba(232, 139, 58, 0.5) !important;
+}
+
+/* 3D Books Showcase Container - Carved Stone Tablet Frame */
+.books-showcase-container {
+  background: var(--stone-deepest) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 18px !important;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.05),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.8),
+    0 24px 60px rgba(0, 0, 0, 0.7) !important;
+}
+
+.bs-hero-word span {
+  color: rgba(237, 232, 223, 0.035) !important;
+  font-family: var(--font-serif) !important;
+  letter-spacing: 0.14em !important;
+  text-shadow: 0 0 40px rgba(0, 0, 0, 0.9) !important;
+}
+
+.bs-nav-bar {
+  background: rgba(23, 21, 19, 0.88) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  color: var(--marble-secondary) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+.bs-nav-title {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-mono) !important;
+  letter-spacing: 0.08em !important;
+}
+.bs-hint-dot {
+  background: var(--gold-accent) !important;
+  box-shadow: 0 0 8px var(--ember-glow) !important;
+}
+
+/* Open Pill Button */
+.bs-open-pill {
+  background: var(--gold-accent) !important;
+  color: var(--stone-deepest) !important;
+  border: 1px solid var(--gold-highlight) !important;
+  font-weight: 700 !important;
+  font-family: var(--font-mono) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+}
+.bs-open-pill:hover {
+  background: var(--gold-highlight) !important;
+  box-shadow: 0 0 20px rgba(232, 139, 58, 0.5) !important;
+}
+
+/* Detail Panel - Carved Stone Tablet */
+.bs-detail-panel {
+  background: rgba(23, 21, 19, 0.95) !important;
+  border: 1px solid var(--gold-hairline-bright) !important;
+  border-radius: 16px !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 24px 60px rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.bs-dp-badge {
+  background: rgba(201, 162, 75, 0.14) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  color: var(--gold-highlight) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.bs-dp-title {
+  color: var(--marble-primary) !important;
+  font-family: var(--font-serif) !important;
+  letter-spacing: 0.02em !important;
+}
+
+.bs-dp-desc {
+  color: var(--marble-secondary) !important;
+  line-height: 1.7 !important;
+}
+
+.bs-dp-author, .bs-dp-year {
+  color: var(--marble-muted) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.bs-star {
+  fill: var(--gold-accent) !important;
+  filter: drop-shadow(0 0 4px rgba(201, 162, 75, 0.5)) !important;
+}
+
+.bs-dp-tag {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  color: var(--marble-secondary) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.bs-btn.bs-btn-primary {
+  background: var(--gold-accent) !important;
+  color: var(--stone-deepest) !important;
+  border: 1px solid var(--gold-highlight) !important;
+  font-weight: 700 !important;
+}
+.bs-btn.bs-btn-primary:hover {
+  background: var(--gold-highlight) !important;
+  box-shadow: 0 0 18px rgba(232, 139, 58, 0.45) !important;
+}
+
+.bs-btn.bs-btn-secondary {
+  background: transparent !important;
+  border: 1px solid var(--gold-hairline-bright) !important;
+  color: var(--marble-primary) !important;
+}
+.bs-btn.bs-btn-secondary:hover {
+  border-color: var(--gold-highlight) !important;
+  color: var(--gold-highlight) !important;
+  box-shadow: 0 0 14px rgba(201, 162, 75, 0.3) !important;
+}
+
+/* Secondary Stone Tablet Project Cards */
+.sec-proj-card, .proj-card-editorial {
+  background: var(--stone-base) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 14px !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.sec-proj-card:hover, .proj-card-editorial:hover {
+  border-color: var(--gold-hairline-bright) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 0 24px rgba(232, 139, 58, 0.18),
+    0 12px 32px rgba(0, 0, 0, 0.65) !important;
+  transform: translateY(-3px) !important;
+}
+
+.sec-proj-card:hover h3,
+.proj-card-editorial:hover .proj-title {
+  color: var(--gold-highlight) !important;
+  text-decoration: underline !important;
+  text-decoration-color: var(--gold-accent) !important;
+  text-underline-offset: 4px !important;
+}

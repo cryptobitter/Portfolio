@@ -221,14 +221,14 @@
       const c = mkCanvas(512, 256),
         x = c.getContext('2d');
       const g = x.createLinearGradient(0, 0, 0, 256);
-      g.addColorStop(0, '#5A463B');
-      g.addColorStop(0.55, '#261812');
-      g.addColorStop(1, '#150C08');
+      g.addColorStop(0, '#2E2A26');
+      g.addColorStop(0.55, '#171513');
+      g.addColorStop(1, '#0E0D0C');
       x.fillStyle = g;
       x.fillRect(0, 0, 512, 256);
-      envBlob(x, 140, 66, 95, '255,255,255', 0.95);
-      envBlob(x, 405, 84, 55, '224,120,75', 0.55);
-      envBlob(x, 256, 150, 120, '200,101,59', 0.32);
+      envBlob(x, 140, 66, 95, '237,232,223', 0.85); // Marble ceiling bounce
+      envBlob(x, 405, 84, 65, '232,139,58', 0.48);  // Warm torchlight ember
+      envBlob(x, 256, 150, 120, '111,143,166', 0.28); // Cool atelier window-light
       const tx = new THREE.CanvasTexture(c);
       tx.mapping = THREE.EquirectangularReflectionMapping;
       const pmrem = new THREE.PMREMGenerator(renderer);
@@ -237,11 +237,11 @@
       pmrem.dispose();
     })();
 
-    // Lighting
-    const hemi = new THREE.HemisphereLight(0xF5F2EC, 0x261812, 0.45);
+    // Lighting (Castle Atelier: Warm key candle/torchlight, cool window-light fill, gold rim)
+    const hemi = new THREE.HemisphereLight(0xEDE8DF, 0x171513, 0.45);
     scene.add(hemi);
 
-    const key = new THREE.DirectionalLight(0xFFFFFF, 0.95);
+    const key = new THREE.DirectionalLight(0xFFE8C4, 1.05);
     key.position.set(3.5, 5, 6);
     key.castShadow = !lowPowerDevice;
     key.shadow.mapSize.set(1024, 1024);
@@ -254,11 +254,11 @@
     key.shadow.bias = -0.0004;
     scene.add(key);
 
-    const fillLight = new THREE.DirectionalLight(0xE0784B, 0.28);
+    const fillLight = new THREE.DirectionalLight(0x6F8FA6, 0.35); // Cool window fill
     fillLight.position.set(-4, 1, 4);
     scene.add(fillLight);
 
-    const rim = new THREE.DirectionalLight(0xFFD4B2, 0.35);
+    const rim = new THREE.DirectionalLight(0xE2C27A, 0.38); // Warm gold rim
     rim.position.set(-2, 3, -5);
     scene.add(rim);
 
