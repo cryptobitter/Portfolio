@@ -18,6 +18,13 @@
       stars: 5,
       desc: "Bilingual (English/Hindi) legal assistant and clause explainer for Indian citizens. Powered by Groq's llama-3.3-70b via FastAPI backend for low-latency guidance, with Supabase Auth & PostgreSQL.",
       tags: ["FastAPI", "Groq API", "Supabase", "PostgreSQL", "Bilingual NLP"],
+      techDetails: {
+        "FastAPI": "Engineered high-throughput async REST endpoints handling legal query ingestion, streaming Groq LLM inferences, and context caching with sub-250ms p95 latency.",
+        "Groq API": "Integrated LLaMA-3.3-70b via Groq's LPUs for near-instantaneous statutory clause translation, simplification, and conversational cross-examination at ~300 tok/sec.",
+        "Supabase": "Implemented secure Row-Level Security (RLS) policies, session token validation, and multi-tenant user consultation history stores.",
+        "PostgreSQL": "Designed normalized relational schema for indexed Indian Penal Code (IPC) and Bharatiya Nyaya Sanhita (BNS) statutes, precedent citations, and audit logs.",
+        "Bilingual NLP": "Engineered prompt pipelines and dialect-aware translation chains preserving nuanced statutory semantics across English and Hindi legal terminology."
+      },
       github: "https://github.com/cryptobitter/nayay-ai-legal-clause-explainer",
       demo: "https://github.com/cryptobitter/nayay-ai-legal-clause-explainer",
       spineBg: "#261812",
@@ -25,7 +32,7 @@
       spineFont: "700 38px 'Playfair Display', Georgia, serif",
       backBg: "#261812",
       backInk: "245,242,236",
-      edge: "#EAE5DB",
+      edge: "#FAF7F2",
       accent: "#C8653B",
       chapters: [
         "Legal Query Ingestion",
@@ -45,6 +52,13 @@
       stars: 5,
       desc: "RAG and LLM system that audits policy decisions and records an immutable audit trail on the blockchain. Verifies institutional compliance while preserving transparent, verifiable decision histories.",
       tags: ["RAG", "LLM", "Blockchain", "FastAPI", "Vector DB"],
+      techDetails: {
+        "RAG": "Architected hybrid Retrieval-Augmented Generation pipeline combining dense vector embeddings with BM25 lexical keyword filtering across institutional policy documentation to eliminate hallucinations.",
+        "LLM": "Orchestrated multi-step reasoning agents that parse compliance statutes, evaluate proposed policy actions, and output structured audit verdicts with citation proofs.",
+        "Blockchain": "Constructed decentralized audit trail recording cryptographic SHA-256 state hashes of every verified decision on-chain for tamper-proof governance transparency.",
+        "FastAPI": "Developed async microservice backend with Pydantic v2 validation, background worker queues for audit processing, and Server-Sent Events (SSE) for live verification updates.",
+        "Vector DB": "Configured low-latency vector similarity indexes with HNSW cosine search for rapid semantic matching of policy clauses, precedent decisions, and statutory citations."
+      },
       github: "https://github.com/cryptobitter/Nirnay",
       demo: "https://github.com/cryptobitter/Nirnay",
       spineBg: "#3E2920",
@@ -52,7 +66,7 @@
       spineFont: "700 40px 'Playfair Display', Georgia, serif",
       backBg: "#3E2920",
       backInk: "245,242,236",
-      edge: "#DFD8CC",
+      edge: "#FAF7F2",
       accent: "#D97706",
       chapters: [
         "Policy Ingestion & RAG",
@@ -72,6 +86,13 @@
       stars: 5,
       desc: "Sole backend engineer on a 5-person team. FastAPI backend on Render with JWT auth & OTP email verification. Feeds X-ray detection models into Grok-generated radiology PDF reports.",
       tags: ["FastAPI", "SQLAlchemy", "Supabase", "ReportLab", "JWT Auth"],
+      techDetails: {
+        "FastAPI": "Sole backend engineer on a 5-person team. Designed scalable async endpoints orchestrating multi-part X-ray uploads, queue dispatch, vision model inferences, and background PDF compilation.",
+        "SQLAlchemy": "Architected async ORM database layer managing patient scan records, radiologist diagnostic annotations, review queues, and audit histories.",
+        "Supabase": "Managed cloud storage buckets for high-resolution medical DICOM and radiographic imagery with secure signed URLs and automated access expiration.",
+        "ReportLab": "Programmed pixel-precise PDF generation engine synthesizing diagnostic imagery, confidence heatmaps, pathology metrics, and formal clinical radiology reports.",
+        "JWT Auth": "Implemented secure bearer authentication with salted bcrypt password hashing, role-based access control (Doctor/Radiologist/Patient), and time-limited OTP email verification."
+      },
       github: "https://github.com/cryptobitter/FRACTOES",
       demo: "https://github.com/cryptobitter/FRACTOES",
       spineBg: "#C8653B",
@@ -79,7 +100,7 @@
       spineFont: "700 38px 'Playfair Display', Georgia, serif",
       backBg: "#A0522D",
       backInk: "255,255,255",
-      edge: "#F5F2EC",
+      edge: "#FAF7F2",
       accent: "#E0784B",
       chapters: [
         "X-Ray Preprocessing",
@@ -545,11 +566,7 @@
       return t + '...';
     }
 
-    function makeIndexPageTex(cfg) {
-      const w = 2048,
-        h = 3072,
-        c = mkCanvas(w, h),
-        x = c.getContext('2d');
+    function paintIndexPage(x, w, h, cfg, highlightTech) {
       const sc = w / 1024;
       x.save();
       x.scale(sc, sc);
@@ -610,6 +627,19 @@
         const n = String(i + 1).padStart(2, '0');
         const pageNo = String(10 + i * 15).padStart(3, ' ');
         const leftTitle = trimToWidth(x, list[i], 490);
+        const isMatched = highlightTech && (
+          list[i].toLowerCase().includes(highlightTech.toLowerCase()) ||
+          highlightTech.toLowerCase().includes(list[i].split(' ')[0].toLowerCase())
+        );
+
+        if (isMatched) {
+          x.fillStyle = 'rgba(201, 162, 75, 0.18)';
+          rr(x, 240, y - 36, 700, 52, 6);
+          x.fill();
+          x.strokeStyle = cfg.accent || '#C8653B';
+          x.lineWidth = 1.5;
+          x.stroke();
+        }
 
         // Chapter number
         x.textAlign = 'left';
@@ -619,7 +649,7 @@
 
         // Chapter title
         x.fillStyle = '#1A1614';
-        x.font = "600 34px 'Plus Jakarta Sans', sans-serif";
+        x.font = (isMatched ? "700 34px" : "600 34px") + " 'Plus Jakarta Sans', sans-serif";
         x.fillText(leftTitle, 315, y);
 
         // Page number
@@ -636,7 +666,16 @@
       }
 
       x.restore();
-      return tex(c);
+    }
+
+    function makeIndexPageTex(cfg) {
+      const w = 2048,
+        h = 3072,
+        c = mkCanvas(w, h);
+      paintIndexPage(c.getContext('2d'), w, h, cfg, null);
+      const t = tex(c);
+      t.needsUpdate = true;
+      return { canvas: c, texture: t };
     }
 
     // Geometry parameters
@@ -684,8 +723,9 @@
       rootG.add(float);
       bookRoot.add(rootG);
 
+      const { canvas: indexCanvas, texture: indexTex } = makeIndexPageTex(cfg);
       const indexPageMat = std({
-        map: makeIndexPageTex(cfg),
+        map: indexTex,
         roughness: 0.92,
         envMapIntensity: 0.2,
         side: THREE.DoubleSide
@@ -751,9 +791,8 @@
         pp.add(pm);
         float.add(pp);
         pages.push(pp);
-        // Page 0 (index page) stays nearly flat against the page block for pristine legibility
-        const factor = i === 0 ? 0.06 : 0.3 * Math.pow(1 - i / PAGE_N, 2.6);
-        pageF.push(factor);
+        // All front pages remain flat on the block: 0 rotation so page 0 is NEVER covered!
+        pageF.push(0);
       }
 
       const pagesB = [],
@@ -815,6 +854,8 @@
         pageF,
         pagesB,
         pageFB,
+        indexCanvas,
+        indexTex,
         hit,
         springs,
         phase: Math.random() * 6.28,
@@ -1062,21 +1103,91 @@
     const openBtn = document.getElementById('booksOpenBtn');
     const closeBtn = document.getElementById('booksCloseBtn');
 
+    let activeTech = null;
+
+    function showTechDetail(cfg, tag) {
+      if (!dpDesc) return;
+      const detail = (cfg.techDetails && cfg.techDetails[tag]) || `Engineered ${tag} integration for high-performance production workflows in ${cfg.title}.`;
+      
+      dpDesc.style.opacity = '0';
+      dpDesc.style.transform = 'translateY(4px)';
+      
+      setTimeout(() => {
+        dpDesc.innerHTML = `<span class="bs-tech-highlight-badge"><span class="bs-tech-dot"></span>TECH SPOTLIGHT: ${tag}</span><span class="bs-tech-desc-text">${detail}</span><button type="button" class="bs-tech-reset-btn" aria-label="Show project overview">← Back to Project Overview</button>`;
+        
+        const resetBtn = dpDesc.querySelector('.bs-tech-reset-btn');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetTechDetail(cfg);
+          });
+        }
+        
+        dpDesc.style.opacity = '1';
+        dpDesc.style.transform = 'translateY(0)';
+      }, 140);
+
+      // Synchronously highlight matching module on the open 3D book page!
+      if (state.selected && state.selected.indexCanvas && state.selected.indexTex) {
+        paintIndexPage(state.selected.indexCanvas.getContext('2d'), 2048, 3072, state.selected.cfg, tag);
+        state.selected.indexTex.needsUpdate = true;
+      }
+    }
+
+    function resetTechDetail(cfg) {
+      activeTech = null;
+      if (dpTags) {
+        dpTags.querySelectorAll('.bs-dp-tag').forEach((t) => t.classList.remove('is-active'));
+      }
+      if (!dpDesc) return;
+      dpDesc.style.opacity = '0';
+      dpDesc.style.transform = 'translateY(4px)';
+      setTimeout(() => {
+        dpDesc.textContent = cfg.desc;
+        dpDesc.style.opacity = '1';
+        dpDesc.style.transform = 'translateY(0)';
+      }, 140);
+
+      if (state.selected && state.selected.indexCanvas && state.selected.indexTex) {
+        paintIndexPage(state.selected.indexCanvas.getContext('2d'), 2048, 3072, state.selected.cfg, null);
+        state.selected.indexTex.needsUpdate = true;
+      }
+    }
+
     function updateDetailUI(cfg) {
       if (!cfg) return;
+      activeTech = null;
       if (dpCategory) dpCategory.textContent = cfg.badge;
       if (dpTitle) dpTitle.textContent = cfg.title;
-      if (dpDesc) dpDesc.textContent = cfg.desc;
+      if (dpDesc) {
+        dpDesc.textContent = cfg.desc;
+        dpDesc.style.opacity = '1';
+        dpDesc.style.transform = 'translateY(0)';
+      }
       if (dpAuthor) dpAuthor.textContent = cfg.author;
       if (dpYear) dpYear.textContent = cfg.year;
 
       if (dpTags) {
         dpTags.innerHTML = '';
         (cfg.tags || []).forEach((tag) => {
-          const s = document.createElement('span');
-          s.className = 'bs-dp-tag';
-          s.textContent = tag;
-          dpTags.appendChild(s);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'bs-dp-tag';
+          btn.setAttribute('aria-label', `View ${tag} implementation details`);
+          btn.textContent = tag;
+          
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (activeTech === tag) {
+              resetTechDetail(cfg);
+            } else {
+              activeTech = tag;
+              dpTags.querySelectorAll('.bs-dp-tag').forEach((t) => t.classList.remove('is-active'));
+              btn.classList.add('is-active');
+              showTechDetail(cfg, tag);
+            }
+          });
+          dpTags.appendChild(btn);
         });
       }
 
@@ -1487,9 +1598,9 @@
       b.pivot.rotation.y = -s.cover.v;
       b.backPivot.rotation.y = s.coverB.v;
 
-      const peel = inDetail ? s.cover.v / DETAIL_OPEN_ANGLE : s.cover.v;
+      // Front pages stay flat so index page 0 is 100% visible
       b.pages.forEach((pp, i) => {
-        pp.rotation.y = -peel * b.pageF[i];
+        pp.rotation.y = 0;
       });
       b.pagesB.forEach((pp, i) => {
         pp.rotation.y = s.coverB.v * b.pageFB[i];

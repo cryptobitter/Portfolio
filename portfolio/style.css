@@ -1323,6 +1323,9 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   padding: 4px 12px;
   border-radius: 9999px;
   backdrop-filter: blur(8px);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .bs-dp-actions {
