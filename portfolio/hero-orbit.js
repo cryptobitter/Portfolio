@@ -41,6 +41,9 @@
   let ctx = null;
   let heroOrbitStage = null;
   let heroSection = null;
+  let fgCanvas = null;
+  let fgCtx = null;
+  let fgImg = null;
 
   // DOM Chapter Elements
   let elWordmark = null;
@@ -115,6 +118,30 @@
   /**
    * Resize canvas taking into account devicePixelRatio (capped at 2)
    */
+  /**
+   * Draw the transparent statue cutout on the foreground canvas (above wordmark)
+   */
+  function drawFgStatue() {
+    if (!fgCtx || !fgCanvas || !fgImg || !fgImg.complete || !fgImg.naturalWidth) return;
+
+    const cw = fgCanvas.width;
+    const ch = fgCanvas.height;
+    const iw = fgImg.naturalWidth || manifest.width;
+    const ih = fgImg.naturalHeight || manifest.height;
+
+    const scale = Math.max(cw / iw, ch / ih);
+    const drawW = iw * scale;
+    const drawH = ih * scale;
+    const drawX = (cw - drawW) / 2;
+    const drawY = (ch - drawH) / 2;
+
+    fgCtx.clearRect(0, 0, cw, ch);
+    fgCtx.drawImage(fgImg, drawX, drawY, drawW, drawH);
+  }
+
+  /**
+   * Resize canvases taking into account devicePixelRatio (capped at 2)
+   */
   function resizeCanvas() {
     if (!canvas || !heroOrbitStage) return;
 
@@ -123,8 +150,20 @@
     const w = rect.width || window.innerWidth;
     const h = rect.height || window.innerHeight;
 
-    canvas.width = Math.round(w * dpr);
-    canvas.height = Math.round(h * dpr);
+    const pw = Math.round(w * dpr);
+    const ph = Math.round(h * dpr);
+
+    canvas.width = pw;
+    canvas.height = ph;
+
+    if (fgCanvas) {
+      fgCanvas.width = pw;
+      fgCanvas.height = ph;
+      if (fgCtx) {
+        fgCtx.imageSmoothingEnabled = true;
+        fgCtx.imageSmoothingQuality = 'high';
+      }
+    }
 
     if (ctx) {
       ctx.imageSmoothingEnabled = true;
@@ -132,6 +171,7 @@
     }
 
     drawFrame(renderedFrameIndex >= 0 ? renderedFrameIndex : manifest.frontFrameIndex, true);
+    drawFgStatue();
   }
 
   /**
@@ -154,6 +194,18 @@
       } else {
         elWordmark.style.opacity = '0';
         elWordmark.style.pointerEvents = 'none';
+      }
+    }
+
+    // Foreground statue cutout (above wordmark) matches wordmark visibility
+    if (fgCanvas) {
+      if (p <= 0.10) {
+        fgCanvas.style.opacity = '1';
+      } else if (p <= 0.20) {
+        const t = norm(p, 0.10, 0.20);
+        fgCanvas.style.opacity = String((1 - t).toFixed(3));
+      } else {
+        fgCanvas.style.opacity = '0';
       }
     }
 
@@ -337,15 +389,15 @@
 
     window.gsap.registerPlugin(window.ScrollTrigger);
 
-    // Pin the hero section stage for 400vh
+    // Pin the hero section firmly at the top for 400vh
     window.ScrollTrigger.create({
       trigger: heroSection,
       start: 'top top',
       end: '+=400%',
-      pin: heroOrbitStage,
+      pin: true,
       pinSpacing: true,
       anticipatePin: 1,
-      scrub: true,
+      scrub: 0.15,
       onUpdate: (self) => {
         handleOrbitScroll(self.progress);
       }
@@ -362,10 +414,14 @@
     heroSection = document.getElementById('hero');
     heroOrbitStage = document.getElementById('heroOrbitStage');
     canvas = document.getElementById('heroOrbitCanvas');
+    fgCanvas = document.getElementById('heroOrbitFgCanvas');
 
     if (!heroSection || !heroOrbitStage || !canvas) return;
 
     ctx = canvas.getContext('2d');
+    if (fgCanvas) fgCtx = fgCanvas.getContext('2d');
+
+
     prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     isMobile = window.innerWidth < 768;
 
@@ -399,6 +455,13 @@
         // Continue to fallback
       }
     }
+
+    // Load foreground statue cutout (placed in front of PORTFOLIO wordmark)
+    fgImg = new Image();
+    fgImg.src = framesBaseDir + (manifest.statueCutout || 'statue_cutout.webp');
+    fgImg.onload = () => {
+      drawFgStatue();
+    };
 
     // Load FRONT frame (poster) immediately!
     const frontIndex = manifest.frontFrameIndex !== undefined ? manifest.frontFrameIndex : 120;

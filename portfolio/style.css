@@ -59,7 +59,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto; /* Required for GSAP ScrollTrigger */
   font-size: 16px;
 }
 
@@ -2968,13 +2968,41 @@ body.intro-complete footer {
   display: block;
 }
 
+/* Foreground statue cutout - Layered in front of PORTFOLIO wordmark */
+.hero-orbit-canvas-fg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 3;
+  pointer-events: none;
+  display: block;
+  transition: opacity 0.15s ease-out;
+}
+
+/* Big Editorial Wordmark "PORTFOLIO" (Layered BEHIND statue, in front of background) */
+.hero-wordmark-wrap {
+  position: absolute;
+  top: var(--portfolio-word-offset);
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+}
+
 /* Subtle Vignette Scrim over Canvas edges */
 .hero-orbit-scrim {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 50%, rgba(10, 11, 14, 0.1) 40%, rgba(10, 11, 14, 0.65) 90%, rgba(10, 11, 14, 0.95) 100%);
+  background: radial-gradient(circle at 50% 50%, rgba(10, 11, 14, 0.08) 40%, rgba(10, 11, 14, 0.6) 88%, rgba(10, 11, 14, 0.95) 100%);
 }
 
 /* Bottom gradient fade into page */
@@ -2984,7 +3012,7 @@ body.intro-complete footer {
   left: 0;
   right: 0;
   height: 180px;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
   background: linear-gradient(180deg, transparent 0%, rgba(10, 11, 14, 0.75) 55%, #121824 100%);
 }
@@ -3001,21 +3029,6 @@ body.intro-complete footer {
   box-sizing: border-box;
   pointer-events: none;
   z-index: 5;
-}
-
-/* Big Editorial Wordmark "PORTFOLIO" (Pale Stone) */
-.hero-wordmark-wrap {
-  position: absolute;
-  top: var(--portfolio-word-offset);
-  left: 0;
-  right: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 4;
-  pointer-events: none;
-  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
 }
 
 .hero-wordmark-text {
@@ -3068,59 +3081,107 @@ body.intro-complete footer {
   -webkit-backdrop-filter: blur(14px);
 }
 
-/* Chapter 1: Intro Card */
+/* Chapter 1: Airy Editorial Layout (Cleanly separated, not a crowded ID card) */
 .hero-chapter-intro {
-  left: 4vw;
-  bottom: 80px;
-  max-width: 460px;
+  left: clamp(20px, 4vw, 56px);
+  bottom: clamp(35px, 6vh, 75px);
+  max-width: 480px;
   width: calc(100% - 8vw);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.intro-card {
-  padding: 28px 32px;
+.intro-identity-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.intro-card .hero-greeting {
+.hero-greeting-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.greeting-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hero-gold-accent);
+  box-shadow: 0 0 8px rgba(197, 160, 89, 0.8);
+}
+
+.hero-chapter-intro .hero-greeting {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
   color: var(--hero-gold-accent);
-  margin-bottom: 6px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0;
 }
 
-.intro-card .hero-name {
+.hero-chapter-intro .hero-name {
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  font-size: clamp(2.2rem, 4.4vw, 3.2rem);
   font-weight: 900;
-  line-height: 1.05;
-  color: #FFF;
-  margin-bottom: 8px;
-  letter-spacing: -0.01em;
+  line-height: 1.02;
+  color: #FFFFFF;
+  margin: 4px 0 6px 0;
+  letter-spacing: -0.015em;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
 }
 
-.intro-card .hero-tagline {
+.hero-tagline-badge {
+  display: inline-block;
+  align-self: flex-start;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
   font-weight: 700;
   color: var(--hero-gold-accent);
-  margin-bottom: 14px;
+  padding: 4px 10px;
+  background: rgba(197, 160, 89, 0.12);
+  border: 1px solid rgba(197, 160, 89, 0.32);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.intro-card .hero-description {
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: #D2CEC5;
-  margin-bottom: 18px;
+.intro-bio-group {
+  position: relative;
+  max-width: 440px;
 }
 
-.intro-card .hero-signature {
+.intro-bio-group .hero-description {
+  font-size: 0.90rem;
+  line-height: 1.68;
+  color: #E2DDD3;
+  margin: 0;
+  padding: 14px 18px;
+  background: rgba(10, 12, 16, 0.68);
+  border-left: 2px solid var(--hero-gold-accent);
+  border-radius: 0 12px 12px 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.intro-footer-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.intro-footer-group .hero-signature {
   font-family: 'Playfair Display', Georgia, serif;
   font-style: italic;
   font-size: 1.55rem;
   color: var(--hero-gold-accent);
-  margin-bottom: 22px;
+  margin: 0;
   opacity: 0.95;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
 }
 
 .btn-orbit-gold {

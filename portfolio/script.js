@@ -764,9 +764,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactEl  = document.getElementById('contact');
 
     let isLight = false;
-    // 01. Hero (White / Warm Cream)
+    // 01. Hero (Dark Stone & Marble)
     if (!projectsEl || scrollY < projectsEl.offsetTop) {
-      isLight = true;
+      isLight = false;
     }
     // 02. Projects (Dark Roasted Coffee)
     else if (processEl && scrollY >= projectsEl.offsetTop && scrollY < processEl.offsetTop) {
@@ -973,7 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.registerPlugin(ScrollTrigger);
 
       // Section Depth Parallax
-      const sections = document.querySelectorAll('section');
+      const sections = document.querySelectorAll('section:not(#hero)');
       sections.forEach(sec => {
         gsap.fromTo(sec, 
           { opacity: 0.94, y: 30 },

@@ -66,33 +66,45 @@
 <section class="hero-orbit-section" id="hero">
   <!-- Pinned 400vh Stage -->
   <div class="hero-orbit-stage" id="heroOrbitStage">
-    <!-- Marble Warrior-King Statue Canvas -->
+    <!-- 1. Background Marble Warrior-King Statue Canvas -->
     <canvas id="heroOrbitCanvas" class="hero-orbit-canvas" role="img" aria-label="Cinematic 3D orbit of marble warrior-king statue"></canvas>
     
-    <!-- Dark Vignette Scrim & Bottom Gradient Transition -->
+    <!-- 2. Big Editorial Wordmark "PORTFOLIO" (Layered BEHIND the marble statue) -->
+    <div class="hero-wordmark-wrap" id="heroWordmarkWrap">
+      <h1 class="hero-wordmark-text">PORTFOLIO</h1>
+      <div class="hero-project-bubble">
+        <span>Get a project in mind? &#128161;</span>
+      </div>
+    </div>
+
+    <!-- 3. Foreground Statue Cutout Canvas (Layered ABOVE PORTFOLIO wordmark) -->
+    <canvas id="heroOrbitFgCanvas" class="hero-orbit-canvas hero-orbit-canvas-fg" aria-hidden="true"></canvas>
+
+    <!-- 4. Dark Vignette Scrim & Bottom Gradient Transition -->
     <div class="hero-orbit-scrim" aria-hidden="true"></div>
     <div class="hero-orbit-fade-bottom" aria-hidden="true"></div>
 
-    <!-- Pinned Content Layers (Chapters 0.00 to 1.00) -->
+    <!-- 5. Pinned Content Layers (Chapters 0.00 to 1.00) -->
     <div class="hero-orbit-content-wrap">
       
-      <!-- Big Editorial Wordmark "PORTFOLIO" (Fades out by p = 0.20) -->
-      <div class="hero-wordmark-wrap" id="heroWordmarkWrap">
-        <h1 class="hero-wordmark-text">PORTFOLIO</h1>
-        <div class="hero-project-bubble">
-          <span>Get a project in mind? &#128161;</span>
-        </div>
-      </div>
-
-      <!-- Chapter 1 (0.00 - 0.20): Name, Role, Bio, Signature & Buttons -->
+      <!-- Chapter 1 (0.00 - 0.20): Airy Editorial Identity, Separated Bio & Buttons -->
       <div class="hero-chapter hero-chapter-intro" id="heroChapterIntro">
-        <div class="hero-scrim-card intro-card">
-          <p class="hero-greeting">HELLO, I'M</p>
+        <div class="intro-identity-group">
+          <div class="hero-greeting-pill">
+            <span class="greeting-dot"></span>
+            <span class="hero-greeting">HELLO, I'M</span>
+          </div>
           <h2 class="hero-name">ADITYA<br>RAJPUT</h2>
-          <p class="hero-tagline">FULL STACK &amp; AI ENGINEER</p>
+          <div class="hero-tagline-badge">FULL STACK &amp; AI ENGINEER</div>
+        </div>
+
+        <div class="intro-bio-group">
           <p class="hero-description">
             I engineer AI-powered systems, LLM pipelines, and high-performance asynchronous backends that blend robust system architecture, speed, and engineering precision.
           </p>
+        </div>
+
+        <div class="intro-footer-group">
           <div class="hero-signature">Aditya Rajput</div>
           <div class="hero-action-row">
             <a href="#projects" class="btn-editorial btn-orbit-gold">SEE FEATURED WORK <span class="arrow">→</span></a>
