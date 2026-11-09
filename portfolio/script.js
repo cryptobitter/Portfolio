@@ -757,6 +757,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const navHeader = document.querySelector('.nav-header');
   function updateNavTheme() {
     if (!navHeader) return;
+    if (window.scrollY > 40) {
+      navHeader.classList.add('nav-scrolled');
+    } else {
+      navHeader.classList.remove('nav-scrolled');
+    }
     const scrollY = window.scrollY + 60;
     const projectsEl = document.getElementById('projects');
     const processEl  = document.getElementById('process');
