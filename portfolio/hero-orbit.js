@@ -1,31 +1,33 @@
 /**
  * ============================================================================
- * HERO ORBIT: STEP-BY-STEP SCROLLING, SUPER-RESOLUTION & LIVING CASTLE TORCHES
+ * HERO ORBIT: FIXED-PIN STEP SCROLLING, TRANSLUCENT TORCHES & ALIGNED TYPOGRAPHY
  * ============================================================================
  * 
- * 1. STEP SCROLLING (3 Stations):
- *    - Station 1 FRONT (frame 120): Wordmark, Name, Role, Bio, Actions.
- *    - Station 2 PROFILE (frame 49): Three System Architecture Pillars card.
- *    - Station 3 BACK (frame 0): "Scroll to see my work" cue.
- *    - One scroll gesture (wheel, swipe, keys) initiates time-based move (1.5s).
- *    - Frame blending (frac interpolation) for silky smooth transitions.
- *    - Boundary handoff: Station 3 down releases pin to #projects.
- *      Scrolling up into hero lands on Station 3 and steps back through 2 and 1.
+ * 1. OPTION A: FIXED SCROLL-TRACK PIN WITH STEP TWEENING:
+ *    - Pinned for 200vh (PIN_DISTANCE = innerHeight * 2).
+ *    - The hero section stays 100% frozen on screen (y = 0) with zero jitter.
+ *    - Station 1 FRONT (progress 0.0) -> Station 2 PROFILE (0.5) -> Station 3 BACK (1.0).
+ *    - User gestures (wheel, touch swipe, keys) are intercepted with non-passive
+ *      listeners (preventDefault: true) and tween the scroll position over ~1.5s.
+ *    - At Station 3, the NEXT downward gesture releases the pin into #projects.
+ *    - Scrolling back up from #projects re-enters at Station 3 and steps back.
+ *    - Scrollbar drag, anchor links, and station step dots remain in perfect sync.
  * 
- * 2. SHARPER 2560x1440 SUPER-RESOLUTION:
- *    - Rendered on high-DPI canvas backing store (CSS size x min(DPR, 2)).
- *    - ctx.imageSmoothingEnabled = true, imageSmoothingQuality = 'high'.
- *    - Async decode with createImageBitmap when supported.
- *    - Solid 2560x1440 statue cutout on foreground canvas.
+ * 2. REALISTIC TRANSLUCENT PARTICLE TORCHES:
+ *    - Additive blending (globalCompositeOperation = 'lighter').
+ *    - 40 soft particles per torch rising and shrinking with noise-driven sway.
+ *    - Color by age: white-yellow core -> golden yellow -> warm ember -> deep red -> 0.
+ *    - Dimming sconce backing so baked-in KlingAI white blobs never show through.
+ *    - Soft warm halo with organic random flicker (subtle to keep left text readable).
+ *    - 3-4 tiny bright golden sparks per torch.
  * 
- * 3. LIVING PROCEDURAL TORCHES:
- *    - Reads interpolated flame coordinates from torchTracks.json.
- *    - Sconce backing to cover baked KlingAI white blobs.
- *    - Independent phase/frequency procedural flames (8-15 Hz).
- *    - Ambient radial wall glow pulsing subtly with torch flicker.
- *    - Rising ember sparks + floating ambient room dust motes.
- *    - Auto-pauses offscreen via IntersectionObserver.
- *    - Static fallback under prefers-reduced-motion.
+ * 3. TYPOGRAPHY & STATUE POSITIONING:
+ *    - Statue rendered with dynamic vertical offset calculated from wordmark bottom
+ *      so crown tips only touch the bottom ~18% of the wordmark letters.
+ *    - The letter "F" and all 9 letters of PORTFOLIO are 100% unobstructed.
+ *    - Wordmark sits >= 20px below top navigation bar.
+ *    - Tech chips stay > 30px clear from all text blocks.
+ *    - "Get a project in mind?" bubble moved next to the action buttons.
  */
 (function () {
   'use strict';
@@ -39,18 +41,18 @@
       { id: 'side',  frame: 49,  label: '02. PROFILE', title: 'System Architecture & Capabilities' },
       { id: 'back',  frame: 0,   label: '03. BACK', title: 'Featured Projects & Work' }
     ],
-    moveDuration: 1500,        // Step move transition duration in ms (1.4s - 1.8s)
-    cooldown: 300,             // Cooldown after move to swallow trackpad inertia (ms)
-    flameIntensity: 1.0,       // Torch flame intensity multiplier (0.0 = off, 1.0 = standard, 1.5 = roaring)
-    emberCount: 8,             // Rising ember sparks per torch
-    moteCount: 20,             // Subtle floating ambient room dust motes
-    wheelThreshold: 20,        // Minimum wheel deltaY to trigger station step
-    touchThreshold: 35         // Minimum touch swipe deltaY to trigger station step
+    moveDuration: 1.5,         // Step move tween duration in seconds (GSAP)
+    cooldownMs: 300,           // Inertia swallow cooldown after tween in ms
+    flameIntensity: 1.0,       // Torch flame intensity multiplier
+    particleCount: 40,         // Translucent flame particles per torch
+    emberCount: 4,             // Tiny rising sparks per torch
+    wheelThreshold: 18,        // Minimum wheel deltaY to trigger station step
+    touchThreshold: 30         // Minimum touch swipe deltaY to trigger station step
   };
 
   const ROLE_LABEL = 'FULL STACK & AI ENGINEER';
 
-  // DOM Elements Cache
+  // DOM Elements
   let heroSection = null;
   let heroOrbitStage = null;
   let canvas = null;
@@ -87,39 +89,31 @@
     backFrameIndex: 0
   };
   let torchTracks = [];
+  let heroScrollTrigger = null;
   let currentStationIndex = 0;
   let currentFrameFloat = CONFIG.stations[0].frame;
-  let isMoving = false;
-  let moveStartTime = 0;
-  let moveStartFrame = CONFIG.stations[0].frame;
-  let moveEndFrame = CONFIG.stations[0].frame;
-  let moveFromStation = 0;
-  let moveToStationTarget = 0;
-  let lastMoveEndTime = 0;
+  let isTweening = false;
+  let lastTweenEndTime = 0;
   let isHeroActive = true;
   let isMobile = false;
   let prefersReducedMotion = false;
   let framesBaseDir = 'frames/';
+  let pinDistance = 1600; // Calculated dynamically from window.innerHeight * 2
 
   // Frame Cache
   const loadedFrames = new Map();
   const bitmapCache = new Map();
   const pendingRequests = new Set();
 
-  // Easing function: cubic ease-in-out
-  function easeInOutCubic(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  }
   const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
 
-  // Determine frame URL
+  // Frame URL builder
   function getFrameUrl(index) {
     const frameNum = index + 1; // 1-based (frame_0001.webp .. frame_0121.webp)
     const padded = String(frameNum).padStart(manifest.digits || 4, '0');
     return `${framesBaseDir}${manifest.prefix || 'frame_'}${padded}.${manifest.format || 'webp'}`;
   }
 
-  // Retrieve cached image or bitmap
   function getFrameDrawable(index) {
     if (bitmapCache.has(index)) return bitmapCache.get(index);
     if (loadedFrames.has(index)) return loadedFrames.get(index);
@@ -143,7 +137,7 @@
     return bestDrawable;
   }
 
-  // Load a single frame with async createImageBitmap decode where possible
+  // Load single frame with async bitmap decode
   function loadSingleFrame(index, priority = false) {
     if (index < 0 || index >= manifest.frameCount) return;
     if (loadedFrames.has(index) || pendingRequests.has(index)) return;
@@ -160,17 +154,17 @@
         createImageBitmap(img)
           .then((bmp) => {
             bitmapCache.set(index, bmp);
-            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isMoving) {
+            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
               renderBlendedFrame(currentFrameFloat);
             }
           })
           .catch(() => {
-            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isMoving) {
+            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
               renderBlendedFrame(currentFrameFloat);
             }
           });
       } else {
-        if (Math.abs(currentFrameFloat - index) <= 1.0 && !isMoving) {
+        if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
           renderBlendedFrame(currentFrameFloat);
         }
       }
@@ -180,7 +174,26 @@
     };
   }
 
-  // Draw single image cover-fit with crown preserved
+  // ============================================================================
+  // STATUE RENDERING: PRECISE DOWNWARD OFFSET FOR CLEAR LETTER "F"
+  // ============================================================================
+  function getStatueDownOffset(ch, drawH) {
+    if (elWordmark && heroOrbitStage) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const stageRect = heroOrbitStage.getBoundingClientRect();
+      const wordmarkRect = elWordmark.getBoundingClientRect();
+      if (wordmarkRect && wordmarkRect.height > 10) {
+        const wordmarkBottomCanvas = (wordmarkRect.bottom - stageRect.top) * dpr;
+        const wordmarkHeightCanvas = wordmarkRect.height * dpr;
+        // Crown tip touches only the bottom ~17-18% of the wordmark letters
+        const targetCrownY = wordmarkBottomCanvas - (wordmarkHeightCanvas * 0.18);
+        const unshiftedCrownY = (drawH > ch ? 0 : (ch - drawH) / 2) + (0.043 * drawH);
+        return Math.max(0, targetCrownY - unshiftedCrownY);
+      }
+    }
+    return ch * 0.138;
+  }
+
   function drawImageCover(targetCtx, targetCanvas, img) {
     const cw = targetCanvas.width;
     const ch = targetCanvas.height;
@@ -190,12 +203,15 @@
     const drawW = iw * scale;
     const drawH = ih * scale;
     const drawX = (cw - drawW) / 2;
-    const drawY = drawH > ch ? 0 : (ch - drawH) / 2;
+
+    const statueDownOffset = getStatueDownOffset(ch, drawH);
+    const drawY = (drawH > ch ? 0 : (ch - drawH) / 2) + statueDownOffset;
+
     targetCtx.drawImage(img, drawX, drawY, drawW, drawH);
     return { drawX, drawY, drawW, drawH, scale };
   }
 
-  // Render blended frames for fractional intermediate progress
+  // Blended frame rendering for intermediate fractional positions
   function renderBlendedFrame(frameFloat) {
     if (!ctx || !canvas) return;
     const clamped = clamp(frameFloat, 0, manifest.frameCount - 1);
@@ -227,7 +243,7 @@
     drawImageCover(fgCtx, fgCanvas, fgImg);
   }
 
-  // Resize canvases taking DPR into account
+  // Canvas buffer resize matching DPR
   function resizeAllCanvases() {
     if (!heroOrbitStage || !canvas) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -255,56 +271,67 @@
     drawFgStatue();
   }
 
-  // Update chapter text, pillars, and cue opacities
-  function updateStationChapters(stationIdx, transitionProgress = 1.0, isExiting = false) {
+  // ============================================================================
+  // CHAPTER REVEALS & STATION DOTS
+  // ============================================================================
+  function updateChaptersFromProgress(p) {
+    // p is 0.0 to 1.0 across the entire 200vh pin
+    // Station 1: p = 0.00 to 0.18
+    // Station 2: p = 0.40 to 0.60
+    // Station 3: p = 0.85 to 1.00
+
     // Station 1: Intro & Wordmark
     if (elWordmark && elChapterIntro) {
-      let opacity = 0;
-      if (stationIdx === 0 && !isExiting) {
-        opacity = transitionProgress;
-      } else if (stationIdx === 0 && isExiting) {
-        opacity = 1 - transitionProgress;
-      }
-      elWordmark.style.opacity = String(opacity.toFixed(3));
-      elChapterIntro.style.opacity = String(opacity.toFixed(3));
-      elWordmark.style.pointerEvents = opacity > 0.6 ? 'auto' : 'none';
-      elChapterIntro.classList.toggle('interactive', opacity > 0.6);
+      const s1Exit = clamp((p - 0.08) / 0.15, 0, 1);
+      const s1Opacity = 1 - s1Exit;
+      elWordmark.style.opacity = String(s1Opacity.toFixed(3));
+      elChapterIntro.style.opacity = String(s1Opacity.toFixed(3));
+      elWordmark.style.pointerEvents = s1Opacity > 0.6 ? 'auto' : 'none';
+      elChapterIntro.classList.toggle('interactive', s1Opacity > 0.6);
       if (fgCanvas) {
-        fgCanvas.style.opacity = String(opacity.toFixed(3));
+        fgCanvas.style.opacity = String(s1Opacity.toFixed(3));
       }
     }
 
     // Station 2: Three Pillars Card
     if (elChapterFeatures) {
-      let opacity = 0;
-      if (stationIdx === 1 && !isExiting) {
-        opacity = transitionProgress;
-      } else if (stationIdx === 1 && isExiting) {
-        opacity = 1 - transitionProgress;
-      }
-      elChapterFeatures.style.opacity = String(opacity.toFixed(3));
-      elChapterFeatures.classList.toggle('interactive', opacity > 0.6);
-      
-      // Staggered pillars reveal
-      if (elPillar1) elPillar1.style.opacity = String(Math.min(1, opacity * 1.3).toFixed(3));
-      if (elPillar2) elPillar2.style.opacity = String(Math.min(1, Math.max(0, (opacity - 0.2) * 1.3)).toFixed(3));
-      if (elPillar3) elPillar3.style.opacity = String(Math.min(1, Math.max(0, (opacity - 0.4) * 1.3)).toFixed(3));
+      const s2Enter = clamp((p - 0.35) / 0.12, 0, 1);
+      const s2Exit = clamp((p - 0.62) / 0.12, 0, 1);
+      const s2Opacity = s2Enter * (1 - s2Exit);
+      elChapterFeatures.style.opacity = String(s2Opacity.toFixed(3));
+      elChapterFeatures.classList.toggle('interactive', s2Opacity > 0.6);
+
+      if (elPillar1) elPillar1.style.opacity = String(Math.min(1, s2Opacity * 1.3).toFixed(3));
+      if (elPillar2) elPillar2.style.opacity = String(Math.min(1, Math.max(0, (s2Opacity - 0.2) * 1.3)).toFixed(3));
+      if (elPillar3) elPillar3.style.opacity = String(Math.min(1, Math.max(0, (s2Opacity - 0.4) * 1.3)).toFixed(3));
+    }
+
+    // Floating tech chips
+    if (elChapterChips) {
+      const chipsEnter = clamp((p - 0.40) / 0.10, 0, 1);
+      const chipsExit = clamp((p - 0.70) / 0.12, 0, 1);
+      const chipsOpacity = chipsEnter * (1 - chipsExit);
+      elChapterChips.style.opacity = String(chipsOpacity.toFixed(3));
     }
 
     // Station 3: Cue Link
     if (elChapterCue) {
-      let opacity = 0;
-      if (stationIdx === 2 && !isExiting) {
-        opacity = transitionProgress;
-      } else if (stationIdx === 2 && isExiting) {
-        opacity = 1 - transitionProgress;
-      }
-      elChapterCue.style.opacity = String(opacity.toFixed(3));
-      elChapterCue.classList.toggle('interactive', opacity > 0.6);
+      const s3Enter = clamp((p - 0.82) / 0.14, 0, 1);
+      elChapterCue.style.opacity = String(s3Enter.toFixed(3));
+      elChapterCue.classList.toggle('interactive', s3Enter > 0.6);
     }
+
+    // Station dots tracking
+    let activeStation = 0;
+    if (p >= 0.75) {
+      activeStation = 2;
+    } else if (p >= 0.28) {
+      activeStation = 1;
+    }
+    currentStationIndex = activeStation;
+    updateStationDots(activeStation);
   }
 
-  // Update station dots navigation state
   function updateStationDots(targetIndex) {
     stationDots.forEach((dot, idx) => {
       const isActive = idx === targetIndex;
@@ -318,116 +345,119 @@
   }
 
   // ============================================================================
-  // TIME-BASED STEP TRANSITION
+  // DERIVE FRAME FROM SCROLL PROGRESS
   // ============================================================================
-  function goToStation(targetIndex) {
-    if (targetIndex < 0 || targetIndex >= CONFIG.stations.length) return;
-    if (isMoving) return;
-    const now = Date.now();
-    if (now - lastMoveEndTime < CONFIG.cooldown) return;
-    if (targetIndex === currentStationIndex && currentFrameFloat === CONFIG.stations[targetIndex].frame) return;
+  function handleScrollProgress(progress) {
+    const p = clamp(progress, 0, 1);
 
-    // Respect prefers-reduced-motion: instant jump with short crossfade
-    if (prefersReducedMotion) {
-      moveFromStation = currentStationIndex;
-      currentStationIndex = targetIndex;
-      currentFrameFloat = CONFIG.stations[targetIndex].frame;
-      updateStationDots(targetIndex);
-      updateStationChapters(moveFromStation, 1, true);
-      setTimeout(() => {
-        renderBlendedFrame(currentFrameFloat);
-        updateStationChapters(targetIndex, 1, false);
-      }, 150);
-      return;
+    // Continuous smooth frame interpolation:
+    // Station 1 (0.0): frame 120 (Front)
+    // Station 2 (0.5): frame 49  (Profile)
+    // Station 3 (1.0): frame 0   (Back)
+    let frameFloat = 120;
+    if (p <= 0.5) {
+      const t = p / 0.5;
+      frameFloat = 120 + (49 - 120) * t;
+    } else {
+      const t = (p - 0.5) / 0.5;
+      frameFloat = 49 + (0 - 49) * t;
     }
 
-    isMoving = true;
-    moveFromStation = currentStationIndex;
-    moveToStationTarget = targetIndex;
-    moveStartFrame = currentFrameFloat;
-    moveEndFrame = CONFIG.stations[targetIndex].frame;
-    moveStartTime = performance.now();
-
-    updateStationDots(targetIndex);
-
-    function animateStep(timestamp) {
-      const elapsed = timestamp - moveStartTime;
-      const t = clamp(elapsed / CONFIG.moveDuration, 0, 1);
-      const easeT = easeInOutCubic(t);
-
-      // Frame interpolation
-      currentFrameFloat = moveStartFrame + (moveEndFrame - moveStartFrame) * easeT;
-      renderBlendedFrame(currentFrameFloat);
-
-      // Chapter text transitions:
-      // First 30% -> fade out old station
-      // Middle 40% -> statue moves clean
-      // Last 30%  -> fade in new station
-      if (t <= 0.30) {
-        const exitProgress = t / 0.30;
-        updateStationChapters(moveFromStation, exitProgress, true);
-        updateStationChapters(moveToStationTarget, 0, false);
-      } else if (t < 0.70) {
-        updateStationChapters(moveFromStation, 1, true);
-        updateStationChapters(moveToStationTarget, 0, false);
-      } else {
-        const enterProgress = (t - 0.70) / 0.30;
-        updateStationChapters(moveFromStation, 1, true);
-        updateStationChapters(moveToStationTarget, enterProgress, false);
-      }
-
-      if (t < 1) {
-        requestAnimationFrame(animateStep);
-      } else {
-        isMoving = false;
-        currentStationIndex = moveToStationTarget;
-        currentFrameFloat = moveEndFrame;
-        lastMoveEndTime = Date.now();
-        renderBlendedFrame(currentFrameFloat);
-        updateStationChapters(currentStationIndex, 1, false);
-      }
-    }
-
-    requestAnimationFrame(animateStep);
+    currentFrameFloat = frameFloat;
+    renderBlendedFrame(frameFloat);
+    updateChaptersFromProgress(p);
   }
 
   // ============================================================================
-  // LIVING PROCEDURAL TORCHES & AMBIENT FLICKER
+  // OPTION A: CONTROLLED STEP TWEENING (GSAP SCROLLTO TWEEN)
   // ============================================================================
-  const torchEmbers = [];
-  const roomMotes = [];
+  const scrollProxy = { y: 0 };
+
+  function tweenToStation(targetStationIndex) {
+    if (isTweening) return;
+    if (targetStationIndex < 0 || targetStationIndex >= CONFIG.stations.length) return;
+
+    const now = Date.now();
+    if (now - lastTweenEndTime < CONFIG.cooldownMs) return;
+
+    if (prefersReducedMotion) {
+      const targetP = targetStationIndex === 0 ? 0 : (targetStationIndex === 1 ? 0.5 : 1.0);
+      window.scrollTo(0, targetP * pinDistance);
+      handleScrollProgress(targetP);
+      return;
+    }
+
+    isTweening = true;
+    currentStationIndex = targetStationIndex;
+    updateStationDots(targetStationIndex);
+
+    const targetP = targetStationIndex === 0 ? 0 : (targetStationIndex === 1 ? 0.5 : 1.0);
+    const targetScrollY = Math.round(targetP * pinDistance);
+
+    scrollProxy.y = window.scrollY || window.pageYOffset || 0;
+
+    window.gsap.killTweensOf(scrollProxy);
+    window.gsap.to(scrollProxy, {
+      y: targetScrollY,
+      duration: CONFIG.moveDuration,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        window.scrollTo(0, scrollProxy.y);
+      },
+      onComplete: () => {
+        isTweening = false;
+        lastTweenEndTime = Date.now();
+        window.scrollTo(0, targetScrollY);
+        handleScrollProgress(targetP);
+      }
+    });
+  }
+
+  // ============================================================================
+  // REALISTIC TRANSLUCENT PARTICLE TORCHES (ADDITIVE BLENDING)
+  // ============================================================================
+  const torchParticlePool = [[], []]; // 0 = Left, 1 = Right
+  const torchEmbersPool = [[], []];
   let torchAnimFrameId = null;
   let isTorchVisible = true;
 
-  function initTorchesAndMotes() {
-    // Initialize rising embers (8 per torch)
+  // Randomized halo alpha targets for organic, non-sine flickering
+  const haloState = [
+    { currentAlpha: 0.07, targetAlpha: 0.07, lastUpdate: 0 },
+    { currentAlpha: 0.08, targetAlpha: 0.08, lastUpdate: 0 }
+  ];
+
+  function initRealisticTorchParticles() {
     for (let t = 0; t < 2; t++) {
-      for (let i = 0; i < CONFIG.emberCount; i++) {
-        torchEmbers.push({
-          torchId: t, // 0 = left, 1 = right
-          dx: (Math.random() - 0.5) * 16,
-          dy: -Math.random() * 40 - 10,
-          speed: 0.6 + Math.random() * 0.9,
-          size: 1.2 + Math.random() * 1.8,
-          alpha: Math.random(),
-          decay: 0.012 + Math.random() * 0.018,
-          wobbleFreq: 6 + Math.random() * 8,
-          wobbleAmp: 1.5 + Math.random() * 2.0
+      torchParticlePool[t] = [];
+      for (let i = 0; i < CONFIG.particleCount; i++) {
+        torchParticlePool[t].push({
+          age: Math.random(), // 0 to 1
+          lifetime: 0.45 + Math.random() * 0.40, // 0.45s to 0.85s
+          initialSizeRatio: 0.35 + Math.random() * 0.40,
+          dx: (Math.random() - 0.5) * 10,
+          dy: (Math.random() - 0.5) * 6,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: -(1.2 + Math.random() * 1.4),
+          swayFreq: 7 + Math.random() * 6,
+          swayAmp: 1.0 + Math.random() * 1.5,
+          seed: Math.random() * 100
         });
       }
-    }
 
-    // Initialize 20 subtle ambient dust motes
-    for (let i = 0; i < CONFIG.moteCount; i++) {
-      roomMotes.push({
-        x: Math.random(),
-        y: Math.random(),
-        vx: (Math.random() - 0.5) * 0.0003,
-        vy: -Math.random() * 0.0004 - 0.0001,
-        size: 1.0 + Math.random() * 2.0,
-        alpha: 0.08 + Math.random() * 0.16,
-        phase: Math.random() * Math.PI * 2
-      });
+      torchEmbersPool[t] = [];
+      for (let i = 0; i < CONFIG.emberCount; i++) {
+        torchEmbersPool[t].push({
+          x: 0,
+          y: 0,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: -(2.0 + Math.random() * 1.6),
+          size: 1.0 + Math.random() * 1.4,
+          alpha: Math.random(),
+          decay: 0.015 + Math.random() * 0.02,
+          wobbleFreq: 8 + Math.random() * 6
+        });
+      }
     }
   }
 
@@ -462,7 +492,9 @@
     };
   }
 
-  function renderTorches(time) {
+  let lastTime = performance.now();
+
+  function renderRealisticTorches(time) {
     if (!torchCtx || !torchCanvas || !isTorchVisible) return;
     const cw = torchCanvas.width;
     const ch = torchCanvas.height;
@@ -470,40 +502,25 @@
 
     if (CONFIG.flameIntensity <= 0.01) return;
 
-    // Determine frame cover metrics to map torch coordinates accurately
+    const dt = Math.min(0.05, (time - lastTime) * 0.001);
+    lastTime = time;
+
     const iw = manifest.width || 2560;
     const ih = manifest.height || 1440;
     const scale = Math.max(cw / iw, ch / ih);
     const drawW = iw * scale;
     const drawH = ih * scale;
     const drawX = (cw - drawW) / 2;
-    const drawY = drawH > ch ? 0 : (ch - drawH) / 2;
+
+    const statueDownOffset = getStatueDownOffset(ch, drawH);
+    const drawY = (drawH > ch ? 0 : (ch - drawH) / 2) + statueDownOffset;
 
     const tracks = getInterpolatedTorchTrack(currentFrameFloat);
-
-    // Render 20 subtle floating dust motes
-    if (!prefersReducedMotion) {
-      torchCtx.save();
-      roomMotes.forEach((mote) => {
-        mote.x += mote.vx;
-        mote.y += mote.vy;
-        if (mote.y < 0) { mote.y = 1; mote.x = Math.random(); }
-        if (mote.x < 0) mote.x = 1;
-        if (mote.x > 1) mote.x = 0;
-        const pulse = Math.sin(time * 0.002 + mote.phase) * 0.05;
-        torchCtx.fillStyle = `rgba(235, 215, 175, ${clamp(mote.alpha + pulse, 0.04, 0.28)})`;
-        torchCtx.beginPath();
-        torchCtx.arc(mote.x * cw, mote.y * ch, mote.size, 0, Math.PI * 2);
-        torchCtx.fill();
-      });
-      torchCtx.restore();
-    }
-
     if (!tracks) return;
 
     const torches = [
-      { id: 0, data: tracks.leftTorch, phaseOffset: 0.0, speed: 1.0 },
-      { id: 1, data: tracks.rightTorch, phaseOffset: 2.37, speed: 1.14 }
+      { id: 0, data: tracks.leftTorch, speed: 1.0, intensity: 0.95 },
+      { id: 1, data: tracks.rightTorch, speed: 1.16, intensity: 1.05 }
     ];
 
     torches.forEach((torch) => {
@@ -515,90 +532,128 @@
       const baseR = (tData.r || 0.015) * drawW;
       const opacity = tData.opacity;
 
-      // Independent frequencies per torch (8 - 15 Hz)
-      const tSec = (time * 0.001 * torch.speed) + torch.phaseOffset;
-      const f1 = Math.sin(tSec * 11.3);
-      const f2 = Math.cos(tSec * 14.7 + 1.2);
-      const f3 = Math.sin(tSec * 8.2 + 2.5);
-      const flameFlicker = prefersReducedMotion ? 0 : (f1 * 0.05 + f2 * 0.03 + f3 * 0.02);
-      const flameHeightMult = 1.0 + (prefersReducedMotion ? 0 : f1 * 0.12 + f3 * 0.08);
-
-      const intensity = CONFIG.flameIntensity;
-
-      // 1. SCONCE BACKING: Dark warm backing to cover baked-in KlingAI white flame
+      // 1. SCONCE BACKING (source-over): Dims baked KlingAI white blob to dark ember
       torchCtx.save();
-      torchCtx.globalAlpha = opacity;
-      const backingGrad = torchCtx.createRadialGradient(px, py + baseR * 0.2, 2, px, py + baseR * 0.2, baseR * 1.5);
-      backingGrad.addColorStop(0, 'rgba(38, 22, 10, 0.95)');
-      backingGrad.addColorStop(0.5, 'rgba(28, 16, 8, 0.75)');
-      backingGrad.addColorStop(1, 'rgba(15, 12, 10, 0)');
-      torchCtx.fillStyle = backingGrad;
+      torchCtx.globalCompositeOperation = 'source-over';
+      const dimGrad = torchCtx.createRadialGradient(px, py + baseR * 0.15, 1, px, py + baseR * 0.15, baseR * 1.3);
+      dimGrad.addColorStop(0, `rgba(12, 11, 10, ${0.82 * opacity})`);
+      dimGrad.addColorStop(0.6, `rgba(16, 14, 12, ${0.45 * opacity})`);
+      dimGrad.addColorStop(1, 'rgba(16, 14, 12, 0)');
+      torchCtx.fillStyle = dimGrad;
       torchCtx.beginPath();
-      torchCtx.arc(px, py + baseR * 0.2, baseR * 1.5, 0, Math.PI * 2);
+      torchCtx.arc(px, py + baseR * 0.15, baseR * 1.3, 0, Math.PI * 2);
       torchCtx.fill();
+      torchCtx.restore();
 
-      // 2. AMBIENT WALL GLOW (Pulses 3-5% with torch flame)
-      const glowR = baseR * 6.5;
-      const glowGrad = torchCtx.createRadialGradient(px, py, 4, px, py, glowR);
-      const glowAlpha = clamp((0.14 + flameFlicker * 0.04) * intensity * opacity, 0, 0.35);
-      glowGrad.addColorStop(0, `rgba(232, 139, 58, ${glowAlpha})`);
-      glowGrad.addColorStop(0.4, `rgba(201, 162, 75, ${glowAlpha * 0.5})`);
-      glowGrad.addColorStop(1, 'rgba(232, 139, 58, 0)');
-      torchCtx.fillStyle = glowGrad;
-      torchCtx.beginPath();
-      torchCtx.arc(px, py, glowR, 0, Math.PI * 2);
-      torchCtx.fill();
-
-      // 3. PROCEDURAL FLAME: Soft overlapping teardrop / elliptical shapes
-      const flameH = baseR * 2.2 * flameHeightMult * intensity;
-      const flameW = baseR * 0.95 * (1 + flameFlicker * 0.5) * intensity;
-      const flameTipX = px + (prefersReducedMotion ? 0 : f2 * 3.5);
-
-      // Outer Flame (Warm Gold / Ember)
-      const outerGrad = torchCtx.createRadialGradient(px, py - flameH * 0.3, 2, px, py - flameH * 0.3, flameH);
-      outerGrad.addColorStop(0, `rgba(240, 160, 50, ${0.85 * opacity})`);
-      outerGrad.addColorStop(0.4, `rgba(226, 120, 30, ${0.70 * opacity})`);
-      outerGrad.addColorStop(0.85, `rgba(180, 70, 15, ${0.40 * opacity})`);
-      outerGrad.addColorStop(1, 'rgba(140, 45, 10, 0)');
-      torchCtx.fillStyle = outerGrad;
-      torchCtx.beginPath();
-      torchCtx.ellipse(px, py - flameH * 0.35, flameW, flameH * 0.65, 0, 0, Math.PI * 2);
-      torchCtx.fill();
-
-      // Inner Core Flame (Brilliant Torch Yellow)
-      const innerGrad = torchCtx.createRadialGradient(flameTipX, py - flameH * 0.25, 1, px, py - flameH * 0.25, flameW * 0.7);
-      innerGrad.addColorStop(0, `rgba(255, 235, 175, ${0.95 * opacity})`);
-      innerGrad.addColorStop(0.5, `rgba(245, 185, 75, ${0.80 * opacity})`);
-      innerGrad.addColorStop(1, 'rgba(230, 140, 35, 0)');
-      torchCtx.fillStyle = innerGrad;
-      torchCtx.beginPath();
-      torchCtx.ellipse(flameTipX, py - flameH * 0.3, flameW * 0.5, flameH * 0.45, 0, 0, Math.PI * 2);
-      torchCtx.fill();
-
-      // 4. RISING EMBERS & SPARKS (Static fallback under prefers-reduced-motion)
-      if (!prefersReducedMotion) {
-        torchEmbers.filter(e => e.torchId === torch.id).forEach((ember) => {
-          ember.dy -= ember.speed;
-          ember.alpha -= ember.decay;
-          const wobble = Math.sin(tSec * ember.wobbleFreq) * ember.wobbleAmp;
-
-          const ex = px + ember.dx + wobble;
-          const ey = py + ember.dy;
-
-          if (ember.alpha > 0) {
-            torchCtx.fillStyle = `rgba(255, 205, 110, ${clamp(ember.alpha * opacity, 0, 1)})`;
-            torchCtx.beginPath();
-            torchCtx.arc(ex, ey, ember.size, 0, Math.PI * 2);
-            torchCtx.fill();
-          } else {
-            // Respawn ember near flame base
-            ember.dx = (Math.random() - 0.5) * (flameW * 1.2);
-            ember.dy = -Math.random() * 8;
-            ember.alpha = 0.8 + Math.random() * 0.2;
-            ember.speed = 0.7 + Math.random() * 1.1;
-          }
-        });
+      // 2. SOFT WARM HALO: Very low alpha, organic random (not sine) flicker
+      const hState = haloState[torch.id];
+      if (time - hState.lastUpdate > 120) {
+        hState.targetAlpha = 0.05 + Math.random() * 0.035;
+        hState.lastUpdate = time;
       }
+      hState.currentAlpha += (hState.targetAlpha - hState.currentAlpha) * 0.06;
+      const haloAlpha = clamp(hState.currentAlpha * opacity * CONFIG.flameIntensity, 0.02, 0.12);
+
+      torchCtx.save();
+      torchCtx.globalCompositeOperation = 'lighter';
+      const haloR = baseR * 5.2;
+      const haloGrad = torchCtx.createRadialGradient(px, py, 2, px, py, haloR);
+      haloGrad.addColorStop(0, `rgba(235, 140, 45, ${haloAlpha})`);
+      haloGrad.addColorStop(0.4, `rgba(205, 120, 25, ${haloAlpha * 0.45})`);
+      haloGrad.addColorStop(1, 'rgba(180, 80, 15, 0)');
+      torchCtx.fillStyle = haloGrad;
+      torchCtx.beginPath();
+      torchCtx.arc(px, py, haloR, 0, Math.PI * 2);
+      torchCtx.fill();
+
+      // Static under prefers-reduced-motion
+      if (prefersReducedMotion) {
+        const staticGrad = torchCtx.createRadialGradient(px, py - baseR * 0.8, 1, px, py - baseR * 0.8, baseR * 1.4);
+        staticGrad.addColorStop(0, `rgba(255, 230, 150, ${0.5 * opacity})`);
+        staticGrad.addColorStop(0.5, `rgba(240, 120, 25, ${0.3 * opacity})`);
+        staticGrad.addColorStop(1, 'rgba(180, 40, 5, 0)');
+        torchCtx.fillStyle = staticGrad;
+        torchCtx.beginPath();
+        torchCtx.arc(px, py - baseR * 0.8, baseR * 1.4, 0, Math.PI * 2);
+        torchCtx.fill();
+        torchCtx.restore();
+        return;
+      }
+
+      // 3. TRANSLUCENT FLAME PARTICLES (35-45 per torch, additive blending)
+      const particles = torchParticlePool[torch.id];
+      particles.forEach((p) => {
+        p.age += (dt * torch.speed) / p.lifetime;
+        if (p.age >= 1) {
+          // Respawn at flame base
+          p.age = 0;
+          p.lifetime = 0.45 + Math.random() * 0.40;
+          p.dx = (Math.random() - 0.5) * (baseR * 0.45);
+          p.dy = (Math.random() - 0.5) * (baseR * 0.2);
+          p.vx = (Math.random() - 0.5) * 0.4;
+          p.vy = -(1.2 + Math.random() * 1.4);
+          p.initialSizeRatio = 0.35 + Math.random() * 0.40;
+        }
+
+        // Upward acceleration of hot air
+        p.vy -= 0.02;
+        const timeSec = time * 0.001 * torch.speed;
+        const noiseSway = Math.sin(timeSec * p.swayFreq + p.seed) * p.swayAmp;
+
+        const partX = px + p.dx + (p.vx * p.age * 20) + noiseSway;
+        const partY = py + p.dy + (p.vy * p.age * 24);
+        const partR = baseR * p.initialSizeRatio * Math.max(0.12, 1.0 - p.age * 0.75);
+
+        // Translucent color ramp by age (bell-shaped alpha fading cleanly at tips)
+        const ageCurve = Math.sin(p.age * Math.PI);
+        const pAlpha = clamp(ageCurve * 0.42 * opacity * CONFIG.flameIntensity, 0, 0.65);
+
+        const pGrad = torchCtx.createRadialGradient(partX, partY, 0, partX, partY, partR);
+        if (p.age < 0.20) {
+          // Hot incandescent core
+          pGrad.addColorStop(0, `rgba(255, 252, 235, ${pAlpha})`);
+          pGrad.addColorStop(0.4, `rgba(255, 225, 90, ${pAlpha * 0.85})`);
+          pGrad.addColorStop(1, 'rgba(255, 160, 30, 0)');
+        } else if (p.age < 0.55) {
+          // Vibrant torch gold
+          pGrad.addColorStop(0, `rgba(255, 215, 65, ${pAlpha * 0.88})`);
+          pGrad.addColorStop(0.5, `rgba(242, 125, 22, ${pAlpha * 0.62})`);
+          pGrad.addColorStop(1, 'rgba(195, 45, 8, 0)');
+        } else {
+          // Licking smoky tip
+          pGrad.addColorStop(0, `rgba(235, 95, 18, ${pAlpha * 0.60})`);
+          pGrad.addColorStop(0.6, `rgba(165, 35, 6, ${pAlpha * 0.30})`);
+          pGrad.addColorStop(1, 'rgba(95, 15, 0, 0)');
+        }
+
+        torchCtx.fillStyle = pGrad;
+        torchCtx.beginPath();
+        torchCtx.arc(partX, partY, partR, 0, Math.PI * 2);
+        torchCtx.fill();
+      });
+
+      // 4. TINY RISING EMBERS (3-4 per torch, bright golden sparks)
+      const embers = torchEmbersPool[torch.id];
+      embers.forEach((ember) => {
+        ember.y += ember.vy;
+        ember.x += ember.vx + Math.sin(time * 0.005 + ember.wobbleFreq) * 0.4;
+        ember.alpha -= ember.decay;
+
+        if (ember.alpha > 0.05) {
+          const ex = px + ember.x;
+          const ey = py + ember.y;
+          torchCtx.fillStyle = `rgba(255, 225, 130, ${clamp(ember.alpha * opacity, 0, 0.95)})`;
+          torchCtx.beginPath();
+          torchCtx.arc(ex, ey, ember.size, 0, Math.PI * 2);
+          torchCtx.fill();
+        } else {
+          // Respawn
+          ember.x = (Math.random() - 0.5) * (baseR * 0.8);
+          ember.y = -Math.random() * (baseR * 0.5);
+          ember.alpha = 0.85 + Math.random() * 0.15;
+          ember.vy = -(2.0 + Math.random() * 1.5);
+        }
+      });
 
       torchCtx.restore();
     });
@@ -606,13 +661,183 @@
 
   function torchLoop(now) {
     if (isTorchVisible && !document.hidden) {
-      renderTorches(now);
+      renderRealisticTorches(now);
     }
     torchAnimFrameId = requestAnimationFrame(torchLoop);
   }
 
   // ============================================================================
-  // PROGRESSIVE ASSET LOADING
+  // GESTURE CONTROLLER (INTERCEPTS WHEEL, TOUCH & KEYS SO PAGE CANNOT MOVE)
+  // ============================================================================
+  function setupOptionAGestures() {
+    let touchStartY = 0;
+
+    // 1. Wheel Listener (Non-passive so preventDefault works 100%)
+    window.addEventListener('wheel', (e) => {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+
+      // When within the hero pin range (0 to pinDistance)
+      if (scrollY <= pinDistance + 10) {
+        // While our GSAP tween is running, lock all user input completely
+        if (isTweening) {
+          e.preventDefault();
+          return;
+        }
+
+        if (Math.abs(e.deltaY) < CONFIG.wheelThreshold) return;
+
+        if (e.deltaY > 0) {
+          // Downward gesture
+          if (currentStationIndex === 0) {
+            e.preventDefault();
+            tweenToStation(1);
+          } else if (currentStationIndex === 1) {
+            e.preventDefault();
+            tweenToStation(2);
+          } else if (currentStationIndex === 2) {
+            // At Station 3:
+            if (scrollY < pinDistance - 8) {
+              e.preventDefault();
+              tweenToStation(2);
+            } else {
+              // At exact Station 3 pin end: allow NEXT downward scroll to proceed to #projects!
+              isHeroActive = false;
+            }
+          }
+        } else if (e.deltaY < 0) {
+          // Upward gesture
+          if (currentStationIndex === 2) {
+            e.preventDefault();
+            tweenToStation(1);
+          } else if (currentStationIndex === 1) {
+            e.preventDefault();
+            tweenToStation(0);
+          } else if (currentStationIndex === 0) {
+            // At Station 1: top of page, allow native
+          }
+        }
+      }
+    }, { passive: false });
+
+    // 2. Touch Swipes (Non-passive)
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length) {
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+
+      if (scrollY <= pinDistance + 10 && e.touches && e.touches.length) {
+        if (isTweening) {
+          e.preventDefault();
+          return;
+        }
+
+        const deltaY = touchStartY - e.touches[0].clientY;
+        if (Math.abs(deltaY) > CONFIG.touchThreshold) {
+          if (deltaY > 0) {
+            // Swipe Up -> Step Down
+            if (currentStationIndex === 0) {
+              e.preventDefault();
+              tweenToStation(1);
+              touchStartY = e.touches[0].clientY;
+            } else if (currentStationIndex === 1) {
+              e.preventDefault();
+              tweenToStation(2);
+              touchStartY = e.touches[0].clientY;
+            } else if (currentStationIndex === 2) {
+              if (scrollY < pinDistance - 8) {
+                e.preventDefault();
+                tweenToStation(2);
+                touchStartY = e.touches[0].clientY;
+              } else {
+                isHeroActive = false;
+              }
+            }
+          } else {
+            // Swipe Down -> Step Up
+            if (currentStationIndex === 2) {
+              e.preventDefault();
+              tweenToStation(1);
+              touchStartY = e.touches[0].clientY;
+            } else if (currentStationIndex === 1) {
+              e.preventDefault();
+              tweenToStation(0);
+              touchStartY = e.touches[0].clientY;
+            }
+          }
+        }
+      }
+    }, { passive: false });
+
+    // 3. Keyboard Navigation
+    window.addEventListener('keydown', (e) => {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+
+      if (scrollY <= pinDistance + 10) {
+        if (isTweening) {
+          if (['ArrowDown', 'PageDown', ' ', 'ArrowUp', 'PageUp'].includes(e.key)) {
+            e.preventDefault();
+          }
+          return;
+        }
+
+        if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
+          if (currentStationIndex === 0) {
+            e.preventDefault();
+            tweenToStation(1);
+          } else if (currentStationIndex === 1) {
+            e.preventDefault();
+            tweenToStation(2);
+          } else if (currentStationIndex === 2) {
+            if (scrollY < pinDistance - 8) {
+              e.preventDefault();
+              tweenToStation(2);
+            } else {
+              isHeroActive = false;
+            }
+          }
+        } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
+          if (currentStationIndex === 2) {
+            e.preventDefault();
+            tweenToStation(1);
+          } else if (currentStationIndex === 1) {
+            e.preventDefault();
+            tweenToStation(0);
+          }
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          tweenToStation(0);
+        } else if (e.key === 'End' && scrollY <= pinDistance) {
+          e.preventDefault();
+          tweenToStation(2);
+        }
+      }
+    });
+
+    // 4. Station Navigation Step Dots
+    stationDots.forEach((dot, idx) => {
+      dot.addEventListener('click', () => {
+        tweenToStation(idx);
+      });
+    });
+
+    // 5. Skip link & Project Links
+    const jumpLinks = document.querySelectorAll('.skip-to-projects-link, a[href="#projects"]');
+    jumpLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        isHeroActive = false;
+        const targetScroll = pinDistance + 40;
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      });
+    });
+  }
+
+  // ============================================================================
+  // PROGRESSIVE ASSET PRELOADING
   // ============================================================================
   function preloadAssetsProgressively() {
     isMobile = window.innerWidth < 768;
@@ -625,14 +850,14 @@
       drawFgStatue();
     };
 
-    // Load remaining Station Frames first: Station 2 (Profile: 49) and Station 3 (Back: 0)
+    // Load key stations first: Profile (49) and Back (0)
     CONFIG.stations.forEach((st) => {
       if (!loadedFrames.has(st.frame)) {
         loadSingleFrame(st.frame, true);
       }
     });
 
-    // Queue in-between frames for background idle load
+    // Queue in-betweens for idle loading
     const queue = [];
     for (let i = 0; i < total; i++) {
       if (!CONFIG.stations.some(s => s.frame === i)) {
@@ -658,147 +883,38 @@
   }
 
   // ============================================================================
-  // GESTURE & SCROLL INTERACTION CONTROLLER
+  // SCROLLTRIGGER PIN INITIALIZATION
   // ============================================================================
-  function setupGestures() {
-    let touchStartY = 0;
+  function setupOptionAPin() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    window.gsap.registerPlugin(window.ScrollTrigger);
 
-    // 1. Wheel Interaction
-    window.addEventListener('wheel', (e) => {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
+    pinDistance = window.innerHeight * 2; // 200vh pinned track
 
-      // When at top of page and hero is active
-      if (scrollY <= 5 && isHeroActive) {
-        if (Math.abs(e.deltaY) < CONFIG.wheelThreshold) return;
+    // Kill any existing trigger
+    if (heroScrollTrigger) heroScrollTrigger.kill();
 
-        if (e.deltaY > 0) {
-          // Downward gesture
-          if (currentStationIndex < CONFIG.stations.length - 1) {
-            e.preventDefault();
-            goToStation(currentStationIndex + 1);
-          } else {
-            // At Station 3 (Back): Release hero pin & scroll to #projects!
-            isHeroActive = false;
-            const projSec = document.getElementById('projects');
-            if (projSec) {
-              e.preventDefault();
-              projSec.scrollIntoView({ behavior: 'smooth' });
-            }
-          }
-        } else if (e.deltaY < 0) {
-          // Upward gesture
-          if (currentStationIndex > 0) {
-            e.preventDefault();
-            goToStation(currentStationIndex - 1);
-          } else {
-            // At Station 1: Allow normal scroll (already top of page)
-          }
-        }
-      }
-    }, { passive: false });
-
-    // 2. Touch Swipes
-    window.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches.length) {
-        touchStartY = e.touches[0].clientY;
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (e) => {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      if (scrollY <= 5 && isHeroActive && e.touches && e.touches.length) {
-        const deltaY = touchStartY - e.touches[0].clientY;
-        if (Math.abs(deltaY) > CONFIG.touchThreshold) {
-          if (deltaY > 0) {
-            // Swipe Up -> Step Down
-            if (currentStationIndex < CONFIG.stations.length - 1) {
-              e.preventDefault();
-              goToStation(currentStationIndex + 1);
-              touchStartY = e.touches[0].clientY;
-            } else {
-              // At Station 3: Release pin
-              isHeroActive = false;
-              const projSec = document.getElementById('projects');
-              if (projSec) projSec.scrollIntoView({ behavior: 'smooth' });
-            }
-          } else {
-            // Swipe Down -> Step Up
-            if (currentStationIndex > 0) {
-              e.preventDefault();
-              goToStation(currentStationIndex - 1);
-              touchStartY = e.touches[0].clientY;
-            }
-          }
-        }
-      }
-    }, { passive: false });
-
-    // 3. Keyboard Navigation
-    window.addEventListener('keydown', (e) => {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      if (scrollY <= 5 && isHeroActive) {
-        if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
-          if (currentStationIndex < CONFIG.stations.length - 1) {
-            e.preventDefault();
-            goToStation(currentStationIndex + 1);
-          } else {
-            isHeroActive = false;
-            const projSec = document.getElementById('projects');
-            if (projSec) {
-              e.preventDefault();
-              projSec.scrollIntoView({ behavior: 'smooth' });
-            }
-          }
-        } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
-          if (currentStationIndex > 0) {
-            e.preventDefault();
-            goToStation(currentStationIndex - 1);
-          }
-        }
+    heroScrollTrigger = window.ScrollTrigger.create({
+      trigger: heroSection,
+      start: 'top top',
+      end: () => `+=${pinDistance}`,
+      pin: true,
+      pinSpacing: true,
+      anticipatePin: 1,
+      onUpdate: (self) => {
+        handleScrollProgress(self.progress);
       }
     });
 
-    // 4. Boundary Handoff: Re-entering Hero from #projects lands on Station 3
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      if (scrollY <= 15 && !isHeroActive) {
-        isHeroActive = true;
-        currentStationIndex = 2; // Station 3 (Back)
-        currentFrameFloat = CONFIG.stations[2].frame;
-        updateStationDots(2);
-        renderBlendedFrame(currentFrameFloat);
-        updateStationChapters(2, 1, false);
-      }
-    }, { passive: true });
+    // Initial update based on current scroll position
+    handleScrollProgress(heroScrollTrigger.progress || 0);
 
-    // 5. Station Navigation Dots
-    stationDots.forEach((dot, idx) => {
-      dot.addEventListener('click', () => {
-        isHeroActive = true;
-        const scrollY = window.scrollY || window.pageYOffset || 0;
-        if (scrollY > 15) {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        goToStation(idx);
-      });
-    });
-
-    // 6. Action Links: Skip link, See featured work, Scroll to work cue
-    const jumpLinks = document.querySelectorAll('.skip-to-projects-link, a[href="#projects"]');
-    jumpLinks.forEach((link) => {
-      link.addEventListener('click', (e) => {
-        isHeroActive = false;
-        const projSec = document.getElementById('projects');
-        if (projSec) {
-          e.preventDefault();
-          projSec.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
+    // Refresh all ScrollTriggers on the page
+    window.ScrollTrigger.refresh();
   }
 
   // ============================================================================
-  // INITIALIZATION
+  // MAIN INITIALIZATION
   // ============================================================================
   async function initHeroOrbit() {
     heroSection = document.getElementById('hero');
@@ -862,8 +978,8 @@
       } catch (e) {}
     }
 
-    // Setup living torches & motes
-    initTorchesAndMotes();
+    // Setup realistic translucent torches
+    initRealisticTorchParticles();
     torchAnimFrameId = requestAnimationFrame(torchLoop);
 
     // Pause torch loop when hero is offscreen
@@ -885,37 +1001,45 @@
       loadedFrames.set(frontIndex, frontImg);
       resizeAllCanvases();
       renderBlendedFrame(frontIndex);
-      updateStationChapters(0, 1, false);
+      updateChaptersFromProgress(0);
       updateStationDots(0);
 
-      // Preload the rest progressively
+      // Setup ScrollTrigger Pin
+      setupOptionAPin();
+
+      // Preload remaining frames progressively
       preloadAssetsProgressively();
     };
 
-    // Sizing & Gestures
     resizeAllCanvases();
-    setupGestures();
+    setupOptionAGestures();
 
-    // Resize listener (debounced)
+    // Debounced Resize listener
     let resizeTimer = 0;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         isMobile = window.innerWidth < 768;
+        pinDistance = window.innerHeight * 2;
         resizeAllCanvases();
-        if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+        if (heroScrollTrigger) {
+          heroScrollTrigger.refresh();
+        }
+        if (window.ScrollTrigger) {
+          window.ScrollTrigger.refresh();
+        }
       }, 150);
     }, { passive: true });
 
-    // Refresh all ScrollTriggers on page
+    // Refresh ScrollTriggers
     setTimeout(() => {
       if (window.ScrollTrigger) window.ScrollTrigger.refresh();
-    }, 300);
+    }, 350);
   }
 
   // Expose configuration and controls for live tuning
   window.HERO_ORBIT_CONFIG = CONFIG;
-  window.goToStation = goToStation;
+  window.tweenToStation = tweenToStation;
   window.initHeroOrbit = initHeroOrbit;
 
   if (document.readyState === 'loading') {
