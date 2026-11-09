@@ -417,6 +417,12 @@ textarea:focus-visible,
     0 24px 60px rgba(0, 0, 0, 0.85) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+  padding: clamp(28px, 3.2vw, 36px) clamp(28px, 3.5vw, 42px) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: min(520px, 44%) !important;
 }
 
 .bs-dp-badge {
@@ -424,27 +430,67 @@ textarea:focus-visible,
   border: 1px solid var(--gold-hairline) !important;
   color: var(--gold-highlight) !important;
   font-family: var(--font-mono) !important;
+  font-size: 0.70rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  padding: 5px 13px !important;
+  border-radius: 9999px !important;
+  margin: 0 0 14px 0 !important;
+  line-height: 1 !important;
 }
 
 .bs-dp-title {
   color: var(--marble-primary) !important;
   font-family: var(--font-serif) !important;
-  letter-spacing: 0.02em !important;
+  font-size: clamp(2.0rem, 3.0vw, 2.7rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.015em !important;
+  line-height: 1.12 !important;
+  margin: 0 0 14px 0 !important;
 }
 
 .bs-dp-desc {
   color: var(--marble-secondary) !important;
-  line-height: 1.7 !important;
+  font-size: clamp(0.85rem, 1.0vw, 0.94rem) !important;
+  line-height: 1.65 !important;
+  margin: 0 0 18px 0 !important;
+  max-width: 100% !important;
+}
+
+.bs-dp-meta {
+  margin: 0 0 16px 0 !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.15) !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
 }
 
 .bs-dp-author, .bs-dp-year {
   color: var(--marble-muted) !important;
   font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
 }
 
 .bs-star {
+  width: 16px !important;
+  height: 16px !important;
   fill: var(--gold-accent) !important;
   filter: drop-shadow(0 0 4px rgba(201, 162, 75, 0.5)) !important;
+}
+
+.bs-dp-divider {
+  width: 1px !important;
+  height: 16px !important;
+  background: rgba(201, 162, 75, 0.25) !important;
+}
+
+.bs-dp-tags {
+  margin: 0 0 24px 0 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
 }
 
 .bs-dp-tag {
@@ -452,6 +498,44 @@ textarea:focus-visible,
   border: 1px solid var(--gold-hairline) !important;
   color: var(--marble-secondary) !important;
   font-family: var(--font-mono) !important;
+  font-size: 0.70rem !important;
+  padding: 4px 11px !important;
+  border-radius: 9999px !important;
+}
+
+.bs-dp-actions {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.bs-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 18px !important;
+  border-radius: 6px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.74rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  line-height: 1.2 !important;
+  cursor: pointer !important;
+  transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.bs-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.bs-btn .bs-arrow {
+  font-size: 0.82rem !important;
+  line-height: 1 !important;
+  margin-left: 2px !important;
 }
 
 .bs-btn.bs-btn-primary {
@@ -459,14 +543,16 @@ textarea:focus-visible,
   color: var(--stone-deepest) !important;
   border: 1px solid var(--gold-highlight) !important;
   font-weight: 700 !important;
+  box-shadow: 0 2px 10px rgba(201, 162, 75, 0.25) !important;
 }
 .bs-btn.bs-btn-primary:hover {
   background: var(--gold-highlight) !important;
   box-shadow: 0 0 18px rgba(232, 139, 58, 0.45) !important;
+  transform: translateY(-1.5px) !important;
 }
 
 .bs-btn.bs-btn-secondary {
-  background: transparent !important;
+  background: rgba(30, 27, 24, 0.7) !important;
   border: 1px solid var(--gold-hairline-bright) !important;
   color: var(--marble-primary) !important;
 }
@@ -474,6 +560,21 @@ textarea:focus-visible,
   border-color: var(--gold-highlight) !important;
   color: var(--gold-highlight) !important;
   box-shadow: 0 0 14px rgba(201, 162, 75, 0.3) !important;
+  transform: translateY(-1.5px) !important;
+}
+
+.bs-close-btn {
+  background: rgba(23, 21, 19, 0.85) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  color: var(--marble-secondary) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+.bs-close-btn:hover {
+  background: var(--gold-accent) !important;
+  border-color: var(--gold-highlight) !important;
+  color: var(--stone-deepest) !important;
+  box-shadow: 0 0 16px rgba(232, 139, 58, 0.45) !important;
 }
 
 /* Secondary Stone Tablet Project Cards */

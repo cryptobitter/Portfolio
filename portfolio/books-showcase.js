@@ -191,7 +191,7 @@
 
     const dims = { w: root.clientWidth || 1000, h: root.clientHeight || 680 };
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPowerDevice ? 1 : 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, lowPowerDevice ? 1 : 2.0));
     if (THREE.SRGBColorSpace) {
       renderer.outputColorSpace = THREE.SRGBColorSpace;
     } else if (THREE.sRGBEncoding) {
@@ -298,16 +298,17 @@
       }
       return new THREE.CanvasTexture(c);
     }
-    const laminateBump = noiseTexture(128, 10, true);
+    // Crisp luxury satin laminate without dirty scratches
+    const laminateBump = noiseTexture(128, 4, false);
 
     const clothBump = (function () {
-      const s = 128,
+      const s = 256,
         c = mkCanvas(s, s),
         x = c.getContext('2d');
       x.fillStyle = '#808080';
       x.fillRect(0, 0, s, s);
       for (let i = 0; i < s; i += 2) {
-        x.fillStyle = i % 4 === 0 ? 'rgba(255,255,255,.22)' : 'rgba(0,0,0,.22)';
+        x.fillStyle = i % 4 === 0 ? 'rgba(255,255,255,.14)' : 'rgba(0,0,0,.14)';
         x.fillRect(i, 0, 1, s);
         x.fillRect(0, i, s, 1);
       }
@@ -318,21 +319,17 @@
       const s = 512,
         c = mkCanvas(s, s),
         x = c.getContext('2d');
-      x.fillStyle = '#ece4d2';
+      x.fillStyle = '#FAF7F2';
       x.fillRect(0, 0, s, s);
       let p = 0;
       while (p < s) {
-        const w = 1 + Math.random() * 2.4,
+        const w = 1 + Math.random() * 2.2,
           tone = Math.random();
         x.fillStyle =
-          tone < 0.12 ? 'rgba(140,125,95,.5)' : tone < 0.5 ? 'rgba(255,255,252,.55)' : 'rgba(190,178,150,.45)';
+          tone < 0.12 ? 'rgba(200,185,160,.28)' : tone < 0.5 ? 'rgba(255,255,255,.7)' : 'rgba(225,215,198,.24)';
         if (vertical) x.fillRect(p, 0, w, s);
         else x.fillRect(0, p, s, w);
         p += w + 0.6 + Math.random() * 1.6;
-      }
-      for (let i = 0; i < 1800; i++) {
-        x.fillStyle = 'rgba(120,108,84,' + (Math.random() * 0.1).toFixed(3) + ')';
-        x.fillRect(Math.random() * s, Math.random() * s, 1.2, 1.2);
       }
       return tex(c);
     }
@@ -343,17 +340,13 @@
       const s = 512,
         c = mkCanvas(s, s),
         x = c.getContext('2d');
-      x.fillStyle = '#f3edde';
+      x.fillStyle = '#FAF8F5';
       x.fillRect(0, 0, s, s);
-      for (let i = 0; i < 1000; i++) {
-        x.fillStyle = 'rgba(120,105,70,' + (0.04 + Math.random() * 0.08).toFixed(3) + ')';
-        x.fillRect(Math.random() * s, Math.random() * s, 1.4, 1.4);
-      }
       const g = x.createLinearGradient(0, 0, s, 0);
-      g.addColorStop(0, 'rgba(0,0,0,.08)');
-      g.addColorStop(0.15, 'rgba(0,0,0,0)');
-      g.addColorStop(0.85, 'rgba(0,0,0,0)');
-      g.addColorStop(1, 'rgba(0,0,0,.08)');
+      g.addColorStop(0, 'rgba(26,22,20,.06)');
+      g.addColorStop(0.15, 'rgba(26,22,20,0)');
+      g.addColorStop(0.85, 'rgba(26,22,20,0)');
+      g.addColorStop(1, 'rgba(26,22,20,.06)');
       x.fillStyle = g;
       x.fillRect(0, 0, s, s);
       return tex(c);
@@ -371,55 +364,60 @@
       return new THREE.CanvasTexture(c);
     })();
 
-    // Editorial Book Cover Painters
+    // Editorial Book Cover Painters (Vector-rendered at 2048x3072 native resolution)
     function paintProjectFront(x, w, h, cfg) {
+      const sc = w / 1024;
+      x.save();
+      x.scale(sc, sc);
+      const dw = 1024, dh = 1536;
+
       // Background gradient
       const bg = cfg.spineBg || '#261812';
-      const g = x.createLinearGradient(0, 0, 0, h);
+      const g = x.createLinearGradient(0, 0, 0, dh);
       g.addColorStop(0, bg);
-      g.addColorStop(1, '#140D0A');
+      g.addColorStop(1, '#120B08');
       x.fillStyle = g;
-      x.fillRect(0, 0, w, h);
+      x.fillRect(0, 0, dw, dh);
 
-      // Fine linen grain
-      x.fillStyle = 'rgba(255,255,255,0.04)';
-      for (let i = 0; i < 300; i++) x.fillRect(Math.random() * w, Math.random() * h, 2, 2);
+      // Fine satin luster
+      x.fillStyle = 'rgba(255,255,255,0.025)';
+      for (let i = 0; i < 200; i++) x.fillRect(Math.random() * dw, Math.random() * dh, 1.5, 1.5);
 
       // Double gold/copper border
       x.strokeStyle = cfg.accent || '#C8653B';
       x.lineWidth = 4;
-      x.strokeRect(60, 60, w - 120, h - 120);
+      x.strokeRect(60, 60, dw - 120, dh - 120);
       x.lineWidth = 1.5;
-      x.strokeStyle = 'rgba(255,255,255,0.2)';
-      x.strokeRect(74, 74, w - 148, h - 148);
+      x.strokeStyle = 'rgba(255,255,255,0.22)';
+      x.strokeRect(74, 74, dw - 148, dh - 148);
 
       // Category Pill at top
       x.fillStyle = cfg.accent || '#C8653B';
-      rr(x, w / 2 - 130, 140, 260, 48, 24);
+      rr(x, dw / 2 - 130, 140, 260, 48, 24);
       x.fill();
       x.fillStyle = '#FFFFFF';
       x.font = "700 20px 'Space Mono', monospace";
       x.textAlign = 'center';
-      x.fillText(cfg.badge, w / 2, 172);
+      x.fillText(cfg.badge, dw / 2, 172);
 
       // Geometric crest / emblem
       x.strokeStyle = 'rgba(255,255,255,0.3)';
       x.lineWidth = 2;
       x.beginPath();
-      x.arc(w / 2, 340, 80, 0, Math.PI * 2);
+      x.arc(dw / 2, 340, 80, 0, Math.PI * 2);
       x.stroke();
       x.beginPath();
-      x.arc(w / 2, 340, 65, 0, Math.PI * 2);
+      x.arc(dw / 2, 340, 65, 0, Math.PI * 2);
       x.stroke();
 
       x.fillStyle = cfg.accent || '#C8653B';
       x.font = "800 48px 'Playfair Display', Georgia, serif";
-      x.fillText(cfg.title.substring(0, 2), w / 2, 356);
+      x.fillText(cfg.title.substring(0, 2), dw / 2, 356);
 
       // Big Project Title
       x.fillStyle = '#FFFFFF';
       x.font = "800 82px 'Playfair Display', Georgia, serif";
-      x.fillText(cfg.title, w / 2, 590);
+      x.fillText(cfg.title, dw / 2, 590);
 
       // Subtitle
       x.fillStyle = '#EAE5DB';
@@ -429,46 +427,53 @@
       let curY = 670;
       subWords.forEach((word) => {
         const test = line ? line + ' ' + word : word;
-        if (x.measureText(test).width > w - 240 && line) {
-          x.fillText(line, w / 2, curY);
+        if (x.measureText(test).width > dw - 240 && line) {
+          x.fillText(line, dw / 2, curY);
           line = word;
           curY += 44;
         } else line = test;
       });
-      if (line) x.fillText(line, w / 2, curY);
+      if (line) x.fillText(line, dw / 2, curY);
 
       // Gold divider line
       x.fillStyle = cfg.accent || '#C8653B';
-      x.fillRect(w / 2 - 60, curY + 40, 120, 3);
+      x.fillRect(dw / 2 - 60, curY + 40, 120, 3);
 
       // Author / Tech at bottom
       x.fillStyle = 'rgba(255,255,255,0.85)';
       x.font = "600 24px 'Space Mono', monospace";
-      x.fillText(cfg.author, w / 2, h - 180);
+      x.fillText(cfg.author, dw / 2, dh - 180);
 
       x.fillStyle = cfg.accent || '#C8653B';
       x.font = "700 20px 'Space Mono', monospace";
-      x.fillText(`ENGINEERED BY ADITYA RAJPUT • ${cfg.year}`, w / 2, h - 130);
+      x.fillText(`ENGINEERED BY ADITYA RAJPUT • ${cfg.year}`, dw / 2, dh - 130);
+
+      x.restore();
     }
 
     function paintBack(x, w, h, cfg) {
+      const sc = w / 1024;
+      x.save();
+      x.scale(sc, sc);
+      const dw = 1024, dh = 1536;
+
       x.fillStyle = cfg.backBg || '#261812';
-      x.fillRect(0, 0, w, h);
+      x.fillRect(0, 0, dw, dh);
       const ink = cfg.backInk || '255,255,255';
 
       // Header on back
-      x.fillStyle = 'rgba(' + ink + ',.7)';
+      x.fillStyle = 'rgba(' + ink + ',.75)';
       x.font = "700 24px 'Space Mono', monospace";
       x.textAlign = 'center';
-      x.fillText("PRODUCTION ARCHITECTURE", w / 2, 170);
+      x.fillText("PRODUCTION ARCHITECTURE", dw / 2, 170);
 
       x.fillStyle = cfg.accent || '#C8653B';
-      x.fillRect(w / 2 - 50, 195, 100, 3);
+      x.fillRect(dw / 2 - 50, 195, 100, 3);
 
       // Synopsis preview lines
       x.fillStyle = 'rgba(' + ink + ',.35)';
       for (let i = 0; i < 8; i++) {
-        const lw = i === 7 ? w - 460 : w - 260 - (i % 2) * 60;
+        const lw = i === 7 ? dw - 460 : dw - 260 - (i % 2) * 60;
         rr(x, 130, 260 + i * 46, lw, 14, 7);
         x.fill();
       }
@@ -476,52 +481,61 @@
       // Chip emblem
       x.fillStyle = 'rgba(' + ink + ',.3)';
       x.beginPath();
-      x.arc(w / 2, h - 360, 36, 0, 6.2832);
+      x.arc(dw / 2, dh - 360, 36, 0, 6.2832);
       x.fill();
 
       // Barcode box
       x.fillStyle = '#FFFFFF';
-      rr(x, w - 320, h - 230, 220, 120, 8);
+      rr(x, dw - 320, dh - 230, 220, 120, 8);
       x.fill();
 
       x.fillStyle = '#111111';
-      let bx = w - 300;
-      while (bx < w - 120) {
+      let bx = dw - 300;
+      while (bx < dw - 120) {
         const bw = 2 + Math.random() * 5;
-        if (Math.random() > 0.38) x.fillRect(bx, h - 215, bw, 70);
+        if (Math.random() > 0.38) x.fillRect(bx, dh - 215, bw, 70);
         bx += bw + 2 + Math.random() * 4;
       }
       x.font = '500 16px Arial';
       x.textAlign = 'center';
-      x.fillText('ADITYA • CSE • 2026', w - 210, h - 122);
+      x.fillText('ADITYA • CSE • 2026', dw - 210, dh - 122);
+
+      x.restore();
     }
 
     function paintSpine(x, w, h, cfg) {
+      const sc = h / 1536;
+      x.save();
+      x.scale(sc, sc);
+      const dw = 220, dh = 1536;
+
       x.fillStyle = cfg.spineBg || '#261812';
-      x.fillRect(0, 0, w, h);
+      x.fillRect(0, 0, dw, dh);
 
       // Gold headbands
       x.fillStyle = cfg.accent || '#C8653B';
-      x.fillRect(0, 0, w, 22);
-      x.fillRect(0, h - 22, w, 22);
+      x.fillRect(0, 0, dw, 22);
+      x.fillRect(0, dh - 22, dw, 22);
 
       x.save();
-      x.translate(w / 2, h / 2);
+      x.translate(dw / 2, dh / 2);
       x.rotate(Math.PI / 2);
       x.fillStyle = cfg.spineInk || '#FFFFFF';
       x.font = cfg.spineFont || "700 40px 'Playfair Display', Georgia";
-      drawSpaced(x, cfg.title.toUpperCase(), -h * 0.08, 14, 8);
+      drawSpaced(x, cfg.title.toUpperCase(), -dh * 0.08, 14, 8);
 
       x.globalAlpha = 0.85;
       x.fillStyle = cfg.accent || '#C8653B';
       x.font = "600 24px 'Space Mono', monospace";
-      drawSpaced(x, "ADITYA RAJPUT", h * 0.34, 8, 4);
+      drawSpaced(x, "ADITYA RAJPUT", dh * 0.34, 8, 4);
       x.globalAlpha = 1;
       x.restore();
 
       x.fillStyle = cfg.accent || '#C8653B';
-      x.fillRect(w / 2 - 20, 80, 40, 3);
-      x.fillRect(w / 2 - 20, h - 80, 40, 3);
+      x.fillRect(dw / 2 - 20, 80, 40, 3);
+      x.fillRect(dw / 2 - 20, dh - 80, 40, 3);
+
+      x.restore();
     }
 
     function trimToWidth(x, text, maxW) {
@@ -532,28 +546,55 @@
     }
 
     function makeIndexPageTex(cfg) {
-      const w = 1024,
-        h = 1536,
+      const w = 2048,
+        h = 3072,
         c = mkCanvas(w, h),
         x = c.getContext('2d');
-      x.fillStyle = '#F5F2EC';
-      x.fillRect(0, 0, w, h);
+      const sc = w / 1024;
+      x.save();
+      x.scale(sc, sc);
+      const dw = 1024, dh = 1536;
 
-      // Grain
-      x.fillStyle = 'rgba(130,110,80,0.06)';
-      for (let i = 0; i < 1500; i++) x.fillRect(Math.random() * w, Math.random() * h, 1.2, 1.2);
+      // Base luxury cream ivory paper
+      x.fillStyle = '#FAF8F5';
+      x.fillRect(0, 0, dw, dh);
 
-      x.fillStyle = '#261812';
+      // Spine gutter shadow gradient on the left edge (crease where page attaches to binding)
+      const gutterG = x.createLinearGradient(0, 0, 200, 0);
+      gutterG.addColorStop(0, 'rgba(30, 20, 15, 0.12)');
+      gutterG.addColorStop(0.4, 'rgba(30, 20, 15, 0.03)');
+      gutterG.addColorStop(1, 'rgba(30, 20, 15, 0)');
+      x.fillStyle = gutterG;
+      x.fillRect(0, 0, 200, dh);
+
+      // Outer page edge subtle shadow (right edge)
+      const edgeG = x.createLinearGradient(dw - 40, 0, dw, 0);
+      edgeG.addColorStop(0, 'rgba(30, 20, 15, 0)');
+      edgeG.addColorStop(1, 'rgba(30, 20, 15, 0.04)');
+      x.fillStyle = edgeG;
+      x.fillRect(dw - 40, 0, 40, dh);
+
+      // Thin decorative corner framing on the recto page
+      x.strokeStyle = 'rgba(201, 162, 75, 0.22)';
+      x.lineWidth = 1;
+      x.strokeRect(230, 80, dw - 310, dh - 160);
+
+      // Header positioned safely in the right 75% of the page
+      const cx = 600; // Visual center of the visible page area (away from gutter)
+
+      x.fillStyle = '#1A1614';
       x.textAlign = 'center';
-      x.font = "800 76px 'Playfair Display', Georgia, serif";
-      x.fillText('ARCHITECTURE', w / 2, 180);
+      x.font = "800 64px 'Playfair Display', Georgia, serif";
+      x.fillText('ARCHITECTURE', cx, 190);
 
+      // Gold accent divider
       x.fillStyle = cfg.accent || '#C8653B';
-      x.fillRect(w / 2 - 120, 215, 240, 3);
+      x.fillRect(cx - 100, 222, 200, 3.5);
 
-      x.fillStyle = '#70685F';
-      x.font = "600 22px 'Space Mono', monospace";
-      x.fillText(cfg.title + ' — MODULE BREAKDOWN', w / 2, 260);
+      // Subheading
+      x.fillStyle = '#7A6F65';
+      x.font = "700 20px 'Space Mono', monospace";
+      x.fillText(cfg.title + ' — MODULE BREAKDOWN', cx, 268);
 
       const list = cfg.chapters || [
         'Architecture Overview',
@@ -563,29 +604,38 @@
         'Deployment & Verification'
       ];
 
-      x.textAlign = 'left';
-      x.font = "600 42px 'Plus Jakarta Sans', sans-serif";
-      let y = 380;
+      // Chapter listing: starts at x = 250, ends at x = 940 (690px width)
+      let y = 390;
       for (let i = 0; i < list.length; i++) {
         const n = String(i + 1).padStart(2, '0');
         const pageNo = String(10 + i * 15).padStart(3, ' ');
-        const left = n + '. ' + trimToWidth(x, list[i], 620);
+        const leftTitle = trimToWidth(x, list[i], 490);
 
-        x.fillStyle = '#261812';
-        x.fillText(left, 140, y);
+        // Chapter number
+        x.textAlign = 'left';
+        x.fillStyle = cfg.accent || '#C8653B';
+        x.font = "700 32px 'Space Mono', monospace";
+        x.fillText(n + '.', 250, y);
 
+        // Chapter title
+        x.fillStyle = '#1A1614';
+        x.font = "600 34px 'Plus Jakarta Sans', sans-serif";
+        x.fillText(leftTitle, 315, y);
+
+        // Page number
         x.textAlign = 'right';
         x.fillStyle = cfg.accent || '#C8653B';
-        x.font = "700 36px 'Space Mono', monospace";
-        x.fillText('P.' + pageNo.trim(), w - 140, y);
+        x.font = "700 30px 'Space Mono', monospace";
+        x.fillText('P.' + pageNo.trim(), 940, y);
 
-        x.textAlign = 'left';
-        x.font = "600 42px 'Plus Jakarta Sans', sans-serif";
+        // Subtle rule under each chapter
+        x.fillStyle = 'rgba(26, 22, 20, 0.08)';
+        x.fillRect(250, y + 22, 690, 1.5);
 
-        x.fillStyle = 'rgba(38,24,18,0.12)';
-        x.fillRect(140, y + 18, w - 280, 1.5);
-        y += 120;
+        y += 124;
       }
+
+      x.restore();
       return tex(c);
     }
 
@@ -641,23 +691,23 @@
         side: THREE.DoubleSide
       });
 
-      const edgeColor = cfg.edge || '#EAE5DB';
-      const mEdge = std({ color: edgeColor, bumpMap: laminateBump, bumpScale: 0.0035, roughness: 0.68, envMapIntensity: 0.3 });
+      const edgeColor = cfg.edge || '#FAF7F2';
+      const mEdge = std({ color: edgeColor, bumpMap: laminateBump, bumpScale: 0.002, roughness: 0.68, envMapIntensity: 0.3 });
 
-      // Front cover texture
-      const cFront = mkCanvas(1024, 1536);
-      paintProjectFront(cFront.getContext('2d'), 1024, 1536, cfg);
-      const mFront = std({ map: tex(cFront), bumpMap: laminateBump, bumpScale: 0.0035, roughness: 0.52, envMapIntensity: 0.3 });
+      // Front cover texture - 2048 x 3072 crisp resolution
+      const cFront = mkCanvas(2048, 3072);
+      paintProjectFront(cFront.getContext('2d'), 2048, 3072, cfg);
+      const mFront = std({ map: tex(cFront), bumpMap: laminateBump, bumpScale: 0.002, roughness: 0.48, envMapIntensity: 0.35 });
 
-      // Back cover texture
-      const cBack = mkCanvas(1024, 1536);
-      paintBack(cBack.getContext('2d'), 1024, 1536, cfg);
-      const mBack = std({ map: tex(cBack), bumpMap: laminateBump, bumpScale: 0.0035, roughness: 0.58, envMapIntensity: 0.26 });
+      // Back cover texture - 2048 x 3072 crisp resolution
+      const cBack = mkCanvas(2048, 3072);
+      paintBack(cBack.getContext('2d'), 2048, 3072, cfg);
+      const mBack = std({ map: tex(cBack), bumpMap: laminateBump, bumpScale: 0.002, roughness: 0.52, envMapIntensity: 0.3 });
 
-      // Spine texture
-      const cSpine = mkCanvas(220, 1536);
-      paintSpine(cSpine.getContext('2d'), 220, 1536, cfg);
-      const mSpine = std({ map: tex(cSpine), bumpMap: clothBump, bumpScale: 0.006, roughness: 0.78, envMapIntensity: 0.22 });
+      // Spine texture - 440 x 3072 crisp resolution
+      const cSpine = mkCanvas(440, 3072);
+      paintSpine(cSpine.getContext('2d'), 440, 3072, cfg);
+      const mSpine = std({ map: tex(cSpine), bumpMap: clothBump, bumpScale: 0.003, roughness: 0.72, envMapIntensity: 0.25 });
 
       // Back cover pivot
       const backPivot = new THREE.Group();
@@ -701,7 +751,9 @@
         pp.add(pm);
         float.add(pp);
         pages.push(pp);
-        pageF.push(0.3 * Math.pow(1 - i / PAGE_N, 2.6));
+        // Page 0 (index page) stays nearly flat against the page block for pristine legibility
+        const factor = i === 0 ? 0.06 : 0.3 * Math.pow(1 - i / PAGE_N, 2.6);
+        pageF.push(factor);
       }
 
       const pagesB = [],
@@ -1319,8 +1371,9 @@
 
     const clock = new THREE.Clock();
     const idle = RM ? 0 : 1;
-    const DETAIL_OPEN_ANGLE = 0.88;
-    const DETAIL_OPEN_SWAY = 0.035;
+    // Open wide (~77 deg) so cover never obstructs inside index page
+    const DETAIL_OPEN_ANGLE = 1.34;
+    const DETAIL_OPEN_SWAY = 0.025;
 
     function tickBook(b, dt, t) {
       const s = b.springs;
