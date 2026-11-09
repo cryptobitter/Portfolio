@@ -286,11 +286,17 @@
     const bookRoot = new THREE.Group();
     scene.add(bookRoot);
 
-    // Procedural textures
-    function tex(c) {
+    // Procedural textures (sharp linear sampling without downsampled mipmap blur)
+    function tex(c, sharp = true) {
       const t = new THREE.CanvasTexture(c);
       if (THREE.SRGBColorSpace) t.colorSpace = THREE.SRGBColorSpace;
       t.anisotropy = ANISO;
+      if (sharp) {
+        t.generateMipmaps = false;
+        t.minFilter = THREE.LinearFilter;
+        t.magFilter = THREE.LinearFilter;
+      }
+      t.needsUpdate = true;
       return t;
     }
 
@@ -591,27 +597,31 @@
       x.fillStyle = edgeG;
       x.fillRect(dw - 40, 0, 40, dh);
 
-      // Thin decorative corner framing on the recto page
-      x.strokeStyle = 'rgba(201, 162, 75, 0.22)';
+      // Double gold/copper framing on the recto page
+      x.strokeStyle = 'rgba(201, 162, 75, 0.35)';
+      x.lineWidth = 1.5;
+      x.strokeRect(210, 70, dw - 280, dh - 140);
+      x.strokeStyle = 'rgba(201, 162, 75, 0.15)';
       x.lineWidth = 1;
-      x.strokeRect(230, 80, dw - 310, dh - 160);
+      x.strokeRect(218, 78, dw - 296, dh - 156);
 
       // Header positioned safely in the right 75% of the page
-      const cx = 600; // Visual center of the visible page area (away from gutter)
+      const cx = 595;
 
-      x.fillStyle = '#1A1614';
+      // Big Bold High-Contrast Heading
+      x.fillStyle = '#0D0A08';
       x.textAlign = 'center';
-      x.font = "800 64px 'Playfair Display', Georgia, serif";
-      x.fillText('ARCHITECTURE', cx, 190);
+      x.font = "900 76px 'Plus Jakarta Sans', sans-serif";
+      x.fillText('ARCHITECTURE', cx, 185);
 
-      // Gold accent divider
+      // Bold accent divider
       x.fillStyle = cfg.accent || '#C8653B';
-      x.fillRect(cx - 100, 222, 200, 3.5);
+      x.fillRect(cx - 130, 218, 260, 4.5);
 
-      // Subheading
-      x.fillStyle = '#7A6F65';
-      x.font = "700 20px 'Space Mono', monospace";
-      x.fillText(cfg.title + ' — MODULE BREAKDOWN', cx, 268);
+      // High-contrast Subheading
+      x.fillStyle = '#3E332A';
+      x.font = "800 24px 'Space Mono', monospace";
+      x.fillText(cfg.title + ' — SYSTEM BREAKDOWN', cx, 268);
 
       const list = cfg.chapters || [
         'Architecture Overview',
@@ -621,48 +631,55 @@
         'Deployment & Verification'
       ];
 
-      // Chapter listing: starts at x = 250, ends at x = 940 (690px width)
+      // Chapter listing: starts at x = 240, ends at x = 950 (710px width)
       let y = 390;
       for (let i = 0; i < list.length; i++) {
         const n = String(i + 1).padStart(2, '0');
         const pageNo = String(10 + i * 15).padStart(3, ' ');
-        const leftTitle = trimToWidth(x, list[i], 490);
+        const leftTitle = trimToWidth(x, list[i], 460);
         const isMatched = highlightTech && (
           list[i].toLowerCase().includes(highlightTech.toLowerCase()) ||
           highlightTech.toLowerCase().includes(list[i].split(' ')[0].toLowerCase())
         );
 
         if (isMatched) {
-          x.fillStyle = 'rgba(201, 162, 75, 0.18)';
-          rr(x, 240, y - 36, 700, 52, 6);
+          // Vibrant spotlight plaque
+          x.fillStyle = 'rgba(217, 119, 6, 0.22)';
+          rr(x, 224, y - 44, 740, 70, 8);
           x.fill();
-          x.strokeStyle = cfg.accent || '#C8653B';
-          x.lineWidth = 1.5;
+          x.strokeStyle = cfg.accent || '#D97706';
+          x.lineWidth = 2.5;
           x.stroke();
+
+          // Small gold bullet dot
+          x.fillStyle = cfg.accent || '#D97706';
+          x.beginPath();
+          x.arc(238, y - 10, 5, 0, Math.PI * 2);
+          x.fill();
         }
 
-        // Chapter number
+        // Chapter number - bold high contrast
         x.textAlign = 'left';
         x.fillStyle = cfg.accent || '#C8653B';
-        x.font = "700 32px 'Space Mono', monospace";
-        x.fillText(n + '.', 250, y);
+        x.font = "800 44px 'Space Mono', monospace";
+        x.fillText(n + '.', 254, y);
 
-        // Chapter title
-        x.fillStyle = '#1A1614';
-        x.font = (isMatched ? "700 34px" : "600 34px") + " 'Plus Jakarta Sans', sans-serif";
-        x.fillText(leftTitle, 315, y);
+        // Chapter title - heavy bold deep obsidian ink
+        x.fillStyle = '#0D0A08';
+        x.font = (isMatched ? "800 46px" : "700 44px") + " 'Plus Jakarta Sans', sans-serif";
+        x.fillText(leftTitle, 344, y);
 
-        // Page number
+        // Page number - high contrast
         x.textAlign = 'right';
-        x.fillStyle = cfg.accent || '#C8653B';
-        x.font = "700 30px 'Space Mono', monospace";
-        x.fillText('P.' + pageNo.trim(), 940, y);
+        x.fillStyle = isMatched ? (cfg.accent || '#D97706') : '#4A3E36';
+        x.font = "800 38px 'Space Mono', monospace";
+        x.fillText('P.' + pageNo.trim(), 946, y);
 
-        // Subtle rule under each chapter
-        x.fillStyle = 'rgba(26, 22, 20, 0.08)';
-        x.fillRect(250, y + 22, 690, 1.5);
+        // High contrast divider rule under each chapter
+        x.fillStyle = isMatched ? 'rgba(217, 119, 6, 0.4)' : 'rgba(26, 22, 20, 0.12)';
+        x.fillRect(224, y + 26, 740, 2);
 
-        y += 124;
+        y += 134;
       }
 
       x.restore();
@@ -673,7 +690,10 @@
         h = 3072,
         c = mkCanvas(w, h);
       paintIndexPage(c.getContext('2d'), w, h, cfg, null);
-      const t = tex(c);
+      const t = tex(c, true);
+      t.generateMipmaps = false;
+      t.minFilter = THREE.LinearFilter;
+      t.magFilter = THREE.LinearFilter;
       t.needsUpdate = true;
       return { canvas: c, texture: t };
     }
@@ -982,7 +1002,7 @@
 
       SLOTS.detail = portrait
         ? { p: [0, 0.75, 1.25], r: [0, 0, 0], s: 1.15 }
-        : { p: [-1.45, -0.05, 1.35], r: [0, 0.02, 0], s: 1.3 };
+        : { p: [-1.42, -0.02, 1.48], r: [0, 0.02, 0], s: 1.4 };
     }
 
     function applyMode() {
