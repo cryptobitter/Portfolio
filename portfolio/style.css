@@ -912,7 +912,7 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
 .section-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 100px 4vw;
+  padding: 24px 4vw;
 }
 
 .section-header-editorial {

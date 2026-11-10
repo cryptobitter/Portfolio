@@ -50,12 +50,22 @@ window.TECH_CASTLE_TOOLS = [
     icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#E0784B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2" fill="rgba(224,120,75,0.25)"/><path d="M9 9h6v6H9z"/><path d="M2 9h3M2 15h3M19 9h3M19 15h3M9 2v3M15 2v3M9 19v3M15 19v3"/></svg>'
   },
   {
+    id: 'langchain',
+    name: 'LangChain',
+    category: 'LLM / RAG',
+    catClass: 'cat-ai',
+    layer: 4,
+    gridArea: '2 / 7 / 3 / 8', // Row 2, Col 7 (right tower turret)
+    mobileGroup: 'towers',
+    icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M19 11c-.5-3.5-3.5-6-7-6-3.9 0-7 3.1-7 7 0 2.2 1 4.2 2.6 5.5L7 21l3.5-1.5c.5.3 1 .4 1.5.5v-3c-.8-.2-1.5-.7-2-1.4-.8-1.1-1-2.5-.5-3.8.7-1.8 2.6-3 4.5-3h.5l3.5-2v3.2c.7.6 1.2 1.5 1.4 2.5.4 1.9-.3 3.9-1.8 5.1-.6.5-1.3.8-2.1.9v3c4-.6 7-4 7-8.5z" fill="#00A67E" fill-opacity="0.25" stroke="#00A67E" stroke-width="1.5" stroke-linejoin="round"/><path d="M17 9.5l3.5 2.5-3.5 2.5" stroke="#E2B855" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11.5" cy="9.5" r="1.5" fill="#E2B855"/></svg>'
+  },
+  {
     id: 'next-block',
     name: '+ Next Block',
     category: 'Future',
     catClass: 'cat-empty',
     layer: 5,
-    gridArea: '2 / 7 / 3 / 8', // Row 2, Col 7 (right tower peak dashed block)
+    gridArea: '1 / 7 / 2 / 8', // Row 1, Col 7 (right tower peak dashed block)
     mobileGroup: 'towers',
     isDashed: true,
     icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'
@@ -209,13 +219,14 @@ window.TECH_CASTLE_TOOLS = [
   // (Col 4 is the Arched Gate opening)
   {
     id: 'vectordb',
-    name: 'Vector DB',
-    category: 'LLM / RAG',
-    catClass: 'cat-ai',
+    name: 'Vector Database',
+    category: 'Database',
+    secondaryCategory: 'LLM / RAG',
+    catClass: 'cat-db',
     layer: 1,
     gridArea: '5 / 5 / 6 / 6', // Row 5, Col 5 (foundation right flank of gate)
     mobileGroup: 'foundation',
-    icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#A855F7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="2.5" fill="rgba(168,85,247,0.25)"/><path d="M4 5v14c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5V5"/><path d="M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5"/><circle cx="12" cy="12" r="1.5" fill="#A855F7"/></svg>'
+    icon: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#3ECF8E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="2.5" fill="rgba(62,207,142,0.25)"/><path d="M4 5v14c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5V5"/><path d="M4 12c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5"/><circle cx="12" cy="12" r="1.5" fill="#3ECF8E"/></svg>'
   },
   {
     id: 'redis',

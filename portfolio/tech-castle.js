@@ -64,15 +64,16 @@
           </li>
         `;
       } else {
+        const catAttr = tool.secondaryCategory ? `${tool.category}, ${tool.secondaryCategory}` : tool.category;
         castleHtml += `
           <li class="castle-tile ${tool.catClass}" 
               data-id="${tool.id}"
-              data-category="${tool.category}" 
+              data-category="${catAttr}" 
               data-layer="${tool.layer}"
               style="grid-area: ${tool.gridArea};"
               tabindex="0"
               role="listitem"
-              aria-label="${tool.name}, ${tool.category}">
+              aria-label="${tool.name}, ${catAttr}">
             <div class="tile-stone-bevel"></div>
             <div class="tile-icon-box">${tool.icon}</div>
             <span class="tile-name">${tool.name}</span>
@@ -178,7 +179,8 @@
 
           castleTiles.forEach(tile => {
             const tileCat = tile.getAttribute('data-category');
-            if (tileCat === cat) {
+            const isMatch = tileCat && (tileCat === cat || tileCat.split(',').map(s => s.trim()).includes(cat));
+            if (isMatch) {
               tile.classList.add('is-highlighted');
               tile.classList.remove('is-dimmed');
             } else {

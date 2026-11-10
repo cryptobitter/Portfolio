@@ -313,6 +313,15 @@ textarea:focus-visible,
 }
 
 /* ==========================================================================
+   GLOBAL SECTION CONTAINER (COMPACT EDITORIAL SPACING BETWEEN SECTIONS)
+   ========================================================================== */
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 4vw !important;
+}
+
+/* ==========================================================================
    SECTION: #projects (FEATURED PROJECTS & 3D BOOKS SHOWCASE)
    ========================================================================== */
 .projects-section {
@@ -320,7 +329,7 @@ textarea:focus-visible,
   color: var(--marble-primary) !important;
   position: relative;
   overflow: hidden;
-  padding: 60px 0 40px !important;
+  padding: 35px 0 20px !important;
 }
 
 /* Subtle Battlement Top Border */
@@ -380,8 +389,8 @@ textarea:focus-visible,
 }
 
 .books-showcase-root {
-  height: 560px !important;
-  min-height: 480px !important;
+  height: 510px !important;
+  min-height: 440px !important;
 }
 @media (max-width: 900px) {
   .books-showcase-root {
@@ -709,7 +718,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   background-color: var(--stone-deepest) !important;
   color: var(--marble-primary) !important;
   position: relative;
-  padding: 55px 0 65px !important;
+  padding: 28px 0 35px !important;
 }
 
 /* Crenellated Battlement Transition Divider at Top */
@@ -1762,7 +1771,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   background-color: var(--stone-darker) !important;
   color: var(--marble-primary) !important;
   position: relative;
-  padding: 55px 0 65px !important;
+  padding: 28px 0 35px !important;
 }
 
 /* Battlement Divider at Top of Experience */
@@ -2077,7 +2086,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   background-color: var(--stone-deepest) !important;
   color: var(--marble-primary) !important;
   position: relative;
-  padding: 55px 0 50px !important;
+  padding: 28px 0 30px !important;
 }
 
 /* Battlement Divider at Top of Contact */
@@ -2401,14 +2410,17 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 
 /* Compact Responsive Section Spacing */
 @media (max-width: 768px) {
+  .section-container {
+    padding: 8px 4vw !important;
+  }
   .projects-section {
-    padding: 45px 0 30px !important;
+    padding: 24px 0 16px !important;
   }
   .process-skills-section,
   .experience-section {
-    padding: 45px 0 45px !important;
+    padding: 24px 0 24px !important;
   }
   .contact-section {
-    padding: 45px 0 35px !important;
+    padding: 24px 0 20px !important;
   }
 }
