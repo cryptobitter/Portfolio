@@ -782,39 +782,52 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   align-items: center;
 }
 
-.banner-mounts {
-  display: flex;
-  justify-content: space-between;
-  width: 82%;
-  height: 22px;
-}
-
-.banner-mount {
+.banner-v-mount {
+  position: relative;
+  width: 86%;
+  height: 42px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.banner-bracket {
-  width: 16px;
-  height: 7px;
-  background: #181615;
-  border: 1px solid var(--banner-gold-trim);
-  border-radius: 3px 3px 0 0;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.8);
+.banner-wall-peg {
+  width: 20px;
+  height: 10px;
+  border-radius: 5px 5px 2px 2px;
+  background: radial-gradient(circle at 40% 30%, #F5DE98, var(--banner-gold-trim) 65%, #6A4E1B 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 8px rgba(201, 162, 75, 0.5);
+  z-index: 12;
 }
 
-.banner-rope {
-  width: 3px;
-  height: 15px;
-  background: repeating-linear-gradient(
-    180deg,
-    #8E713E 0px,
-    #8E713E 3px,
-    #4A3B20 3px,
-    #4A3B20 6px
-  );
-  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.6);
+.banner-v-ropes {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+.banner-tab-loops {
+  position: absolute;
+  top: 36px;
+  width: 78%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 11;
+  pointer-events: none;
+}
+
+.banner-tab-loop {
+  width: 16px;
+  height: 22px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, var(--banner-cloth-top), var(--banner-cloth-bottom));
+  border: 1.5px solid var(--banner-gold-stitch);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
 .banner-rod {
@@ -1027,20 +1040,23 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 
 .banner-step-item .step-num {
   font-family: var(--font-serif) !important;
-  font-size: 1.05rem !important;
+  font-size: 1.08rem !important;
   font-weight: 800 !important;
   color: var(--banner-gold-numeral) !important;
-  width: 36px !important;
-  height: 36px !important;
+  width: 38px !important;
+  height: 38px !important;
   border-radius: 50% !important;
-  border: 1.5px solid var(--banner-gold-stitch) !important;
-  background: rgba(14, 12, 11, 0.35) !important;
+  border: 1.5px solid var(--banner-gold-trim) !important;
+  background: radial-gradient(circle at 35% 35%, rgba(122, 36, 50, 0.95), rgba(94, 26, 36, 0.98)) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
-  text-shadow: 0 0 10px rgba(201, 162, 75, 0.45) !important;
+  box-shadow: 
+    0 3px 10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    0 0 12px rgba(201, 162, 75, 0.3) !important;
+  text-shadow: 0 0 8px rgba(201, 162, 75, 0.6) !important;
   transition: all 0.25s ease !important;
 }
 
