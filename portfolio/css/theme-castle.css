@@ -765,11 +765,15 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 /* Two-Row Grid: Row 1 = Headings (aligned bottoms), Row 2 = Banner & Tools (aligned tops) */
 .process-skills-grid {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
+  grid-template-columns: 42% 58% !important;
   grid-template-rows: auto 1fr !important;
-  column-gap: 56px !important;
+  column-gap: 48px !important;
   row-gap: 20px !important;
   align-items: start !important;
+}
+
+.process-banner-col {
+  min-width: 380px !important;
 }
 
 .process-heading-block {
@@ -1221,80 +1225,528 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   }
 }
 
-/* Capabilities & Skills Matrix Grid */
+/* ==========================================================================
+   SECTION: TOOLS & TECH STACK CASTLE
+   ========================================================================== */
 .skills-col {
-  padding-left: 20px;
+  padding-left: 12px;
 }
 @media (max-width: 900px) {
-  .skills-col { padding-left: 0; margin-top: 50px; }
+  .skills-col { padding-left: 0; margin-top: 40px; }
 }
 
+/* Category Visual Legend & Toggle Filter Buttons */
 .skills-legend {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px 12px !important;
   border-bottom: 1px solid var(--gold-hairline) !important;
-  padding-bottom: 14px !important;
-  margin-bottom: 22px !important;
+  padding-bottom: 16px !important;
+  margin-bottom: 20px !important;
 }
 
-.legend-item {
+.skills-legend .legend-item {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(201, 162, 75, 0.15) !important;
+  border-radius: 20px !important;
+  padding: 5px 12px !important;
   color: var(--marble-muted) !important;
   font-family: var(--font-mono) !important;
-  font-size: 0.72rem !important;
-  letter-spacing: 0.08em !important;
+  font-size: 0.74rem !important;
+  letter-spacing: 0.06em !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  transition: all 0.22s ease !important;
+  outline: none !important;
 }
 
-.skills-matrix-grid {
-  background: var(--stone-base) !important;
-  border: 1px solid var(--gold-hairline) !important;
-  padding: 24px !important;
-}
-
-.skill-circle-card {
-  background: var(--stone-darker) !important;
-  border: 1px solid var(--gold-hairline) !important;
+.skills-legend .legend-item:hover {
   color: var(--marble-primary) !important;
-  transition: all 0.25s ease !important;
+  border-color: rgba(201, 162, 75, 0.45) !important;
+  background: rgba(201, 162, 75, 0.08) !important;
+  transform: translateY(-1px);
 }
 
-.skill-circle-card:hover {
-  background: var(--stone-elevated) !important;
-  border-color: var(--gold-highlight) !important;
-  box-shadow: 0 0 14px rgba(201, 162, 75, 0.3) !important;
+.skills-legend .legend-item.is-filter-active {
+  color: #FFFFFF !important;
+  background: rgba(201, 162, 75, 0.22) !important;
+  border-color: var(--gold-accent) !important;
+  box-shadow: 0 0 12px rgba(201, 162, 75, 0.35) !important;
+}
+
+.skills-legend .legend-item:focus-visible {
+  outline: 2px solid var(--gold-accent) !important;
+  outline-offset: 2px !important;
+}
+
+/* Legend & Tile Dots with Crisp Glowing Hues */
+.legend-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  flex-shrink: 0 !important;
+}
+
+.legend-dot.cat-lang, .tile-dot.cat-lang { background-color: #F7DF1E !important; box-shadow: 0 0 6px rgba(247, 223, 30, 0.7) !important; }
+.legend-dot.cat-frontend, .tile-dot.cat-frontend { background-color: #61DAFB !important; box-shadow: 0 0 6px rgba(97, 218, 251, 0.7) !important; }
+.legend-dot.cat-backend, .tile-dot.cat-backend { background-color: #05998B !important; box-shadow: 0 0 6px rgba(5, 153, 139, 0.7) !important; }
+.legend-dot.cat-ai, .tile-dot.cat-ai { background-color: #F55036 !important; box-shadow: 0 0 6px rgba(245, 80, 54, 0.7) !important; }
+.legend-dot.cat-db, .tile-dot.cat-db { background-color: #3ECF8E !important; box-shadow: 0 0 6px rgba(62, 207, 142, 0.7) !important; }
+.legend-dot.cat-devops, .tile-dot.cat-devops { background-color: #2496ED !important; box-shadow: 0 0 6px rgba(36, 150, 237, 0.7) !important; }
+.legend-dot.cat-iot, .tile-dot.cat-iot { background-color: #E0784B !important; box-shadow: 0 0 6px rgba(224, 120, 75, 0.7) !important; }
+
+/* Castle Matrix Outer Container */
+.skills-matrix-grid {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  display: block !important;
+}
+
+.castle-stage {
+  position: relative;
+  width: 100%;
+  padding-top: 26px; /* clearance for pennant */
+}
+
+/* --- Heraldic Crimson Pennant atop Left Tower (above Groq API) --- */
+.castle-pennant {
+  position: absolute;
+  top: -6px;
+  left: calc((100% - (6 * 4px)) / 14); /* perfectly centered above column 1 */
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.pennant-pole {
+  width: 3px;
+  height: 34px;
+  background: linear-gradient(180deg, #F9E7B9 0%, #C9A24B 50%, #5E4112 100%);
+  border-radius: 2px 2px 0 0;
+  position: relative;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+
+.pennant-pole::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -2.5px;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #FFF4D0 0%, #C9A24B 100%);
+  transform: rotate(45deg);
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(201, 162, 75, 0.7);
+}
+
+.pennant-cloth-wrap {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 54px;
+  height: 26px;
+  transform-origin: 0% 50%;
+  animation: pennantFlutter 3.4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+}
+
+.pennant-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@keyframes pennantFlutter {
+  0% { transform: perspective(300px) rotateY(0deg) skewY(0deg); }
+  25% { transform: perspective(300px) rotateY(-14deg) skewY(2.5deg); }
+  50% { transform: perspective(300px) rotateY(8deg) skewY(-2deg); }
+  75% { transform: perspective(300px) rotateY(-6deg) skewY(1deg); }
+  100% { transform: perspective(300px) rotateY(3deg) skewY(-0.5deg); }
+}
+
+/* --- Castle 7-Column Grid --- */
+.castle-grid {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(5, minmax(82px, auto)) 24px !important;
+  gap: 4px !important; /* 4px Mortar Gap */
+  position: relative;
+}
+
+/* --- Stone Block Tool Tiles --- */
+.castle-tile {
+  position: relative;
+  min-height: 82px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 8px 6px !important;
+  background: var(--stone-base) !important;
+  border: 1px solid rgba(201, 162, 75, 0.24) !important;
+  border-radius: 6px !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.7),
+    0 4px 10px rgba(0, 0, 0, 0.45) !important;
+  cursor: pointer !important;
+  outline: none !important;
+  text-align: center !important;
+  user-select: none !important;
+  transition: transform 0.22s cubic-bezier(0.2, 0, 0.2, 1),
+              box-shadow 0.22s ease,
+              border-color 0.22s ease,
+              background-color 0.22s ease,
+              opacity 0.25s ease,
+              filter 0.25s ease !important;
+}
+
+/* Masonry stone chiseling effect */
+.castle-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(circle at 50% 0%, rgba(201, 162, 75, 0.06) 0%, transparent 70%);
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+.castle-tile:hover {
   transform: translateY(-2px) !important;
+  border-color: var(--gold-accent) !important;
+  background: var(--stone-elevated) !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.16),
+    0 8px 20px rgba(0, 0, 0, 0.6),
+    0 0 14px rgba(201, 162, 75, 0.4) !important;
+  z-index: 10 !important;
 }
 
-.process-skills-section .circle-icon,
-.skill-circle-card .circle-icon {
-  width: 46px !important;
-  height: 46px !important;
-  border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(201, 162, 75, 0.25) !important;
+.castle-tile:focus-visible {
+  outline: 2px solid var(--gold-accent) !important;
+  outline-offset: 2px !important;
+  z-index: 12 !important;
+}
+
+/* Filter States */
+.castle-tile.is-highlighted {
+  border-color: var(--gold-accent) !important;
+  background: var(--stone-elevated) !important;
+  box-shadow: 
+    inset 0 0 10px rgba(201, 162, 75, 0.25),
+    0 0 16px rgba(201, 162, 75, 0.5) !important;
+  z-index: 5 !important;
+}
+
+.castle-tile.is-dimmed {
+  opacity: 0.22 !important;
+  filter: grayscale(0.7) !important;
+}
+
+/* Dashed Next Block Tile */
+.castle-tile.tile-dashed {
+  border: 1.5px dashed rgba(201, 162, 75, 0.5) !important;
+  background: rgba(18, 16, 14, 0.45) !important;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.55) !important;
+  color: var(--marble-muted) !important;
+}
+
+.castle-tile.tile-dashed:hover {
+  border-color: var(--gold-accent) !important;
+  background: rgba(201, 162, 75, 0.1) !important;
+  color: var(--marble-primary) !important;
+}
+
+/* Tile Icon Box */
+.tile-icon-box {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(201, 162, 75, 0.18) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  margin-bottom: 10px !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  margin-bottom: 6px !important;
+  transition: transform 0.2s ease, border-color 0.2s ease !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
 }
 
-.process-skills-section .circle-icon svg,
-.skill-circle-card .circle-icon svg {
-  width: 26px !important;
-  height: 26px !important;
+.tile-icon-box svg {
+  width: 20px !important;
+  height: 20px !important;
   display: block !important;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4)) !important;
-  transition: transform 0.25s ease !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)) !important;
 }
 
-.skill-circle-card:hover .circle-icon {
-  background: rgba(201, 162, 75, 0.16) !important;
-  border-color: var(--gold-highlight) !important;
+.castle-tile:hover .tile-icon-box {
   transform: scale(1.08) !important;
-  box-shadow: 0 0 16px rgba(201, 162, 75, 0.35) !important;
+  border-color: rgba(201, 162, 75, 0.5) !important;
 }
 
-.skill-circle-card:hover .circle-icon svg {
-  transform: scale(1.06) !important;
+/* Tile Name: Wrap onto 2 lines, >= 12px, NEVER truncated */
+.tile-name {
+  font-size: 0.77rem !important; /* 12.3px */
+  font-weight: 600 !important;
+  font-family: var(--font-sans) !important;
+  color: var(--marble-primary) !important;
+  line-height: 1.22 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  max-width: 100% !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: visible !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Category Dot Indicator */
+.tile-cat-indicator {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.tile-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Tooltip with Category */
+.tile-tooltip {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--stone-darkest);
+  color: var(--gold-accent);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border: 1px solid var(--gold-accent);
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 30;
+}
+
+.tile-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: var(--gold-accent) transparent transparent transparent;
+}
+
+.castle-tile:hover .tile-tooltip,
+.castle-tile:focus-visible .tile-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* --- Battlements (Merlons) on Row 3 Cols 3 and 5 --- */
+.castle-merlon {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+}
+
+.merlon-stone {
+  width: 68%;
+  height: 48px;
+  background: var(--stone-base);
+  border: 1px solid var(--gold-hairline);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.merlon-stone::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: var(--gold-hairline);
+  opacity: 0.8;
+}
+
+/* --- Arched Gate Portal (Row 5 Col 4) --- */
+.castle-gate-portal {
+  position: relative;
+  background: #090807 !important;
+  border: 1px solid rgba(201, 162, 75, 0.35) !important;
+  border-bottom: none !important;
+  border-radius: 36px 36px 0 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  overflow: hidden !important;
+  box-shadow: 
+    inset 0 4px 16px rgba(0, 0, 0, 0.95),
+    0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.gate-arch-keystone {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 9px;
+  background: linear-gradient(180deg, #D4AF37 0%, #8C6D23 100%);
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+}
+
+.gate-tunnel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px 0;
+}
+
+.portcullis-svg {
+  width: 82%;
+  height: 82%;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85));
+}
+
+.gate-drawbridge-threshold {
+  width: 100%;
+  height: 4px;
+  background: #4A3319;
+  border-top: 1px solid #C9A24B;
+}
+
+/* --- Stone Plinth Strip across Row 6 Cols 1-7 --- */
+.castle-plinth-strip {
+  background: linear-gradient(180deg, var(--stone-elevated) 0%, var(--stone-darker) 100%) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 4px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.8),
+    0 8px 20px rgba(0, 0, 0, 0.6) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.plinth-chisel-line {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-hairline) 20%, var(--gold-accent) 50%, var(--gold-hairline) 80%, transparent);
+  opacity: 0.65;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1100px) {
+  .process-skills-grid {
+    column-gap: 32px !important;
+  }
+  .tile-icon-box {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  .tile-icon-box svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .tile-name {
+    font-size: 0.74rem !important; /* ~11.8px */
+  }
+}
+
+@media (max-width: 900px) {
+  .process-skills-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .process-banner-col {
+    min-width: 100% !important;
+  }
+}
+
+/* Phone Layout (< 640px) */
+@media (max-width: 639px) {
+  .castle-stage {
+    padding-top: 0 !important;
+  }
+  .castle-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: auto !important;
+    gap: 8px !important;
+  }
+  .castle-tile {
+    grid-area: auto !important;
+    min-height: 74px !important;
+    padding: 8px 4px !important;
+  }
+  .castle-merlon,
+  .castle-gate-portal,
+  .castle-plinth-strip,
+  .castle-pennant {
+    display: none !important;
+  }
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .pennant-cloth-wrap {
+    animation: none !important;
+  }
+  .castle-tile,
+  .castle-merlon,
+  .castle-gate-portal,
+  .castle-plinth-strip,
+  .castle-pennant {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* ==========================================================================

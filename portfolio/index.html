@@ -410,14 +410,15 @@
       <!-- Row 2, Col 2: Skills & Tech Grid -->
       <div class="skills-col reveal" style="transition-delay: 0.15s">
 
-        <!-- Category Visual Legend -->
-        <div class="skills-legend">
-          <span class="legend-item"><span class="legend-dot cat-lang"></span>Language</span>
-          <span class="legend-item"><span class="legend-dot cat-backend"></span>Backend</span>
-          <span class="legend-item"><span class="legend-dot cat-ai"></span>LLM / RAG</span>
-          <span class="legend-item"><span class="legend-dot cat-db"></span>Database</span>
-          <span class="legend-item"><span class="legend-dot cat-devops"></span>Deployment</span>
-          <span class="legend-item"><span class="legend-dot cat-iot"></span>IoT</span>
+        <!-- Category Visual Legend & Interactive Toggle Filters -->
+        <div class="skills-legend" id="skillsLegend" role="group" aria-label="Filter technologies by category">
+          <button type="button" class="legend-item" data-category="Language" aria-pressed="false"><span class="legend-dot cat-lang"></span>Language</button>
+          <button type="button" class="legend-item" data-category="Frontend" aria-pressed="false"><span class="legend-dot cat-frontend"></span>Frontend</button>
+          <button type="button" class="legend-item" data-category="Backend" aria-pressed="false"><span class="legend-dot cat-backend"></span>Backend</button>
+          <button type="button" class="legend-item" data-category="LLM / RAG" aria-pressed="false"><span class="legend-dot cat-ai"></span>LLM / RAG</button>
+          <button type="button" class="legend-item" data-category="Database" aria-pressed="false"><span class="legend-dot cat-db"></span>Database</button>
+          <button type="button" class="legend-item" data-category="Deployment" aria-pressed="false"><span class="legend-dot cat-devops"></span>Deployment</button>
+          <button type="button" class="legend-item" data-category="IoT" aria-pressed="false"><span class="legend-dot cat-iot"></span>IoT</button>
         </div>
 
         <!-- 4x5 Continuous Matrix Grid rendered dynamically via script.js -->
@@ -637,6 +638,8 @@
 <script defer src="books-showcase.js"></script>
 <script defer src="blossom-theme.js"></script>
 <script defer src="process-banner.js"></script>
+<script defer src="tools-data.js"></script>
+<script defer src="tech-castle.js"></script>
 <script defer src="script.js"></script>
 </body>
 </html>

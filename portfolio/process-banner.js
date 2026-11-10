@@ -520,6 +520,7 @@
       if (quoteRibbon) gsap.set(quoteRibbon, { opacity: 1, y: 0 });
 
       isWavingActive = true;
+      window.bannerUnfurlFinished = true;
       initWaveCloth();
       if (isIntersecting) startRenderLoop();
     } else {
@@ -546,6 +547,8 @@
               onComplete: () => {
                 isWavingActive = true;
                 if (isIntersecting) startRenderLoop();
+                window.bannerUnfurlFinished = true;
+                window.dispatchEvent(new CustomEvent('bannerUnfurlComplete'));
                 if (window.ScrollTrigger) ScrollTrigger.refresh();
               }
             });
@@ -631,6 +634,7 @@
         stepItems.forEach(item => gsap.set(item, { opacity: 1, y: 0 }));
         if (quoteRibbon) gsap.set(quoteRibbon, { opacity: 1, y: 0 });
         isWavingActive = true;
+        window.bannerUnfurlFinished = true;
         initWaveCloth();
       }
     }
