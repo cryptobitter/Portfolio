@@ -290,54 +290,114 @@
   <div class="section-container">
     <div class="process-skills-grid">
       
-      <!-- Left Column: 5-Step Process -->
-      <div class="process-col reveal">
-        <span class="section-number">02 / WORKFLOW</span>
-        <h2 class="section-title-serif">MY ENGINEERING PROCESS</h2>
-        <p class="process-intro">A clear process. Thoughtful architecture. High-performance code.</p>
-
-        <div class="process-list">
-          <div class="process-step">
-            <span class="step-num">01</span>
-            <div class="step-details">
-              <h4>DISCOVER &amp; SPEC ARCHITECTURE</h4>
-              <p>Analyze latency requirements, map data flows, and define API contracts before writing code.</p>
+      <!-- Left Column: Heraldic Castle Banner (Unfurls and Waves) -->
+      <div class="process-banner-col" id="processBannerCol">
+        <!-- Hanging Rig: Wood/Iron Rod with Gold Finials, Rings & Ropes (STAYS FIXED) -->
+        <div class="banner-rig" aria-hidden="true">
+          <div class="banner-mounts">
+            <div class="banner-mount banner-mount-left">
+              <div class="banner-bracket"></div>
+              <div class="banner-rope"></div>
+            </div>
+            <div class="banner-mount banner-mount-right">
+              <div class="banner-bracket"></div>
+              <div class="banner-rope"></div>
             </div>
           </div>
-          <div class="process-step">
-            <span class="step-num">02</span>
-            <div class="step-details">
-              <h4>DB SCHEMA &amp; AUTH SECURITY</h4>
-              <p>Design normalized relational schemas in PostgreSQL/SQLAlchemy with JWT and Supabase security.</p>
-            </div>
+          <div class="banner-rod">
+            <div class="banner-finial banner-finial-left"></div>
+            <div class="banner-rod-shaft"></div>
+            <div class="banner-finial banner-finial-right"></div>
           </div>
-          <div class="process-step">
-            <span class="step-num">03</span>
-            <div class="step-details">
-              <h4>ASYNC FASTAPI &amp; AI INTEGRATION</h4>
-              <p>Implement non-blocking async routes and integrate Groq LLMs or OpenCV computer vision pipelines.</p>
-            </div>
-          </div>
-          <div class="process-step">
-            <span class="step-num">04</span>
-            <div class="step-details">
-              <h4>QUEUE, CACHE &amp; OPTIMIZATION</h4>
-              <p>Offload heavy tasks to Redis message queues and optimize database queries for low latency.</p>
-            </div>
-          </div>
-          <div class="process-step">
-            <span class="step-num">05</span>
-            <div class="step-details">
-              <h4>DEPLOY, CONTAINERIZE &amp; SHIP</h4>
-              <p>Containerize using Docker, setup CI/CD pipelines, and deploy on Render/Cloud platforms.</p>
-            </div>
+          <div class="banner-rings">
+            <span class="banner-ring"></span>
+            <span class="banner-ring"></span>
+            <span class="banner-ring"></span>
+            <span class="banner-ring"></span>
+            <span class="banner-ring"></span>
           </div>
         </div>
 
-        <div class="process-footer-quote">
-          <p><em>"Engineering is not just what it does; it's how fast, clean, and reliable it runs."</em></p>
+        <!-- The Hanging Cloth Envelope (Drops/Scales down on unfurl, gently sways) -->
+        <div class="banner-cloth-wrap" id="bannerClothWrap">
+          <div class="banner-cloth" id="bannerCloth">
+            <!-- 3D Wave Canvas for dynamic vertex wave & fold shadows -->
+            <canvas id="bannerWaveCanvas" class="banner-wave-canvas" aria-hidden="true"></canvas>
+
+            <!-- Background Fabric Texture (CSS woven texture fallback & depth) -->
+            <div class="banner-fabric-fallback" aria-hidden="true"></div>
+
+            <!-- Thin Gold Stitched Border & Inset Frame -->
+            <div class="banner-stitch-border" aria-hidden="true"></div>
+
+            <!-- Content on the Cloth: Header & 5 Steps as an accessible <ol> -->
+            <div class="banner-content" id="bannerContent">
+              <div class="banner-header">
+                <span class="section-number">02 / WORKFLOW</span>
+                <h2 class="section-title-serif">MY ENGINEERING PROCESS</h2>
+                <p class="process-intro">A clear process. Thoughtful architecture. High-performance code.</p>
+              </div>
+
+              <ol class="banner-steps-list" role="list">
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">I</span>
+                  <div class="step-details">
+                    <h4>DISCOVER &amp; SPEC ARCHITECTURE</h4>
+                    <p>Analyze latency requirements, map data flows, and define API contracts before writing code.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">II</span>
+                  <div class="step-details">
+                    <h4>DB SCHEMA &amp; AUTH SECURITY</h4>
+                    <p>Design normalized relational schemas in PostgreSQL/SQLAlchemy with JWT and Supabase security.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">III</span>
+                  <div class="step-details">
+                    <h4>ASYNC FASTAPI &amp; AI INTEGRATION</h4>
+                    <p>Implement non-blocking async routes and integrate Groq LLMs or OpenCV computer vision pipelines.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">IV</span>
+                  <div class="step-details">
+                    <h4>QUEUE, CACHE &amp; OPTIMIZATION</h4>
+                    <p>Offload heavy tasks to Redis message queues and optimize database queries for low latency.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">V</span>
+                  <div class="step-details">
+                    <h4>DEPLOY, CONTAINERIZE &amp; SHIP</h4>
+                    <p>Containerize using Docker, setup CI/CD pipelines, and deploy on Render/Cloud platforms.</p>
+                  </div>
+                </li>
+              </ol>
+            </div><!-- /.banner-content -->
+
+            <!-- Bottom Swallowtail Hem with Gold Fringe -->
+            <div class="banner-fringe" aria-hidden="true">
+              <svg class="banner-fringe-svg" viewBox="0 0 100 14" preserveAspectRatio="none">
+                <defs>
+                  <pattern id="bannerFringePattern" width="2" height="14" patternUnits="userSpaceOnUse">
+                    <line x1="1" y1="0" x2="1" y2="14" stroke="var(--banner-gold-trim)" stroke-width="1.2" stroke-linecap="round" />
+                  </pattern>
+                </defs>
+                <rect width="100" height="14" fill="url(#bannerFringePattern)" />
+              </svg>
+            </div>
+          </div><!-- /.banner-cloth -->
+        </div><!-- /#bannerClothWrap -->
+
+        <!-- Closing Quote Ribbon Under the Hem -->
+        <div class="banner-ribbon-quote" id="bannerRibbonQuote">
+          <div class="banner-ribbon-body">
+            <p><em>&ldquo;Engineering is not just what it does; it's how fast, clean, and reliable it runs.&rdquo;</em></p>
+          </div>
         </div>
-      </div>
+      </div><!-- /.process-banner-col -->
 
       <!-- Right Column: Skills & Tech Grid -->
       <div class="skills-col reveal" style="transition-delay: 0.15s">
@@ -571,6 +631,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script defer src="books-showcase.js"></script>
 <script defer src="blossom-theme.js"></script>
+<script defer src="process-banner.js"></script>
 <script defer src="script.js"></script>
 </body>
 </html>

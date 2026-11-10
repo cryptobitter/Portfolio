@@ -12,6 +12,20 @@
  */
 
 :root {
+  /* Heraldic Castle Banner Customization Variables */
+  --banner-cloth-top: #7A2432;       /* Deep crimson top gradient */
+  --banner-cloth-bottom: #5E1A24;    /* Deep crimson bottom gradient (swap to #16233B / #243657 for navy) */
+  --banner-gold-trim: #C9A24B;       /* Gold trim & bottom fringe */
+  --banner-gold-stitch: rgba(201, 162, 75, 0.45); /* Gold dashed stitched border */
+  --banner-gold-numeral: #E5C378;    /* Gold Roman numerals */
+  --banner-text-ivory: #FAF7F2;      /* WCAG AA ivory titles */
+  --banner-text-muted: #E2DBD0;      /* WCAG AA ivory body text */
+  --banner-rod-shaft: #22201D;       /* Wrought iron rod */
+  --banner-finial-gold: #D4AF37;     /* Gold finials */
+  --banner-fringe-gold: #C9A24B;     /* Gold fringe */
+  --banner-wave-amplitude: 1.0;      /* Multiplier for wave displacement */
+  --banner-wave-speed: 1.0;          /* Multiplier for wind speed */
+
   /* Design Tokens: Stone Backgrounds */
   --stone-deepest: #0E0D0C;
   --stone-darker: #171513;
@@ -745,119 +759,386 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   z-index: 1;
 }
 
-/* Steps as a Staircase / Chiseling Sequence */
-.process-step {
+/* ==========================================================================
+   HERALDIC CASTLE BANNER: MY ENGINEERING PROCESS (UNFURL & CONTINUOUS WAVE)
+   ========================================================================== */
+.process-banner-col {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* 1. Hanging Rig (Mounts, Ropes, Rod, Finials, Rings) - STAYS FIXED IN PLACE */
+.banner-rig {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.banner-mounts {
+  display: flex;
+  justify-content: space-between;
+  width: 82%;
+  height: 22px;
+}
+
+.banner-mount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.banner-bracket {
+  width: 16px;
+  height: 7px;
+  background: #181615;
+  border: 1px solid var(--banner-gold-trim);
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.banner-rope {
+  width: 3px;
+  height: 15px;
+  background: repeating-linear-gradient(
+    180deg,
+    #8E713E 0px,
+    #8E713E 3px,
+    #4A3B20 3px,
+    #4A3B20 6px
+  );
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.banner-rod {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-rod-shaft {
+  width: calc(100% - 36px);
+  height: 12px;
+  background: linear-gradient(180deg, #3A3530 0%, #1E1C1A 50%, #100F0E 100%);
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  border-radius: 6px;
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.banner-finial {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #F7E4A8, var(--banner-finial-gold) 60%, #7A5716 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 0 12px rgba(201, 162, 75, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+.banner-finial-left {
+  margin-right: -4px;
+}
+
+.banner-finial-right {
+  margin-left: -4px;
+}
+
+.banner-rings {
+  position: absolute;
+  top: 13px;
+  width: 78%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 11;
+}
+
+.banner-ring {
+  width: 14px;
+  height: 20px;
+  border: 2.5px solid var(--banner-gold-trim);
+  border-radius: 7px;
+  background: transparent;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* 2. Banner Cloth Envelope: Drops on Unfurl (scaleY: 0 -> 1), Waves gently */
+.banner-cloth-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin-top: -6px;
+  transform-origin: top center;
+  z-index: 4;
+  will-change: transform;
+}
+
+.banner-cloth {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(180deg, var(--banner-cloth-top) 0%, var(--banner-cloth-bottom) 100%);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), 50% 100%, 0 calc(100% - 40px));
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.75),
+    inset 0 0 60px rgba(0, 0, 0, 0.35);
+  padding: 42px 36px 72px;
+  border-radius: 4px 4px 0 0;
+  overflow: visible;
+}
+
+/* Woven Fabric Texture (Faint CSS Weave) */
+.banner-fabric-fallback {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: 
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 2px, transparent 2px, transparent 4px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 2px, transparent 2px, transparent 4px);
+  mix-blend-mode: overlay;
+  opacity: 0.85;
+}
+
+/* Three.js 3D Wave Canvas */
+.banner-wave-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Inset Gold Stitched Border */
+.banner-stitch-border {
+  position: absolute;
+  inset: 12px;
+  bottom: 48px;
+  border: 1.5px dashed var(--banner-gold-stitch);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 36px), 50% 100%, 0 calc(100% - 36px));
+  pointer-events: none;
   z-index: 2;
+  box-shadow: inset 0 0 12px rgba(201, 162, 75, 0.12);
+}
+
+/* Gold Bullion Fringe along V-Notch */
+.banner-fringe {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.banner-fringe-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 3. Banner Content (Crisp Text Layer with subtle shared sway) */
+.banner-content {
+  position: relative;
+  z-index: 5;
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.banner-header {
+  margin-bottom: 24px;
+}
+
+.banner-header .section-number {
+  color: var(--banner-gold-numeral) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.18em !important;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.banner-header .section-title-serif {
+  color: var(--banner-text-ivory) !important;
+  font-family: var(--font-serif) !important;
+  font-size: clamp(1.8rem, 3.2vw, 2.35rem) !important;
+  letter-spacing: 0.03em !important;
+  line-height: 1.15;
+  margin: 0 0 10px 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.banner-header .process-intro {
+  color: var(--banner-text-muted) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 4. Real <ol> Step Rows on Banner Cloth */
+.banner-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-step-item {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 20px;
-  padding: 22px 26px !important;
-  background: var(--stone-base) !important;
-  border: 1px solid var(--gold-hairline) !important;
-  border-radius: 14px !important;
-  box-shadow: 
-    inset 0 1px 1px rgba(255, 255, 255, 0.05),
-    0 8px 24px rgba(0, 0, 0, 0.45) !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  gap: 18px;
+  padding: 16px 10px;
+  border-bottom: 1px dashed var(--banner-gold-stitch);
+  transition: all 0.25s ease;
+  outline: none;
+  cursor: default;
 }
 
-/* Progressive Staircase Offsets on Desktop */
-@media (min-width: 900px) {
-  .process-step:nth-child(1) { margin-left: 0px; }
-  .process-step:nth-child(2) { margin-left: 14px; }
-  .process-step:nth-child(3) { margin-left: 28px; }
-  .process-step:nth-child(4) { margin-left: 42px; }
-  .process-step:nth-child(5) { margin-left: 56px; }
+.banner-step-item:last-child {
+  border-bottom: none;
 }
 
-.process-step:hover {
-  border-color: var(--gold-hairline-bright) !important;
-  box-shadow: 
-    inset 0 1px 1px rgba(255, 255, 255, 0.08),
-    0 0 20px rgba(232, 139, 58, 0.22),
-    0 12px 30px rgba(0, 0, 0, 0.6) !important;
-  transform: translateY(-2px);
+.banner-step-item:hover {
+  background: rgba(201, 162, 75, 0.07);
+  border-radius: 6px;
 }
 
-/* Decorative Gold Roman Numerals (I, II, III, IV, V) */
-.process-step .step-num {
-  font-size: 0 !important;
-  width: 38px !important;
-  height: 38px !important;
+.banner-step-item:focus-visible {
+  outline: 2px solid var(--banner-gold-trim);
+  outline-offset: 2px;
+  background: rgba(201, 162, 75, 0.10);
+  border-radius: 6px;
+}
+
+.banner-step-item .step-num {
+  font-family: var(--font-serif) !important;
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  color: var(--banner-gold-numeral) !important;
+  width: 36px !important;
+  height: 36px !important;
   border-radius: 50% !important;
-  background: var(--stone-darker) !important;
-  border: 1px solid var(--gold-hairline-bright) !important;
+  border: 1.5px solid var(--banner-gold-stitch) !important;
+  background: rgba(14, 12, 11, 0.35) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  text-shadow: 0 0 10px rgba(201, 162, 75, 0.45) !important;
   transition: all 0.25s ease !important;
 }
 
-.process-step:hover .step-num {
-  border-color: var(--gold-highlight) !important;
-  box-shadow: 0 0 14px rgba(232, 139, 58, 0.45) !important;
+.banner-step-item:hover .step-num {
+  border-color: var(--banner-gold-trim) !important;
+  box-shadow: 0 0 14px rgba(201, 162, 75, 0.5) !important;
+  transform: scale(1.05);
 }
 
-.process-step:nth-child(1) .step-num::before {
-  content: "I";
-  font-size: 0.95rem;
-  font-family: var(--font-serif);
-  font-weight: 800;
-  color: var(--gold-accent);
-}
-.process-step:nth-child(2) .step-num::before {
-  content: "II";
-  font-size: 0.92rem;
-  font-family: var(--font-serif);
-  font-weight: 800;
-  color: var(--gold-accent);
-}
-.process-step:nth-child(3) .step-num::before {
-  content: "III";
-  font-size: 0.88rem;
-  font-family: var(--font-serif);
-  font-weight: 800;
-  color: var(--gold-accent);
-}
-.process-step:nth-child(4) .step-num::before {
-  content: "IV";
-  font-size: 0.88rem;
-  font-family: var(--font-serif);
-  font-weight: 800;
-  color: var(--gold-accent);
-}
-.process-step:nth-child(5) .step-num::before {
-  content: "V";
-  font-size: 0.95rem;
-  font-family: var(--font-serif);
-  font-weight: 800;
-  color: var(--gold-accent);
-}
-
-.process-step h4 {
+.banner-step-item .step-details h4 {
   font-family: var(--font-serif) !important;
-  color: var(--marble-primary) !important;
-  font-size: 1.05rem !important;
+  color: var(--banner-text-ivory) !important;
+  font-size: 1.02rem !important;
+  font-weight: 700 !important;
   letter-spacing: 0.04em !important;
-  margin-bottom: 6px !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.3;
 }
 
-.process-step p {
-  color: var(--marble-secondary) !important;
+.banner-step-item .step-details p {
+  color: var(--banner-text-muted) !important;
   font-size: 0.88rem !important;
-  line-height: 1.6 !important;
+  line-height: 1.55 !important;
+  margin: 0 !important;
 }
 
-.process-footer-quote {
-  border-left: 2px solid var(--gold-accent) !important;
-  background: rgba(23, 21, 19, 0.6) !important;
-  padding: 16px 20px !important;
-  border-radius: 0 10px 10px 0 !important;
-  color: var(--marble-muted) !important;
-  margin-top: 36px !important;
+/* 5. Closing Quote Ribbon Under Banner Hem */
+.banner-ribbon-quote {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 18px;
+  z-index: 6;
+  text-align: center;
+}
+
+.banner-ribbon-body {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(180deg, #201D1A 0%, #141312 100%);
+  border: 1px solid var(--banner-gold-trim);
+  border-radius: 4px;
+  padding: 13px 24px;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+.banner-ribbon-body p {
+  color: var(--banner-gold-numeral) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 0.88rem !important;
+  font-style: italic !important;
+  letter-spacing: 0.02em !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .process-banner-col {
+    max-width: 100%;
+    margin-bottom: 30px;
+  }
+  .banner-cloth {
+    padding: 34px 24px 64px;
+  }
+}
+
+@media (max-width: 600px) {
+  .banner-cloth {
+    padding: 30px 18px 58px;
+  }
+  .banner-step-item {
+    gap: 12px;
+    padding: 14px 6px;
+  }
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .banner-cloth-wrap {
+    transform: none !important;
+  }
+  .banner-step-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .banner-ribbon-quote {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .banner-content {
+    transform: none !important;
+  }
+  .banner-wave-canvas {
+    display: none !important;
+  }
 }
 
 /* Capabilities & Skills Matrix Grid */
