@@ -90,10 +90,6 @@ body {
   background-attachment: fixed;
 }
 
-/* Disable pink blossom layer in Castle theme */
-.blossom-background-layer {
-  display: none !important;
-}
 
 /* Accessible Global Focus Ring */
 a:focus-visible,

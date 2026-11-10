@@ -391,11 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.remove('intro-active');
       curtain.classList.add('hidden');
 
-      // Trigger blossom gust across hero as tunnel closes!
-      if (typeof window.triggerBlossomGust === 'function') {
-        window.triggerBlossomGust('right', 35);
-      }
-
       setTimeout(() => {
         alive = false;
         cancelAnimationFrame(raf);
@@ -822,60 +817,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ============ Tech Stack Castle ============ */
   // The stone castle is managed and rendered via tools-data.js and tech-castle.js
 
-  /* ============ 3D Mascot Character Proximity, Tilt & GLB Model Handler ============ */
-  const mascotCard   = document.getElementById('mascotCard');
-  const mascotStage  = document.getElementById('heroMascotStage');
-  const mascotBubble = document.getElementById('mascotBubble');
-
-  const bubblePhrases = [
-    "Hey, I'm Aditya! 👋",
-    "Building FastAPI & AI models! ⚡",
-    "Llama 3.3 70B stream active 🚀",
-    "Python & Redis task queues 🔥",
-    "Got a project in mind? 💡"
-  ];
-  let phraseIdx = 0;
-  let lastPopTime = 0;
-  let tiltX = 0, tiltY = 0;
-
-  if (mascotCard && mascotStage) {
-    window.addEventListener('mousemove', (e) => {
-      const rect = mascotCard.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top  + rect.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      const normX = dx / (window.innerWidth / 2);
-      const normY = dy / (window.innerHeight / 2);
-      tiltX = Math.max(-14, Math.min(14, normY * -18));
-      tiltY = Math.max(-18, Math.min(18, normX * 18));
-
-      mascotCard.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-
-      const now = Date.now();
-      if (dist < 220) {
-        mascotStage.classList.add('near');
-        if (now - lastPopTime > 1600) {
-          lastPopTime = now;
-          mascotCard.classList.remove('pop');
-          void mascotCard.offsetWidth;
-          mascotCard.classList.add('pop');
-
-          if (mascotBubble) {
-            phraseIdx = (phraseIdx + 1) % bubblePhrases.length;
-            mascotBubble.textContent = bubblePhrases[phraseIdx];
-          }
-
-          setTimeout(() => mascotCard.classList.remove('pop'), 600);
-        }
-      } else {
-        mascotStage.classList.remove('near');
-      }
-    }, { passive: true });
-  }
-
   /* ============ 3D Cards Tilt with Soft Moving Sheen ============ */
   function setup3dCardsTilt() {
     if (prefersReducedMotion || isTouchDevice()) return;
@@ -974,47 +915,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ============ 3D WebGL Scenes (Lazy-Loaded After Core Render) ============ */
-  function init3dScenes() {
-    if (prefersReducedMotion || typeof THREE === 'undefined') return;
-
-    /* Mascot GLB Model Check / Fallback */
-    const mascotContainer = document.getElementById('mascot3dContainer');
-    const mascotImgFallback = document.getElementById('mascotImgFallback');
-
-    if (mascotContainer && typeof THREE.GLTFLoader !== 'undefined') {
-      const loader = new THREE.GLTFLoader();
-      loader.load('assets/character.glb', (gltf) => {
-        mascotContainer.style.display = 'block';
-        if (mascotImgFallback) mascotImgFallback.style.display = 'none';
-
-        const mRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        mRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        mRenderer.setSize(mascotContainer.clientWidth, mascotContainer.clientHeight);
-        mascotContainer.appendChild(mRenderer.domElement);
-
-        const mScene = new THREE.Scene();
-        const mCam = new THREE.PerspectiveCamera(45, mascotContainer.clientWidth / mascotContainer.clientHeight, 0.1, 50);
-        mCam.position.set(0, 0, 5);
-
-        const light = new THREE.DirectionalLight(0xFFFFFF, 1.2);
-        light.position.set(2, 4, 3);
-        mScene.add(light);
-        mScene.add(new THREE.AmbientLight(0xFFF0E0, 0.8));
-
-        const model = gltf.scene;
-        mScene.add(model);
-
-        function animMascot() {
-          mRenderer.render(mScene, mCam);
-          requestAnimationFrame(animMascot);
-        }
-        animMascot();
-      }, undefined, () => {});
-    }
-  }
-
-
   /* ============ Dynamic Script Loader ============ */
   function loadScript(src) {
     return new Promise((resolve, reject) => {
@@ -1063,9 +963,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // Lazy load Three.js
+      // Lazy load Three.js if needed
       await loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js');
-      init3dScenes();
     } catch (e) {
       console.warn('Three.js lazy load fallback:', e);
     }

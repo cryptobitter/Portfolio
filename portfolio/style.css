@@ -2804,71 +2804,7 @@ body.intro-complete footer {
   }
 }
 
-/* ==========================================================================
-   BLOSSOM THEME & PETALS BACKGROUND LAYER
-   ========================================================================== */
-.blossom-background-layer {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-
-#blossomPetalsCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.blossom-tree {
-  display: none !important;
-  position: absolute;
-  top: -10px;
-  width: clamp(260px, 34vw, 500px);
-  height: auto;
-  pointer-events: none;
-  z-index: 2;
-  transition: opacity 0.85s cubic-bezier(0.25, 1, 0.5, 1), transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
-  will-change: opacity, transform;
-}
-
-.blossom-tree-right {
-  right: -20px;
-}
-
-.blossom-tree-left {
-  left: -20px;
-}
-
-.blossom-tree.is-active {
-  opacity: 0.92;
-  transform: translate3d(0, 0, 0);
-}
-
-.blossom-tree-right.is-inactive {
-  opacity: 0;
-  transform: translate3d(55px, -20px, 0);
-}
-
-.blossom-tree-left.is-inactive {
-  opacity: 0;
-  transform: translate3d(-55px, -20px, 0);
-}
-
-.blossom-tree-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.18));
-}
-
-/* Ensure all content sections and cards remain solid & layered above petals */
+/* Ensure all content sections and cards remain solid */
 .hero-section,
 .projects-section,
 .process-section,
@@ -2892,12 +2828,6 @@ body.intro-complete footer {
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  #blossomPetalsCanvas {
-    display: none !important;
-  }
-  .blossom-tree {
-    transition: none !important;
-  }
   .intro-curtain {
     display: none !important;
   }
