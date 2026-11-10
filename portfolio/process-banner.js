@@ -1,27 +1,28 @@
 /**
  * process-banner.js
  * Heraldic Castle Banner: Cloth physics, rolling unfurl, and continuous wave.
- * Calibrated against frame-by-frame analysis of reference video flag_reference.mp4.
+ * DOM-driven single source of truth: pure cloth canvas texture with zero row-dependent artifacts.
  */
 (function () {
   'use strict';
 
   // --- Measured & Calibrated Parameters ---
   const CALIBRATION = {
-    // Unfurl timing (0 to 1.4s unroll, 1.4 to 3.5s overshoot & settle)
+    // Unfurl sequence timing
+    headingRevealDuration: 0.45,
+    rigRevealDuration: 0.40,
     unfurlDuration: 1.40,
-    overshootDuration: 2.10, // 1.4s -> 3.5s settle
+    overshootDuration: 1.80,
     unfurlThreshold: 'top 70%', // ~30% into viewport
 
-    // Wave parameters (calibrated to ~3.0s wave period, 3-4 soft vertical folds, 3.5% hem sway)
+    // Wave parameters (calibrated to ~2.85s period, 3-4 soft vertical folds, 3.5% hem sway)
     baseSpeed: 1.0,           // Multiplier for wave frequency
-    wavePeriod: 2.85,         // Idle wave period in seconds
+    wavePeriod: 2.85,         // Wave period in seconds
     hemAmplitudePct: 0.035,   // ~3.5% of banner width (~14px depth, ~10px lateral)
-    dropAmplitudeBoost: 1.85, // Higher wave amplitude during drop, decaying to 1.0
     scrollGustMax: 2.0,       // Boost on quick scroll
     scrollGustDecay: 0.93,
 
-    // Geometry resolution
+    // Geometry resolution (48x72 desktop, 24x36 mobile)
     segmentsXDesktop: 48,
     segmentsYDesktop: 72,
     segmentsXMobile: 24,
@@ -36,6 +37,9 @@
   const bannerCol = document.getElementById('processBannerCol');
   if (!bannerCol) return;
 
+  const processHeading = document.getElementById('processHeadingBlock');
+  const bannerMountRing = document.getElementById('bannerMountRing');
+  const bannerRig = document.getElementById('bannerRig');
   const clothWrap = document.getElementById('bannerClothWrap');
   const cloth = document.getElementById('bannerCloth');
   const waveCanvas = document.getElementById('bannerWaveCanvas');
@@ -66,15 +70,15 @@
   let clothTexture = null;
   let clock = null;
 
-  // Unfurl progress uniforms
+  // Unfurl progress state
   const unfurlState = {
-    progress: 1.0, // 0.0 (rolled at rod) to 1.0 (at hem)
+    progress: 1.0,  // 0.0 (rolled at rod) to 1.0 (at hem)
     overshoot: 0.0, // vertical bounce
     amplitudeMult: 1.0
   };
 
-  // Step vertical positions (relative 0.0 at top to 1.0 at bottom)
-  const stepFractions = [0.22, 0.38, 0.54, 0.70, 0.86];
+  // Step vertical fractions (5 steps evenly distributed within cloth)
+  const stepFractions = [0.15, 0.32, 0.49, 0.66, 0.83];
 
   // --- 1. Helper: Read CSS Theme Variables ---
   function parseColor(str, fallbackHex) {
@@ -91,7 +95,6 @@
     const topHex = cs.getPropertyValue('--banner-cloth-top').trim() || '#7A2432';
     const btmHex = cs.getPropertyValue('--banner-cloth-bottom').trim() || '#5E1A24';
     const trimHex = cs.getPropertyValue('--banner-gold-trim').trim() || '#C9A24B';
-    const stitchHex = cs.getPropertyValue('--banner-gold-stitch').trim() || 'rgba(201, 162, 75, 0.45)';
     const ampMult = parseFloat(cs.getPropertyValue('--banner-wave-amplitude')) || 1.0;
     const spdMult = parseFloat(cs.getPropertyValue('--banner-wave-speed')) || 1.0;
 
@@ -99,7 +102,6 @@
       topHex,
       btmHex,
       trimHex,
-      stitchHex,
       colorTop: parseColor(topHex, 0x7A2432),
       colorBottom: parseColor(btmHex, 0x5E1A24),
       goldTrim: parseColor(trimHex, 0xC9A24B),
@@ -108,10 +110,9 @@
     };
   }
 
-  // --- 2. Canvas 2D Procedural Cloth Texture Generator ---
+  // --- 2. Canvas 2D Procedural Cloth Texture (NO row-dependent elements, NO ghost circles) ---
   function createClothTexture(width, height) {
     const texCanvas = document.createElement('canvas');
-    // Crisp texture resolution
     const w = 512;
     const h = 768;
     texCanvas.width = w;
@@ -130,8 +131,8 @@
     // B. Quilted Diamond Textile Weave Pattern
     ctx.save();
     ctx.lineWidth = 1;
-    const diagSpacing = 18;
-    // Light diagonal lines
+    const diagSpacing = 16;
+    // Light diagonal
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
     ctx.beginPath();
     for (let x = -h; x < w + h; x += diagSpacing) {
@@ -140,8 +141,8 @@
     }
     ctx.stroke();
 
-    // Dark opposing diagonal lines
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+    // Dark opposing diagonal
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.055)';
     ctx.beginPath();
     for (let x = -h; x < w + h; x += diagSpacing) {
       ctx.moveTo(x, 0);
@@ -150,13 +151,13 @@
     ctx.stroke();
     ctx.restore();
 
-    // C. Thin Gold Stitched Border (Inset ~20px)
+    // C. Thin Gold Stitched Border (Inset ~16px) following perimeter & swallowtail
     ctx.save();
     ctx.strokeStyle = vars.trimHex;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.6;
     ctx.setLineDash([4, 4]);
-    const inset = 18;
-    const notchH = 46; // Swallowtail notch in texture coords
+    const inset = 16;
+    const notchH = 44;
     ctx.beginPath();
     ctx.moveTo(inset, inset);
     ctx.lineTo(w - inset, inset);
@@ -167,48 +168,8 @@
     ctx.stroke();
     ctx.restore();
 
-    // D. 5 Horizontal Band Divider Stitched Lines
-    ctx.save();
-    ctx.strokeStyle = 'rgba(201, 162, 75, 0.35)';
-    ctx.lineWidth = 1.2;
-    ctx.setLineDash([3, 3]);
-    const bandYs = [0.28, 0.44, 0.60, 0.76];
-    bandYs.forEach(yRatio => {
-      const y = h * yRatio;
-      ctx.beginPath();
-      ctx.moveTo(inset + 10, y);
-      ctx.lineTo(w - inset - 10, y);
-      ctx.stroke();
-    });
-    ctx.restore();
-
-    // E. 5 Gold Medallion Circle Backings on the Left
-    const medallionCenters = [0.22, 0.38, 0.54, 0.70, 0.86];
-    const medX = inset + 32;
-    const medR = 20;
-
-    medallionCenters.forEach(yRatio => {
-      const y = h * yRatio;
-      // Outer gold rim
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(medX, y, medR, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-      ctx.fill();
-
-      ctx.lineWidth = 2.0;
-      ctx.strokeStyle = vars.trimHex;
-      ctx.setLineDash([]);
-      ctx.stroke();
-
-      // Inner subtle rim
-      ctx.beginPath();
-      ctx.arc(medX, y, medR - 3, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-      ctx.lineWidth = 1.0;
-      ctx.stroke();
-      ctx.restore();
-    });
+    // ZERO medallions, ZERO band dividers drawn on texture.
+    // DOM is 100% single source of truth for Roman numerals and dividers.
 
     const texture = new THREE.CanvasTexture(texCanvas);
     texture.generateMipmaps = true;
@@ -217,7 +178,7 @@
     return texture;
   }
 
-  // --- 3. Three.js Cloth Engine (Option B with Dynamic Shading & Unroll) ---
+  // --- 3. Three.js Cloth Engine (Option B with Dynamic Normal-based Shading) ---
   function initWaveCloth() {
     if (prefersReducedMotion || !window.THREE || !waveCanvas || !cloth) return;
 
@@ -225,7 +186,7 @@
       clock = new THREE.Clock();
       const rect = cloth.getBoundingClientRect();
       const width = Math.max(rect.width, 280);
-      const height = Math.max(rect.height, 420);
+      const height = Math.max(rect.height, 360);
 
       // Renderer
       renderer = new THREE.WebGLRenderer({
@@ -250,7 +211,7 @@
       clothTexture = createClothTexture(width, height);
       const vars = getBannerCssVars();
 
-      // Custom Vertex Shader: 3-harmonic wave + rolling cylinder unfurl + physical analytical normal
+      // Custom Vertex Shader: 3-harmonic wave + rolling cylinder unfurl + analytical normal
       const vertexShader = `
         uniform float uTime;
         uniform float uAmplitude;
@@ -268,7 +229,6 @@
           vUv = uv;
 
           // uv.y in Three.js PlaneGeometry: 1.0 is rod (top), 0.0 is hem (bottom)
-          // Effective unroll drop position
           float effectiveProg = clamp(uUnfurlProgress + uOvershoot * 0.08, 0.0, 1.0);
           float rollY = 1.0 - effectiveProg;
 
@@ -277,7 +237,7 @@
           if (uv.y < rollY) {
             // Vertices below the leading edge are rolled forward in a cylinder roll
             float distBelow = rollY - uv.y;
-            float rollRadius = max(0.001, (1.0 - uUnfurlProgress) * 22.0);
+            float rollRadius = max(0.001, (1.0 - uUnfurlProgress) * 20.0);
             float angle = distBelow * (uHeight / max(rollRadius, 1.0)) * 0.85;
 
             pos.y = (rollY - 0.5) * uHeight - sin(angle) * rollRadius;
@@ -333,7 +293,7 @@
 
         void main() {
           // Swallowtail V-notch Cut (Discard outside below notch)
-          float notchPx = 42.0;
+          float notchPx = 40.0;
           float notchY = notchPx / uHeight;
           float distFromCenter = abs(vUv.x - 0.5) * 2.0;
           float cutLineY = (1.0 - distFromCenter) * notchY;
@@ -437,17 +397,15 @@
       material.uniforms.uUnfurlProgress.value = unfurlState.progress;
       material.uniforms.uOvershoot.value = unfurlState.overshoot;
 
-      // A. Real HTML Step Text: Micro-offset from same wave function (max 2.5px, 0 at top)
+      // Real HTML Step Text: Micro-offset from same wave function (max 2.4px at bottom, 0 at top)
       const spd = material.uniforms.uSpeed.value;
       stepItems.forEach((item, idx) => {
-        // Distance from rod fraction
         const yFrac = (idx + 1) / stepItems.length;
-        // Subtle organic sway: max 2.5px at bottom, 0 at top
         const xOffset = Math.sin(time * 2.1 * spd + idx * 0.9) * (yFrac * 2.4);
         item.style.transform = `translateX(${xOffset.toFixed(2)}px)`;
       });
 
-      // B. Swallowtail Fringe fluttering with the hem
+      // Swallowtail Fringe fluttering with the hem
       if (fringeSvg) {
         const fringeSway = Math.sin(time * 2.6 * spd) * 3.2;
         fringeSvg.style.transform = `translateX(${fringeSway.toFixed(2)}px)`;
@@ -469,12 +427,12 @@
     }
   }, { passive: true });
 
-  // --- 6. Resize Handler ---
+  // --- 6. Resize Handler & Observers ---
   function handleResize() {
     if (!cloth || !renderer || !camera || !mesh) return;
     const rect = cloth.getBoundingClientRect();
     const width = Math.max(rect.width, 280);
-    const height = Math.max(rect.height, 420);
+    const height = Math.max(rect.height, 360);
 
     renderer.setSize(width, height, false);
     camera.left = width / -2;
@@ -505,6 +463,20 @@
     resizeTimer = setTimeout(handleResize, 150);
   });
 
+  // Observe DOM changes and font readiness
+  if (window.ResizeObserver && cloth) {
+    const ro = new ResizeObserver(() => {
+      handleResize();
+    });
+    ro.observe(cloth);
+  }
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      handleResize();
+    });
+  }
+
   // --- 7. IntersectionObserver & Tab Visibility ---
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -532,7 +504,7 @@
     }
   });
 
-  // --- 8. Unfurl (First Visit Only, Matching Reference Video 0-3.5s) ---
+  // --- 8. Unfurl Sequence (Heading reveals -> Mount ring & rod appear -> Cloth drops with unroll) ---
   function setupUnfurlAnimation() {
     const hasUnfurled = sessionStorage.getItem('heraldic_banner_unfurled');
 
@@ -540,19 +512,25 @@
       // Already unfurled or prefers-reduced-motion: show hung immediately
       unfurlState.progress = 1.0;
       unfurlState.overshoot = 0.0;
+      if (processHeading) gsap.set(processHeading, { opacity: 1, y: 0 });
+      if (bannerMountRing) gsap.set(bannerMountRing, { opacity: 1, scale: 1 });
+      if (bannerRig) gsap.set(bannerRig, { opacity: 1, y: 0 });
       if (clothWrap) gsap.set(clothWrap, { scaleY: 1, opacity: 1 });
-      stepItems.forEach(item => gsap.set(item, { opacity: 1 }));
+      stepItems.forEach(item => gsap.set(item, { opacity: 1, y: 0 }));
       if (quoteRibbon) gsap.set(quoteRibbon, { opacity: 1, y: 0 });
 
       isWavingActive = true;
       initWaveCloth();
       if (isIntersecting) startRenderLoop();
     } else {
-      // Initial state: rolled under the rod
+      // Initial state: hidden before ScrollTrigger
       unfurlState.progress = 0.0;
       unfurlState.overshoot = 0.0;
+      if (processHeading) gsap.set(processHeading, { opacity: 0, y: 16 });
+      if (bannerMountRing) gsap.set(bannerMountRing, { opacity: 0, scale: 0.8 });
+      if (bannerRig) gsap.set(bannerRig, { opacity: 0, y: -10 });
       if (clothWrap) gsap.set(clothWrap, { scaleY: 1, opacity: 1 });
-      stepItems.forEach(item => gsap.set(item, { opacity: 0, y: 12 }));
+      stepItems.forEach(item => gsap.set(item, { opacity: 0, y: 10 }));
       if (quoteRibbon) gsap.set(quoteRibbon, { opacity: 0, y: 12 });
 
       if (window.ScrollTrigger) {
@@ -572,7 +550,28 @@
               }
             });
 
-            // 0 - 1.4s: Unroll downward from rod
+            // 1) Heading block reveals (label, headline, subtitle)
+            if (processHeading) {
+              tl.to(processHeading, {
+                opacity: 1,
+                y: 0,
+                duration: CALIBRATION.headingRevealDuration,
+                ease: 'power2.out'
+              }, 0);
+            }
+
+            // 2) Ring, ropes and rod appear under it (~0.4s)
+            if (bannerMountRing && bannerRig) {
+              tl.to([bannerMountRing, bannerRig], {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                duration: CALIBRATION.rigRevealDuration,
+                ease: 'back.out(1.2)'
+              }, 0.35);
+            }
+
+            // 3) Cloth drops from the rod using cylinder unroll (0.65s to 2.05s)
             tl.to(unfurlState, {
               progress: 1.0,
               duration: CALIBRATION.unfurlDuration,
@@ -581,51 +580,54 @@
                 // Step rows fade in sequentially as the roll edge passes them
                 stepItems.forEach((item, idx) => {
                   if (unfurlState.progress >= stepFractions[idx] && item.style.opacity !== '1') {
-                    gsap.to(item, { opacity: 1, y: 0, duration: 0.38, ease: 'power2.out' });
+                    gsap.to(item, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
                   }
                 });
               }
-            }, 0);
+            }, 0.65);
 
-            // 1.4 - 3.5s: Overshoot and settle bounce (overshoot -> rebound -> settle)
+            // Overshoot and settle bounce
             tl.to(unfurlState, {
-              overshoot: 1.0, // Peak downward overshoot at ~1.75s
-              duration: 0.40,
+              overshoot: 1.0, // Peak downward overshoot
+              duration: 0.38,
               ease: 'power2.out'
-            }, 1.35);
+            }, 2.05);
 
             tl.to(unfurlState, {
-              overshoot: -0.35, // Rebound upward at ~2.15s
-              duration: 0.45,
+              overshoot: -0.35, // Rebound upward
+              duration: 0.42,
               ease: 'power2.inOut'
-            }, 1.75);
+            }, 2.43);
 
             tl.to(unfurlState, {
-              overshoot: 0.15, // Secondary small bounce at ~2.70s
-              duration: 0.55,
+              overshoot: 0.15, // Secondary bounce
+              duration: 0.50,
               ease: 'power2.inOut'
-            }, 2.20);
+            }, 2.85);
 
             tl.to(unfurlState, {
-              overshoot: 0.0, // Settle to equilibrium by ~3.45s
-              duration: 0.75,
+              overshoot: 0.0, // Equilibrium
+              duration: 0.65,
               ease: 'power2.out'
-            }, 2.75);
+            }, 3.35);
 
-            // Quote ribbon under the hem fades in as banner settles
+            // Quote ribbon under hem appears at settle
             if (quoteRibbon) {
               tl.to(quoteRibbon, {
                 opacity: 1,
                 y: 0,
-                duration: 0.65,
+                duration: 0.60,
                 ease: 'power2.out'
-              }, 2.50);
+              }, 3.00);
             }
           }
         });
       } else {
         // Fallback
         unfurlState.progress = 1.0;
+        if (processHeading) gsap.set(processHeading, { opacity: 1, y: 0 });
+        if (bannerMountRing) gsap.set(bannerMountRing, { opacity: 1, scale: 1 });
+        if (bannerRig) gsap.set(bannerRig, { opacity: 1, y: 0 });
         stepItems.forEach(item => gsap.set(item, { opacity: 1, y: 0 }));
         if (quoteRibbon) gsap.set(quoteRibbon, { opacity: 1, y: 0 });
         isWavingActive = true;
@@ -634,8 +636,8 @@
     }
   }
 
-  // --- 9. Window Tuning API ---
-  window.setHeraldicBannerWave = function (amplitude, speed, foldMultiplier) {
+  // --- 10. Window Tuning API ---
+  window.setHeraldicBannerWave = function (amplitude, speed) {
     if (material) {
       if (typeof amplitude === 'number') material.uniforms.uAmplitude.value = amplitude;
       if (typeof speed === 'number') material.uniforms.uSpeed.value = CALIBRATION.baseSpeed * speed;

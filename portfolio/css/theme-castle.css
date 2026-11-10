@@ -762,12 +762,69 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 /* ==========================================================================
    HERALDIC CASTLE BANNER: MY ENGINEERING PROCESS (UNFURL & CONTINUOUS WAVE)
    ========================================================================== */
+/* Two-Row Grid: Row 1 = Headings (aligned bottoms), Row 2 = Banner & Tools (aligned tops) */
+.process-skills-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: auto 1fr !important;
+  column-gap: 56px !important;
+  row-gap: 20px !important;
+  align-items: start !important;
+}
+
+.process-heading-block {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  margin-bottom: 0 !important;
+}
+
+.skills-heading-block {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  padding-left: 20px !important;
+  margin-bottom: 0 !important;
+}
+
+.process-heading-block .process-intro,
+.skills-heading-block .process-intro {
+  margin-bottom: 0 !important;
+}
+
 .process-banner-col {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+}
+
+.skills-col {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  padding-left: 20px !important;
+  margin-top: 0 !important;
+}
+
+/* Small Gold Ring Hook Centered Under Heading Block */
+.banner-mount-ring {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2.5px solid var(--banner-gold-trim);
+  background: radial-gradient(circle at 35% 35%, #F7E4A8, var(--banner-gold-trim) 60%, #7A5716 100%);
+  box-shadow: 0 0 10px rgba(201, 162, 75, 0.5), 0 2px 5px rgba(0, 0, 0, 0.7);
+  margin: 0 auto;
+  z-index: 12;
+  flex-shrink: 0;
 }
 
 /* 1. Hanging Rig (Mounts, Ropes, Rod, Finials, Rings) - STAYS FIXED IN PLACE */
@@ -785,10 +842,11 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 .banner-v-mount {
   position: relative;
   width: 86%;
-  height: 42px;
+  height: 38px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: -6px;
 }
 
 .banner-wall-peg {
@@ -907,7 +965,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   box-shadow: 
     0 24px 60px rgba(0, 0, 0, 0.75),
     inset 0 0 60px rgba(0, 0, 0, 0.35);
-  padding: 42px 36px 72px;
+  padding: 24px 28px 60px;
   border-radius: 4px 4px 0 0;
   overflow: visible;
 }
@@ -1014,8 +1072,8 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 18px;
-  padding: 16px 10px;
+  gap: 16px;
+  padding: 13px 8px;
   border-bottom: 1px dashed var(--banner-gold-stitch);
   transition: all 0.25s ease;
   outline: none;
@@ -1117,22 +1175,28 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 
 /* Responsive adjustments */
 @media (max-width: 991px) {
-  .process-banner-col {
-    max-width: 100%;
-    margin-bottom: 30px;
+  .process-skills-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto !important;
+    row-gap: 32px !important;
   }
+  .process-heading-block { grid-column: 1 !important; grid-row: 1 !important; }
+  .process-banner-col    { grid-column: 1 !important; grid-row: 2 !important; max-width: 100% !important; margin-bottom: 24px !important; }
+  .skills-heading-block  { grid-column: 1 !important; grid-row: 3 !important; padding-left: 0 !important; }
+  .skills-col            { grid-column: 1 !important; grid-row: 4 !important; padding-left: 0 !important; }
+
   .banner-cloth {
-    padding: 34px 24px 64px;
+    padding: 22px 20px 56px !important;
   }
 }
 
 @media (max-width: 600px) {
   .banner-cloth {
-    padding: 30px 18px 58px;
+    padding: 18px 14px 50px !important;
   }
   .banner-step-item {
-    gap: 12px;
-    padding: 14px 6px;
+    gap: 12px !important;
+    padding: 12px 6px !important;
   }
 }
 

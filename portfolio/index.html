@@ -290,15 +290,31 @@
   <div class="section-container">
     <div class="process-skills-grid">
       
-      <!-- Left Column: Heraldic Castle Banner (Unfurls and Waves) -->
+      <!-- Row 1, Col 1: Left Heading Block (Above Banner) -->
+      <div class="process-heading-block" id="processHeadingBlock">
+        <span class="section-number">02 / WORKFLOW</span>
+        <h2 class="section-title-serif">MY ENGINEERING PROCESS</h2>
+        <p class="process-intro">A clear process. Thoughtful architecture. High-performance code.</p>
+      </div>
+
+      <!-- Row 1, Col 2: Right Heading Block (Above Tools Card) -->
+      <div class="skills-heading-block reveal" style="transition-delay: 0.15s">
+        <span class="section-number">03 / CAPABILITIES</span>
+        <h2 class="section-title-serif">TOOLS &amp; TECH STACK</h2>
+        <p class="process-intro">Core technologies and frameworks I use to build scalable products.</p>
+      </div>
+
+      <!-- Row 2, Col 1: Heraldic Castle Banner (Hanging from Ring Under Heading) -->
       <div class="process-banner-col" id="processBannerCol">
+        <!-- Small gold ring centered under heading block -->
+        <div class="banner-mount-ring" id="bannerMountRing" aria-hidden="true"></div>
+
         <!-- Hanging Rig: V-Ropes, Gold-Capped Rod with Finials, Cloth Tab Loops (STAYS FIXED) -->
-        <div class="banner-rig" aria-hidden="true">
+        <div class="banner-rig" id="bannerRig" aria-hidden="true">
           <div class="banner-v-mount">
-            <div class="banner-wall-peg"></div>
-            <svg class="banner-v-ropes" viewBox="0 0 320 42" preserveAspectRatio="none">
-              <line x1="160" y1="4" x2="36" y2="40" stroke="var(--banner-gold-trim)" stroke-width="2.5" stroke-linecap="round" />
-              <line x1="160" y1="4" x2="284" y2="40" stroke="var(--banner-gold-trim)" stroke-width="2.5" stroke-linecap="round" />
+            <svg class="banner-v-ropes" viewBox="0 0 320 38" preserveAspectRatio="none">
+              <line x1="160" y1="2" x2="36" y2="36" stroke="var(--banner-gold-trim)" stroke-width="2.5" stroke-linecap="round" />
+              <line x1="160" y1="2" x2="284" y2="36" stroke="var(--banner-gold-trim)" stroke-width="2.5" stroke-linecap="round" />
             </svg>
           </div>
           <div class="banner-rod">
@@ -328,14 +344,8 @@
             <!-- Thin Gold Stitched Border & Inset Frame -->
             <div class="banner-stitch-border" aria-hidden="true"></div>
 
-            <!-- Content on the Cloth: Header & 5 Steps as an accessible <ol> -->
+            <!-- Content on the Cloth: ONLY the 5 Steps as an accessible <ol> -->
             <div class="banner-content" id="bannerContent">
-              <div class="banner-header">
-                <span class="section-number">02 / WORKFLOW</span>
-                <h2 class="section-title-serif">MY ENGINEERING PROCESS</h2>
-                <p class="process-intro">A clear process. Thoughtful architecture. High-performance code.</p>
-              </div>
-
               <ol class="banner-steps-list" role="list">
                 <li class="banner-step-item" tabindex="0">
                   <span class="step-num" aria-hidden="true">I</span>
@@ -397,11 +407,8 @@
         </div>
       </div><!-- /.process-banner-col -->
 
-      <!-- Right Column: Skills & Tech Grid -->
+      <!-- Row 2, Col 2: Skills & Tech Grid -->
       <div class="skills-col reveal" style="transition-delay: 0.15s">
-        <span class="section-number">03 / CAPABILITIES</span>
-        <h2 class="section-title-serif">TOOLS &amp; TECH STACK</h2>
-        <p class="process-intro">Core technologies and frameworks I use to build scalable products.</p>
 
         <!-- Category Visual Legend -->
         <div class="skills-legend">
