@@ -320,7 +320,7 @@ textarea:focus-visible,
   color: var(--marble-primary) !important;
   position: relative;
   overflow: hidden;
-  padding: 100px 0 120px !important;
+  padding: 60px 0 40px !important;
 }
 
 /* Subtle Battlement Top Border */
@@ -336,8 +336,8 @@ textarea:focus-visible,
 
 .projects-section .section-header-editorial {
   border-bottom: 1px solid var(--gold-hairline) !important;
-  padding-bottom: 24px !important;
-  margin-bottom: 36px !important;
+  padding-bottom: 20px !important;
+  margin-bottom: 24px !important;
 }
 
 .projects-section .section-number {
@@ -377,6 +377,16 @@ textarea:focus-visible,
     inset 0 1px 2px rgba(255, 255, 255, 0.05),
     inset 0 -2px 6px rgba(0, 0, 0, 0.8),
     0 24px 60px rgba(0, 0, 0, 0.7) !important;
+}
+
+.books-showcase-root {
+  height: 560px !important;
+  min-height: 480px !important;
+}
+@media (max-width: 900px) {
+  .books-showcase-root {
+    height: 640px !important;
+  }
 }
 
 .bs-hero-word span {
@@ -699,7 +709,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   background-color: var(--stone-deepest) !important;
   color: var(--marble-primary) !important;
   position: relative;
-  padding: 110px 0 130px !important;
+  padding: 55px 0 65px !important;
 }
 
 /* Crenellated Battlement Transition Divider at Top */
@@ -732,7 +742,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 .process-skills-section .process-intro {
   color: var(--marble-secondary) !important;
   font-size: 0.95rem !important;
-  margin-bottom: 32px !important;
+  margin-bottom: 20px !important;
 }
 
 /* Connecting Chiseling Line */
@@ -1752,7 +1762,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   background-color: var(--stone-darker) !important;
   color: var(--marble-primary) !important;
   position: relative;
-  padding: 110px 0 130px !important;
+  padding: 55px 0 65px !important;
 }
 
 /* Battlement Divider at Top of Experience */
@@ -1768,8 +1778,8 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 
 .experience-section .section-header-editorial {
   border-bottom: 1px solid var(--gold-hairline) !important;
-  padding-bottom: 24px !important;
-  margin-bottom: 40px !important;
+  padding-bottom: 20px !important;
+  margin-bottom: 28px !important;
 }
 
 .experience-section .section-number {
@@ -1936,9 +1946,9 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 .animated-footer-gateway {
   position: relative;
   width: 100%;
-  height: 85vh;
-  min-height: 580px;
-  max-height: 850px;
+  height: 65vh;
+  min-height: 460px;
+  max-height: 640px;
   background: radial-gradient(ellipse at 50% 30%, rgba(34, 31, 28, 0.7) 0%, rgba(14, 13, 12, 0.98) 75%), var(--stone-deepest) !important;
   overflow: hidden;
   border-top: 2px solid var(--gold-hairline) !important;
@@ -2067,7 +2077,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   background-color: var(--stone-deepest) !important;
   color: var(--marble-primary) !important;
   position: relative;
-  padding: 110px 0 60px !important;
+  padding: 55px 0 50px !important;
 }
 
 /* Battlement Divider at Top of Contact */
@@ -2386,5 +2396,19 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   font-family: var(--font-mono) !important;
   font-size: 0.72rem !important;
   letter-spacing: 0.12em !important;
-  padding: 28px 0 !important;
+  padding: 24px 0 !important;
+}
+
+/* Compact Responsive Section Spacing */
+@media (max-width: 768px) {
+  .projects-section {
+    padding: 45px 0 30px !important;
+  }
+  .process-skills-section,
+  .experience-section {
+    padding: 45px 0 45px !important;
+  }
+  .contact-section {
+    padding: 45px 0 35px !important;
+  }
 }
