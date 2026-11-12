@@ -440,6 +440,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerText  = document.getElementById('afTimerText');
     const meterFill  = document.getElementById('afMeterFill');
     const proceedBtn = document.getElementById('afProceedBtn');
+    const headings   = gateway.querySelector('.af-headings');
+
+    if (headings) {
+      headings.style.cursor = 'pointer';
+      headings.addEventListener('click', () => {
+        const contactSec = document.getElementById('contact');
+        if (contactSec) {
+          contactSec.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
 
     if (!gateway || !leftWrap || !rightWrap || !leftCanvas || !rightCanvas) {
       return;
@@ -699,16 +710,17 @@ document.addEventListener('DOMContentLoaded', () => {
         wrappers[i].style.transform = `translateX(${revealX}%) translate(${x}px, ${y}px) scale(${scale})`;
       }
 
-      // Timer countdown if activated
+      // Continuous interactive state
       if (isStarted && !isCompleted) {
-        const elapsed = (t - startTime) / 1000;
-        const remaining = Math.max(0, TOTAL_DURATION - elapsed);
-        const secs = Math.ceil(remaining);
-        if (timerText) timerText.textContent = `CONNECT REVEAL • 0${secs}s`;
-        if (meterFill) meterFill.style.width = `${(remaining / TOTAL_DURATION) * 100}%`;
-
-        if (elapsed >= TOTAL_DURATION) {
-          completeGatewayTransition();
+        if (timerText) {
+          const elapsed = (t - startTime) / 1000;
+          const remaining = Math.max(0, TOTAL_DURATION - elapsed);
+          const secs = Math.ceil(remaining);
+          timerText.textContent = `CONNECT REVEAL • 0${secs}s`;
+          if (meterFill) meterFill.style.width = `${(remaining / TOTAL_DURATION) * 100}%`;
+          if (elapsed >= TOTAL_DURATION) {
+            completeGatewayTransition();
+          }
         }
       }
 
