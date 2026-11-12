@@ -389,12 +389,12 @@ textarea:focus-visible,
 }
 
 .books-showcase-root {
-  height: 510px !important;
-  min-height: 440px !important;
+  height: 660px !important;
+  min-height: 560px !important;
 }
 @media (max-width: 900px) {
   .books-showcase-root {
-    height: 640px !important;
+    height: 700px !important;
   }
 }
 
@@ -406,16 +406,26 @@ textarea:focus-visible,
 }
 
 .bs-nav-bar {
-  background: rgba(23, 21, 19, 0.88) !important;
-  border: 1px solid var(--gold-hairline) !important;
+  background: transparent !important;
+  border: none !important;
   color: var(--marble-secondary) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  padding: 20px 28px !important;
 }
 .bs-nav-title {
-  color: var(--marble-primary) !important;
-  font-family: var(--font-mono) !important;
-  letter-spacing: 0.08em !important;
+  display: none !important;
+}
+.bs-nav-hint {
+  background: rgba(23, 21, 19, 0.85) !important;
+  border: 1px solid var(--gold-hairline) !important;
+  border-radius: 20px !important;
+  padding: 7px 16px !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
 }
 .bs-hint-dot {
   background: var(--gold-accent) !important;
