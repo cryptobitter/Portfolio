@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Heraldic Castle Pulley Hoist for Achievements & Certifications
  * Aditya Rajput Portfolio
  * 
@@ -244,9 +244,11 @@
     updatePulley(0, 0);
   }
 
+  window.initPulley = initPulley;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPulley);
   } else {
     initPulley();
   }
 })();
+

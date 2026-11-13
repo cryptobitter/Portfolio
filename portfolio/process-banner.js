@@ -1,4 +1,4 @@
-/**
+﻿/**
  * process-banner.js
  * Heraldic Castle Banner: Cloth physics, rolling unfurl, and continuous wave.
  * DOM-driven single source of truth: pure cloth canvas texture with zero row-dependent artifacts.
@@ -656,9 +656,11 @@
   };
 
   // Run on DOM ready
+  window.initProcessBanner = setupUnfurlAnimation;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupUnfurlAnimation);
   } else {
     setupUnfurlAnimation();
   }
 })();
+

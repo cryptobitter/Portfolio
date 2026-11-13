@@ -1,0 +1,10 @@
+{
+  "name": "aditya-rajput-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx serve portfolio"
+  },
+  "dependencies": {}
+}

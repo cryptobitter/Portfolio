@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 3D Books / Projects Showcase for Aditya Rajput Portfolio
  * Adapted from Vengeance UI 3D Books Showcase into high-performance Vanilla Three.js
  */
@@ -1696,6 +1696,7 @@
     animate();
   }
 
+  window.initBooksShowcase = initBooksShowcase;
   // Auto-init when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initBooksShowcase);
@@ -1703,3 +1704,4 @@
     initBooksShowcase();
   }
 })();
+

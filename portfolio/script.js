@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
 
   /* ============ Check Reduced Motion Preference ============ */
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -746,6 +746,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+  window.initScrollAnimations = initScrollAnimations;
+  window.initAnimatedFooter = initAnimatedFooter;
+  window.initProtectedSections = function() {
+    if (typeof window.initBooksShowcase === 'function') window.initBooksShowcase();
+    if (typeof window.initProcessBanner === 'function') window.initProcessBanner();
+    if (typeof window.initTechCastle === 'function') window.initTechCastle();
+    if (typeof window.initPulley === 'function') window.initPulley();
+    if (typeof window.initScrollAnimations === 'function') window.initScrollAnimations();
+    if (typeof window.initAnimatedFooter === 'function') window.initAnimatedFooter();
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  };
   initGalleryTunnel();
   initAnimatedFooter();
 
@@ -1066,3 +1077,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+

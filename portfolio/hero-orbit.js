@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ============================================================================
  * HERO ORBIT: FIXED-PIN STEP SCROLLING, TRANSLUCENT TORCHES & ALIGNED TYPOGRAPHY
  * ============================================================================
@@ -704,8 +704,13 @@
               e.preventDefault();
               tweenToStation(2);
             } else {
-              // At exact Station 3 pin end: allow NEXT downward scroll to proceed to #projects!
-              isHeroActive = false;
+              // At exact Station 3 pin end: check if access gate is locked
+              if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+                e.preventDefault();
+                if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+              } else {
+                isHeroActive = false;
+              }
             }
           }
         } else if (e.deltaY < 0) {
@@ -757,7 +762,12 @@
                 tweenToStation(2);
                 touchStartY = e.touches[0].clientY;
               } else {
-                isHeroActive = false;
+                if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+                  e.preventDefault();
+                  if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+                } else {
+                  isHeroActive = false;
+                }
               }
             }
           } else {
@@ -800,7 +810,12 @@
               e.preventDefault();
               tweenToStation(2);
             } else {
-              isHeroActive = false;
+              if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+                e.preventDefault();
+                if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+              } else {
+                isHeroActive = false;
+              }
             }
           }
         } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
@@ -833,6 +848,10 @@
     jumpLinks.forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
+        if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+          if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+          return;
+        }
         isHeroActive = false;
         const targetScroll = pinDistance + 40;
         window.scrollTo({ top: targetScroll, behavior: 'smooth' });
@@ -1054,3 +1073,4 @@
     initHeroOrbit();
   }
 })();
+
