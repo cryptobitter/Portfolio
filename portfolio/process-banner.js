@@ -1,4 +1,4 @@
-/**
+﻿/**
  * process-banner.js
  * Heraldic Castle Banner: Cloth physics, rolling unfurl, and continuous wave.
  * DOM-driven single source of truth: pure cloth canvas texture with zero row-dependent artifacts.
@@ -575,19 +575,28 @@
             }
 
             // 3) Cloth drops from the rod using cylinder unroll (0.65s to 2.05s)
+            const revealedSteps = new Set();
             tl.to(unfurlState, {
               progress: 1.0,
               duration: CALIBRATION.unfurlDuration,
               ease: 'power2.inOut',
               onUpdate: () => {
-                // Step rows fade in sequentially as the roll edge passes them
+                // Step rows fade in sequentially as the roll edge passes them using Set tracking (no competing tweens)
                 stepItems.forEach((item, idx) => {
-                  if (unfurlState.progress >= stepFractions[idx] && item.style.opacity !== '1') {
+                  if (unfurlState.progress >= stepFractions[idx] && !revealedSteps.has(idx)) {
+                    revealedSteps.add(idx);
                     gsap.to(item, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
                   }
                 });
               }
             }, 0.65);
+
+            // Fallback: force every step to opacity 1 when unfurl completes
+            tl.eventCallback('onComplete', () => {
+              stepItems.forEach((item) => {
+                gsap.set(item, { opacity: 1, y: 0 });
+              });
+            });
 
             // Overshoot and settle bounce
             tl.to(unfurlState, {
@@ -656,9 +665,11 @@
   };
 
   // Run on DOM ready
+  window.initProcessBanner = setupUnfurlAnimation;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupUnfurlAnimation);
   } else {
     setupUnfurlAnimation();
   }
 })();
+

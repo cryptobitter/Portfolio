@@ -1,0 +1,16 @@
+{
+  "name": "aditya-rajput-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx serve portfolio",
+    "test": "node scripts/verify-polish-pass.cjs",
+    "convert:certs": "node scripts/convert-certificates.js",
+    "generate:og": "node scripts/generate-og-image.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1",
+    "sharp": "^0.35.5"
+  }
+}

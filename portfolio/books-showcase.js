@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 3D Books / Projects Showcase for Aditya Rajput Portfolio
  * Adapted from Vengeance UI 3D Books Showcase into high-performance Vanilla Three.js
  */
@@ -13,7 +13,7 @@
       title: "NAYAY AI",
       subtitle: "AI Legal Clause Explainer & Aid Platform",
       author: "FastAPI • Groq API • Supabase",
-      badge: "LIVE PRODUCT",
+      badge: "LIVE DEMO",
       year: "2026",
       stars: 5,
       desc: "Bilingual (English/Hindi) legal assistant and clause explainer for Indian citizens. Powered by Groq's llama-3.3-70b via FastAPI backend for low-latency guidance, with Supabase Auth & PostgreSQL.",
@@ -25,8 +25,12 @@
         "PostgreSQL": "Designed normalized relational schema for indexed Indian Penal Code (IPC) and Bharatiya Nyaya Sanhita (BNS) statutes, precedent citations, and audit logs.",
         "Bilingual NLP": "Engineered prompt pipelines and dialect-aware translation chains preserving nuanced statutory semantics across English and Hindi legal terminology."
       },
-      github: "https://github.com/cryptobitter/nayay-ai-legal-clause-explainer",
-      demo: "https://github.com/cryptobitter/nayay-ai-legal-clause-explainer",
+      links: {
+        repoUrl: "https://github.com/cryptobitter/nayay-ai-legal-clause-explainer",
+        demoUrl: "https://nayay-ai-legal-clause-explainer.vercel.app/",
+        architectureUrl: "",
+        videoUrl: ""
+      },
       spineBg: "#261812",
       spineInk: "#E0784B",
       spineFont: "700 38px 'Playfair Display', Georgia, serif",
@@ -47,7 +51,7 @@
       title: "NIRNAY",
       subtitle: "On-Chain Policy Decision Auditor",
       author: "RAG • LLM • Blockchain",
-      badge: "IN DEVELOPMENT",
+      badge: "HACKATHON PROJECT",
       year: "2026",
       stars: 5,
       desc: "RAG and LLM system that audits policy decisions and records an immutable audit trail on the blockchain. Verifies institutional compliance while preserving transparent, verifiable decision histories.",
@@ -59,8 +63,12 @@
         "FastAPI": "Developed async microservice backend with Pydantic v2 validation, background worker queues for audit processing, and Server-Sent Events (SSE) for live verification updates.",
         "Vector DB": "Configured low-latency vector similarity indexes with HNSW cosine search for rapid semantic matching of policy clauses, precedent decisions, and statutory citations."
       },
-      github: "https://github.com/cryptobitter/Nirnay",
-      demo: "https://github.com/cryptobitter/Nirnay",
+      links: {
+        repoUrl: "https://github.com/cryptobitter/Nirnay",
+        demoUrl: "",
+        architectureUrl: "",
+        videoUrl: ""
+      },
       spineBg: "#3E2920",
       spineInk: "#FFFFFF",
       spineFont: "700 40px 'Playfair Display', Georgia, serif",
@@ -81,7 +89,7 @@
       title: "FRACTOES",
       subtitle: "AI Fracture X-Ray Analysis & Radiology PDF",
       author: "FastAPI • ReportLab • Vision",
-      badge: "PRODUCTION SHIPPED",
+      badge: "TEAM PROJECT · BACKEND LEAD",
       year: "2026",
       stars: 5,
       desc: "Sole backend engineer on a 5-person team. FastAPI backend on Render with JWT auth & OTP email verification. Feeds X-ray detection models into Grok-generated radiology PDF reports.",
@@ -93,8 +101,12 @@
         "ReportLab": "Programmed pixel-precise PDF generation engine synthesizing diagnostic imagery, confidence heatmaps, pathology metrics, and formal clinical radiology reports.",
         "JWT Auth": "Implemented secure bearer authentication with salted bcrypt password hashing, role-based access control (Doctor/Radiologist/Patient), and time-limited OTP email verification."
       },
-      github: "https://github.com/cryptobitter/FRACTOES",
-      demo: "https://github.com/cryptobitter/FRACTOES",
+      links: {
+        repoUrl: "",
+        demoUrl: "https://fractoes.vercel.app/",
+        architectureUrl: "",
+        videoUrl: ""
+      },
       spineBg: "#C8653B",
       spineInk: "#FFFFFF",
       spineFont: "700 38px 'Playfair Display', Georgia, serif",
@@ -1182,27 +1194,82 @@
     }
 
     function updateDetailUI(cfg) {
-      if (!cfg) return;
-      activeTech = null;
-      if (dpCategory) dpCategory.textContent = cfg.badge;
+      if (dpBadge) dpBadge.textContent = cfg.badge || '';
       if (dpTitle) dpTitle.textContent = cfg.title;
-      if (dpDesc) {
-        dpDesc.textContent = cfg.desc;
-        dpDesc.style.opacity = '1';
-        dpDesc.style.transform = 'translateY(0)';
-      }
+      if (dpDesc) dpDesc.textContent = cfg.desc;
       if (dpAuthor) dpAuthor.textContent = cfg.author;
       if (dpYear) dpYear.textContent = cfg.year;
 
+      // 1. Problem Section (rendered only when data exists)
+      const elProblem = document.getElementById('bsCsProblem');
+      const elProblemText = document.getElementById('bsCsProblemText');
+      if (elProblem && elProblemText) {
+        if (cfg.problem) {
+          elProblemText.textContent = cfg.problem;
+          elProblem.style.display = 'block';
+        } else {
+          elProblem.style.display = 'none';
+        }
+      }
+
+      // 2. Architecture Section (rendered only when data exists)
+      const elArch = document.getElementById('bsCsArch');
+      const elArchWrap = document.getElementById('bsCsArchWrap');
+      const elArchImg = document.getElementById('bsCsArchImg');
+      const elArchText = document.getElementById('bsCsArchText');
+      if (elArch && elArchText) {
+        const arch = cfg.architecture;
+        if (arch && (arch.description || arch.diagramUrl)) {
+          elArch.style.display = 'block';
+          if (arch.description) {
+            elArchText.textContent = arch.description;
+            elArchText.style.display = 'block';
+          } else {
+            elArchText.style.display = 'none';
+          }
+          if (elArchWrap && elArchImg && arch.diagramUrl) {
+            elArchImg.src = arch.diagramUrl;
+            elArchImg.alt = `${cfg.title} Architecture Diagram`;
+            elArchWrap.style.display = 'block';
+            elArchWrap.onclick = () => openLightbox(arch.diagramUrl, `${cfg.title} — System Architecture`);
+          } else if (elArchWrap) {
+            elArchWrap.style.display = 'none';
+          }
+        } else {
+          elArch.style.display = 'none';
+        }
+      }
+
+      // 3. Key Decisions Section (rendered only when data exists)
+      const elDecisions = document.getElementById('bsCsDecisions');
+      const elDecisionsList = document.getElementById('bsCsDecisionsList');
+      if (elDecisions && elDecisionsList) {
+        if (cfg.keyDecisions && cfg.keyDecisions.length > 0) {
+          elDecisionsList.innerHTML = '';
+          cfg.keyDecisions.forEach((dec) => {
+            const li = document.createElement('li');
+            li.textContent = typeof dec === 'string' ? dec : `${dec.title}: ${dec.desc}`;
+            elDecisionsList.appendChild(li);
+          });
+          elDecisions.style.display = 'block';
+        } else {
+          elDecisions.style.display = 'none';
+        }
+      }
+
+      // 4. Per-Tag Architecture Notes (preserved)
       if (dpTags) {
         dpTags.innerHTML = '';
-        (cfg.tags || []).forEach((tag) => {
+        activeTech = null;
+        resetTechDetail(cfg);
+
+        cfg.tags.forEach((tag) => {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'bs-dp-tag';
           btn.setAttribute('aria-label', `View ${tag} implementation details`);
           btn.textContent = tag;
-          
+
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (activeTech === tag) {
@@ -1218,13 +1285,152 @@
         });
       }
 
-      if (dpGithub) {
-        dpGithub.href = cfg.github || 'https://github.com/cryptobitter';
+      // 5. Metrics Section (rendered only when data exists)
+      const elMetrics = document.getElementById('bsCsMetrics');
+      const elMetricsGrid = document.getElementById('bsCsMetricsGrid');
+      if (elMetrics && elMetricsGrid) {
+        if (cfg.metrics && cfg.metrics.length > 0) {
+          elMetricsGrid.innerHTML = '';
+          cfg.metrics.forEach((m) => {
+            const card = document.createElement('div');
+            card.className = 'bs-metric-card';
+            card.innerHTML = `<span class="bs-metric-val">${m.value}</span><span class="bs-metric-lbl">${m.label}</span>`;
+            elMetricsGrid.appendChild(card);
+          });
+          elMetrics.style.display = 'block';
+        } else {
+          elMetrics.style.display = 'none';
+        }
       }
-      if (dpDemo) {
-        dpDemo.href = cfg.demo || cfg.github;
+
+      // 6. Gallery / Screenshots (1-3 images with lazy loading and lightbox)
+      const elGallery = document.getElementById('bsCsGallery');
+      const elGalleryGrid = document.getElementById('bsCsGalleryGrid');
+      if (elGallery && elGalleryGrid) {
+        if (cfg.images && cfg.images.length > 0) {
+          elGalleryGrid.innerHTML = '';
+          cfg.images.forEach((imgObj) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'bs-gallery-thumb';
+            thumb.tabIndex = 0;
+            thumb.setAttribute('role', 'button');
+            thumb.setAttribute('aria-label', imgObj.alt || 'View screenshot');
+            thumb.innerHTML = `<img src="${imgObj.url}" alt="${imgObj.alt || ''}" loading="lazy">`;
+            thumb.onclick = () => openLightbox(imgObj.url, imgObj.caption || imgObj.alt || cfg.title);
+            thumb.onkeydown = (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(imgObj.url, imgObj.caption || imgObj.alt || cfg.title);
+              }
+            };
+            elGalleryGrid.appendChild(thumb);
+          });
+          elGallery.style.display = 'block';
+        } else {
+          elGallery.style.display = 'none';
+        }
+      }
+
+      // 7. Actions & Links
+      const actionsContainer = document.querySelector('.bs-dp-actions');
+      if (actionsContainer) {
+        actionsContainer.innerHTML = '';
+        const links = cfg.links || {};
+
+        if (links.demoUrl) {
+          const demoBtn = document.createElement('a');
+          demoBtn.className = 'bs-btn bs-btn-secondary';
+          demoBtn.href = links.demoUrl;
+          demoBtn.target = '_blank';
+          demoBtn.rel = 'noopener noreferrer';
+          demoBtn.innerHTML = '<span>Live Demo</span><span class="bs-arrow">&#8599;</span>';
+          actionsContainer.appendChild(demoBtn);
+        }
+
+        if (links.repoUrl) {
+          const repoBtn = document.createElement('a');
+          repoBtn.className = 'bs-btn bs-btn-primary';
+          repoBtn.href = links.repoUrl;
+          repoBtn.target = '_blank';
+          repoBtn.rel = 'noopener noreferrer';
+          repoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span>Source Code</span><span class="bs-arrow">&#8599;</span>';
+          actionsContainer.appendChild(repoBtn);
+        }
+
+        if (links.architectureUrl) {
+          const archBtn = document.createElement('a');
+          archBtn.className = 'bs-btn bs-btn-ghost';
+          archBtn.href = links.architectureUrl;
+          archBtn.target = '_blank';
+          archBtn.rel = 'noopener noreferrer';
+          archBtn.innerHTML = '<span>Architecture</span><span class="bs-arrow">&#8599;</span>';
+          actionsContainer.appendChild(archBtn);
+        }
+
+        if (links.videoUrl) {
+          const vidBtn = document.createElement('a');
+          vidBtn.className = 'bs-btn bs-btn-ghost';
+          vidBtn.href = links.videoUrl;
+          vidBtn.target = '_blank';
+          vidBtn.rel = 'noopener noreferrer';
+          vidBtn.innerHTML = '<span>Video Walkthrough</span><span class="bs-arrow">&#8599;</span>';
+          actionsContainer.appendChild(vidBtn);
+        }
       }
     }
+
+    // Lightbox modal controller
+    let lastActiveElement = null;
+    function openLightbox(imgSrc, captionText) {
+      const lb = document.getElementById('bsLightbox');
+      const img = document.getElementById('bsLightboxImg');
+      const cap = document.getElementById('bsLightboxCaption');
+      if (!lb || !img) return;
+
+      lastActiveElement = document.activeElement;
+      img.src = imgSrc;
+      img.alt = captionText || 'Enlarged project view';
+      if (cap) cap.textContent = captionText || '';
+
+      lb.classList.add('is-open');
+      lb.setAttribute('aria-hidden', 'false');
+      lb.focus();
+
+      const closeBtn = document.getElementById('bsLightboxClose');
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('bsLightbox');
+      if (!lb) return;
+      lb.classList.remove('is-open');
+      lb.setAttribute('aria-hidden', 'true');
+      const img = document.getElementById('bsLightboxImg');
+      if (img) img.src = '';
+      if (lastActiveElement && typeof lastActiveElement.focus === 'function') {
+        lastActiveElement.focus();
+      }
+    }
+
+    // Attach lightbox listeners
+    const lbEl = document.getElementById('bsLightbox');
+    const lbClose = document.getElementById('bsLightboxClose');
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lbEl) {
+      lbEl.addEventListener('click', (e) => {
+        if (e.target === lbEl) closeLightbox();
+      });
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const lb = document.getElementById('bsLightbox');
+        if (lb && lb.classList.contains('is-open')) {
+          e.stopPropagation();
+          closeLightbox();
+        }
+      }
+    });
+
 
     function open(book) {
       if (state.mode !== 'hero') return;
@@ -1725,6 +1931,7 @@
     }
   }
 
+  window.initBooksShowcase = initBooksShowcase;
   // Auto-init when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initBooksShowcase);
@@ -1732,3 +1939,4 @@
     initBooksShowcase();
   }
 })();
+

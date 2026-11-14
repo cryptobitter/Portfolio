@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ============================================================================
  * HERO ORBIT: FIXED-PIN STEP SCROLLING, TRANSLUCENT TORCHES & ALIGNED TYPOGRAPHY
  * ============================================================================
@@ -41,8 +41,8 @@
       { id: 'side',  frame: 49,  label: '02. PROFILE', title: 'System Architecture & Capabilities' },
       { id: 'back',  frame: 0,   label: '03. BACK', title: 'Featured Projects & Work' }
     ],
-    moveDuration: 1.5,         // Step move tween duration in seconds (GSAP)
-    cooldownMs: 300,           // Inertia swallow cooldown after tween in ms
+    moveDuration: 1.0,         // Step move tween duration in seconds (GSAP)
+    cooldownMs: 250,           // Inertia swallow cooldown after tween in ms
     flameIntensity: 1.0,       // Torch flame intensity multiplier
     particleCount: 40,         // Translucent flame particles per torch
     emberCount: 4,             // Tiny rising sparks per torch
@@ -95,6 +95,7 @@
   let currentStationIndex = 0;
   let currentFrameFloat = CONFIG.stations[0].frame;
   let isTweening = false;
+  let queuedStationIndex = null;
   let lastTweenEndTime = 0;
   let isHeroActive = true;
   let isMobile = false;
@@ -102,10 +103,28 @@
   let framesBaseDir = 'frames/';
   let pinDistance = 1600; // Calculated dynamically from window.innerHeight * 2
 
-  // Frame Cache
-  const loadedFrames = new Map();
-  const bitmapCache = new Map();
+  // ============================================================================
+  // MEMORY-CONSTRAINED SLIDING LRU BITMAP CACHE (UNDER 250 MB RAM DECODED)
+  // ============================================================================
+  const STATION_FRAME_INDICES = new Set([120, 49, 0]);
+  const stationBitmaps = new Map();     // Permanent 2560x1440 bitmaps at rest (Front: 120, Side: 49, Back: 0)
+  const slidingBitmapLRU = new Map();   // Sliding window of max 14 in-between bitmaps (1600x900)
   const pendingRequests = new Set();
+  const MAX_SLIDING_WINDOW = 14;
+
+  // Sampled in-between frame set (~40 frames total across 121 frames for fluid blending)
+  const IN_BETWEEN_INDICES = [];
+  for (let i = 0; i <= 120; i += 3) {
+    IN_BETWEEN_INDICES.push(i);
+  }
+  if (!IN_BETWEEN_INDICES.includes(49)) {
+    IN_BETWEEN_INDICES.push(49);
+    IN_BETWEEN_INDICES.sort((a, b) => a - b);
+  }
+  if (!IN_BETWEEN_INDICES.includes(120)) {
+    IN_BETWEEN_INDICES.push(120);
+  }
+  const SAMPLE_SET = new Set(IN_BETWEEN_INDICES);
 
   const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
 
@@ -117,32 +136,73 @@
   }
 
   function getFrameDrawable(index) {
-    if (bitmapCache.has(index)) return bitmapCache.get(index);
-    if (loadedFrames.has(index)) return loadedFrames.get(index);
+    if (stationBitmaps.has(index)) return stationBitmaps.get(index);
+    if (slidingBitmapLRU.has(index)) {
+      const bmp = slidingBitmapLRU.get(index);
+      // Refresh recency in LRU
+      slidingBitmapLRU.delete(index);
+      slidingBitmapLRU.set(index, bmp);
+      return bmp;
+    }
     return null;
+  }
+
+  function evictExcessBitmaps() {
+    while (slidingBitmapLRU.size > MAX_SLIDING_WINDOW) {
+      let furthestKey = null;
+      let maxDist = -1;
+      for (const idx of slidingBitmapLRU.keys()) {
+        const dist = Math.abs(idx - currentFrameFloat);
+        if (dist > maxDist) {
+          maxDist = dist;
+          furthestKey = idx;
+        }
+      }
+      if (furthestKey !== null) {
+        const bmp = slidingBitmapLRU.get(furthestKey);
+        slidingBitmapLRU.delete(furthestKey);
+        if (bmp && typeof bmp.close === 'function') {
+          bmp.close(); // Immediate GPU/RAM release
+        }
+      } else {
+        const firstKey = slidingBitmapLRU.keys().next().value;
+        const bmp = slidingBitmapLRU.get(firstKey);
+        slidingBitmapLRU.delete(firstKey);
+        if (bmp && typeof bmp.close === 'function') {
+          bmp.close();
+        }
+      }
+    }
   }
 
   function findClosestLoadedDrawable(targetIndex) {
     const direct = getFrameDrawable(targetIndex);
     if (direct) return direct;
+
     let bestDist = Infinity;
     let bestDrawable = null;
-    for (const [idx, item] of loadedFrames.entries()) {
-      if (item && item.complete && item.naturalWidth) {
-        const d = Math.abs(idx - targetIndex);
-        if (d < bestDist) {
-          bestDist = d;
-          bestDrawable = bitmapCache.get(idx) || item;
-        }
+
+    for (const [idx, bmp] of stationBitmaps.entries()) {
+      const d = Math.abs(idx - targetIndex);
+      if (d < bestDist) {
+        bestDist = d;
+        bestDrawable = bmp;
+      }
+    }
+    for (const [idx, bmp] of slidingBitmapLRU.entries()) {
+      const d = Math.abs(idx - targetIndex);
+      if (d < bestDist) {
+        bestDist = d;
+        bestDrawable = bmp;
       }
     }
     return bestDrawable;
   }
 
-  // Load single frame with async bitmap decode
+  // Load single frame with async bitmap decode, strict LRU window and instant memory cleanup
   function loadSingleFrame(index, priority = false) {
     if (index < 0 || index >= manifest.frameCount) return;
-    if (loadedFrames.has(index) || pendingRequests.has(index)) return;
+    if (stationBitmaps.has(index) || slidingBitmapLRU.has(index) || pendingRequests.has(index)) return;
 
     pendingRequests.add(index);
     const img = new Image();
@@ -150,30 +210,58 @@
     img.src = getFrameUrl(index);
 
     img.onload = () => {
-      loadedFrames.set(index, img);
       pendingRequests.delete(index);
+      const isStation = STATION_FRAME_INDICES.has(index);
+
       if (window.createImageBitmap) {
-        createImageBitmap(img)
+        // Desktop in-betweens decoded at 1600x900 for huge RAM savings. Station frames keep 2560x1440.
+        const bitmapOpts = (!isStation && !isMobile)
+          ? { resizeWidth: 1600, resizeHeight: 900, resizeQuality: 'high' }
+          : undefined;
+
+        createImageBitmap(img, bitmapOpts)
           .then((bmp) => {
-            bitmapCache.set(index, bmp);
-            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
+            // Free the HTMLImageElement immediately from DOM memory
+            img.onload = null;
+            img.onerror = null;
+            img.src = '';
+
+            if (isStation) {
+              stationBitmaps.set(index, bmp);
+            } else {
+              slidingBitmapLRU.set(index, bmp);
+              evictExcessBitmaps();
+            }
+
+            if (Math.abs(currentFrameFloat - index) <= 2.0 && !isTweening) {
               renderBlendedFrame(currentFrameFloat);
             }
           })
           .catch(() => {
-            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
-              renderBlendedFrame(currentFrameFloat);
-            }
+            img.onload = null;
+            img.onerror = null;
+            img.src = '';
           });
-      } else {
-        if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
-          renderBlendedFrame(currentFrameFloat);
-        }
       }
     };
     img.onerror = () => {
       pendingRequests.delete(index);
+      img.onload = null;
+      img.onerror = null;
+      img.src = '';
     };
+  }
+
+  function ensureSurroundingFrames(frameFloat) {
+    const base = Math.round(frameFloat);
+    for (let offset = 0; offset <= 8; offset++) {
+      const idxs = offset === 0 ? [base] : [base - offset, base + offset];
+      idxs.forEach((idx) => {
+        if (SAMPLE_SET.has(idx)) {
+          loadSingleFrame(idx, false);
+        }
+      });
+    }
   }
 
   // ============================================================================
@@ -225,23 +313,64 @@
   function renderBlendedFrame(frameFloat) {
     if (!ctx || !canvas) return;
     const clamped = clamp(frameFloat, 0, manifest.frameCount - 1);
-    const baseIndex = Math.floor(clamped);
-    const nextIndex = Math.min(manifest.frameCount - 1, baseIndex + 1);
-    const frac = clamped - baseIndex;
 
-    const imgA = findClosestLoadedDrawable(baseIndex);
+    // Find nearest loaded frames at or below and at or above clamped
+    let lowerIndex = null;
+    let upperIndex = null;
+    let lowerDist = Infinity;
+    let upperDist = Infinity;
+
+    const allLoaded = [];
+    stationBitmaps.forEach((_, idx) => allLoaded.push(idx));
+    slidingBitmapLRU.forEach((_, idx) => allLoaded.push(idx));
+
+    for (let i = 0; i < allLoaded.length; i++) {
+      const idx = allLoaded[i];
+      if (idx <= clamped) {
+        const d = clamped - idx;
+        if (d < lowerDist) {
+          lowerDist = d;
+          lowerIndex = idx;
+        }
+      }
+      if (idx >= clamped) {
+        const d = idx - clamped;
+        if (d < upperDist) {
+          upperDist = d;
+          upperIndex = idx;
+        }
+      }
+    }
+
+    if (lowerIndex === null && upperIndex === null) {
+      const fallback = findClosestLoadedDrawable(Math.round(clamped));
+      if (fallback) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawImageCover(ctx, canvas, fallback);
+      }
+      return;
+    }
+
+    if (lowerIndex === null) lowerIndex = upperIndex;
+    if (upperIndex === null) upperIndex = lowerIndex;
+
+    const imgA = getFrameDrawable(lowerIndex) || findClosestLoadedDrawable(lowerIndex);
     if (!imgA) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawImageCover(ctx, canvas, imgA);
 
-    if (frac > 0.02 && nextIndex !== baseIndex) {
-      const imgB = findClosestLoadedDrawable(nextIndex);
-      if (imgB && imgB !== imgA) {
-        ctx.save();
-        ctx.globalAlpha = frac;
-        drawImageCover(ctx, canvas, imgB);
-        ctx.restore();
+    if (lowerIndex !== upperIndex) {
+      const span = upperIndex - lowerIndex;
+      const frac = span > 0 ? (clamped - lowerIndex) / span : 0;
+      if (frac > 0.02) {
+        const imgB = getFrameDrawable(upperIndex) || findClosestLoadedDrawable(upperIndex);
+        if (imgB && imgB !== imgA) {
+          ctx.save();
+          ctx.globalAlpha = frac;
+          drawImageCover(ctx, canvas, imgB);
+          ctx.restore();
+        }
       }
     }
   }
@@ -297,6 +426,8 @@
       const s1Opacity = 1 - s1Exit;
       elWordmark.style.opacity = String(s1Opacity.toFixed(3));
       elChapterIntro.style.opacity = String(s1Opacity.toFixed(3));
+      elWordmark.style.visibility = s1Opacity > 0.01 ? 'visible' : 'hidden';
+      elChapterIntro.style.visibility = s1Opacity > 0.01 ? 'visible' : 'hidden';
       elWordmark.style.pointerEvents = s1Opacity > 0.6 ? 'auto' : 'none';
       elChapterIntro.classList.toggle('interactive', s1Opacity > 0.6);
       if (fgCanvas) {
@@ -311,6 +442,7 @@
 
     if (elChapterFeatures) {
       elChapterFeatures.style.opacity = String(s2Opacity.toFixed(3));
+      elChapterFeatures.style.visibility = s2Opacity > 0.01 ? 'visible' : 'hidden';
       elChapterFeatures.classList.toggle('interactive', s2Opacity > 0.6);
 
       if (elPillar1) elPillar1.style.opacity = String(Math.min(1, s2Opacity * 1.3).toFixed(3));
@@ -320,6 +452,7 @@
 
     if (elChapterTechStack) {
       elChapterTechStack.style.opacity = String(s2Opacity.toFixed(3));
+      elChapterTechStack.style.visibility = s2Opacity > 0.01 ? 'visible' : 'hidden';
       elChapterTechStack.classList.toggle('interactive', s2Opacity > 0.6);
 
       if (elStack1) elStack1.style.opacity = String(Math.min(1, s2Opacity * 1.3).toFixed(3));
@@ -331,6 +464,7 @@
     if (elChapterCue) {
       const s3Enter = clamp((p - 0.82) / 0.14, 0, 1);
       elChapterCue.style.opacity = String(s3Enter.toFixed(3));
+      elChapterCue.style.visibility = s3Enter > 0.01 ? 'visible' : 'hidden';
       elChapterCue.classList.toggle('interactive', s3Enter > 0.6);
     }
 
@@ -377,6 +511,7 @@
     }
 
     currentFrameFloat = frameFloat;
+    ensureSurroundingFrames(frameFloat);
     renderBlendedFrame(frameFloat);
     updateChaptersFromProgress(p);
   }
@@ -386,12 +521,32 @@
   // ============================================================================
   const scrollProxy = { y: 0 };
 
-  function tweenToStation(targetStationIndex) {
-    if (isTweening) return;
+  function jumpToEnd() {
+    if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+      if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+      return;
+    }
+    isHeroActive = false;
+    queuedStationIndex = null;
+    if (isTweening) {
+      window.gsap.killTweensOf(scrollProxy);
+      isTweening = false;
+    }
+    currentStationIndex = 2;
+    updateStationDots(2);
+    const targetScroll = pinDistance + 40;
+    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+  }
+
+  function tweenToStation(targetStationIndex, isQueued = false) {
+    if (isTweening) {
+      queuedStationIndex = targetStationIndex;
+      return;
+    }
     if (targetStationIndex < 0 || targetStationIndex >= CONFIG.stations.length) return;
 
     const now = Date.now();
-    if (now - lastTweenEndTime < CONFIG.cooldownMs) return;
+    if (!isQueued && (now - lastTweenEndTime < CONFIG.cooldownMs)) return;
 
     if (prefersReducedMotion) {
       const targetP = targetStationIndex === 0 ? 0 : (targetStationIndex === 1 ? 0.5 : 1.0);
@@ -422,6 +577,13 @@
         lastTweenEndTime = Date.now();
         window.scrollTo(0, targetScrollY);
         handleScrollProgress(targetP);
+        if (queuedStationIndex !== null && queuedStationIndex !== currentStationIndex) {
+          const nextTarget = queuedStationIndex;
+          queuedStationIndex = null;
+          tweenToStation(nextTarget, true);
+        } else {
+          queuedStationIndex = null;
+        }
       }
     });
   }
@@ -691,9 +853,16 @@
 
       // When within the hero pin range (0 to pinDistance)
       if (scrollY <= pinDistance + 10) {
-        // While our GSAP tween is running, lock all user input completely
+                // While tweening: queue one extra step instead of ignoring it
         if (isTweening) {
           e.preventDefault();
+          if (Math.abs(e.deltaY) >= CONFIG.wheelThreshold) {
+            if (e.deltaY > 0) {
+              queuedStationIndex = Math.min(CONFIG.stations.length - 1, currentStationIndex + 1);
+            } else {
+              queuedStationIndex = Math.max(0, currentStationIndex - 1);
+            }
+          }
           return;
         }
 
@@ -713,8 +882,13 @@
               e.preventDefault();
               tweenToStation(2);
             } else {
-              // At exact Station 3 pin end: allow NEXT downward scroll to proceed to #projects!
-              isHeroActive = false;
+              // At exact Station 3 pin end: check if access gate is locked
+              if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+                e.preventDefault();
+                if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+              } else {
+                isHeroActive = false;
+              }
             }
           }
         } else if (e.deltaY < 0) {
@@ -743,8 +917,16 @@
       const scrollY = window.scrollY || window.pageYOffset || 0;
 
       if (scrollY <= pinDistance + 10 && e.touches && e.touches.length) {
-        if (isTweening) {
+                if (isTweening) {
           e.preventDefault();
+          const deltaY = touchStartY - e.touches[0].clientY;
+          if (Math.abs(deltaY) > CONFIG.touchThreshold) {
+            if (deltaY > 0) {
+              queuedStationIndex = Math.min(CONFIG.stations.length - 1, currentStationIndex + 1);
+            } else {
+              queuedStationIndex = Math.max(0, currentStationIndex - 1);
+            }
+          }
           return;
         }
 
@@ -766,7 +948,12 @@
                 tweenToStation(2);
                 touchStartY = e.touches[0].clientY;
               } else {
-                isHeroActive = false;
+                if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+                  e.preventDefault();
+                  if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+                } else {
+                  isHeroActive = false;
+                }
               }
             }
           } else {
@@ -790,14 +977,35 @@
       const scrollY = window.scrollY || window.pageYOffset || 0;
 
       if (scrollY <= pinDistance + 10) {
+        if (e.key === 'End' || e.key === 'PageDown') {
+          e.preventDefault();
+          jumpToEnd();
+          return;
+        }
+
+        if (e.key === 'Home' || e.key === 'PageUp') {
+          e.preventDefault();
+          queuedStationIndex = null;
+          if (isTweening) {
+            window.gsap.killTweensOf(scrollProxy);
+            isTweening = false;
+          }
+          tweenToStation(0, true);
+          return;
+        }
+
         if (isTweening) {
-          if (['ArrowDown', 'PageDown', ' ', 'ArrowUp', 'PageUp'].includes(e.key)) {
+          if (['ArrowDown', ' '].includes(e.key)) {
             e.preventDefault();
+            queuedStationIndex = Math.min(CONFIG.stations.length - 1, currentStationIndex + 1);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            queuedStationIndex = Math.max(0, currentStationIndex - 1);
           }
           return;
         }
 
-        if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
+        if (['ArrowDown', ' '].includes(e.key)) {
           if (currentStationIndex === 0) {
             e.preventDefault();
             tweenToStation(1);
@@ -809,10 +1017,10 @@
               e.preventDefault();
               tweenToStation(2);
             } else {
-              isHeroActive = false;
+              jumpToEnd();
             }
           }
-        } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
+        } else if (e.key === 'ArrowUp') {
           if (currentStationIndex === 2) {
             e.preventDefault();
             tweenToStation(1);
@@ -820,12 +1028,6 @@
             e.preventDefault();
             tweenToStation(0);
           }
-        } else if (e.key === 'Home') {
-          e.preventDefault();
-          tweenToStation(0);
-        } else if (e.key === 'End' && scrollY <= pinDistance) {
-          e.preventDefault();
-          tweenToStation(2);
         }
       }
     });
@@ -838,23 +1040,19 @@
     });
 
     // 5. Skip link & Project Links
-    const jumpLinks = document.querySelectorAll('.skip-to-projects-link, a[href="#projects"]');
+    const jumpLinks = document.querySelectorAll('.skip-to-projects-link, .hero-skip-btn, a[href="#projects"]');
     jumpLinks.forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        isHeroActive = false;
-        const targetScroll = pinDistance + 40;
-        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        jumpToEnd();
       });
     });
   }
 
   // ============================================================================
   // PROGRESSIVE ASSET PRELOADING
-  // ============================================================================
   function preloadAssetsProgressively() {
     isMobile = window.innerWidth < 768;
-    const total = manifest.frameCount;
 
     // Load Cutout image
     fgImg = new Image();
@@ -863,23 +1061,16 @@
       drawFgStatue();
     };
 
-    // Load key stations first: Profile (49) and Back (0)
-    CONFIG.stations.forEach((st) => {
-      if (!loadedFrames.has(st.frame)) {
-        loadSingleFrame(st.frame, true);
-      }
-    });
+    // 1. Station 1 (120) is loaded first synchronously in initHeroOrbit.
+    // 2. Next, load Station 2 (Profile: 49) and Station 3 (Back: 0) as high priority:
+    loadSingleFrame(49, true);
+    loadSingleFrame(0, true);
 
-    // Queue in-betweens for idle loading
-    const queue = [];
-    for (let i = 0; i < total; i++) {
-      if (!CONFIG.stations.some(s => s.frame === i)) {
-        queue.push(i);
-      }
-    }
+    // 3. Queue in-between sampled frames progressively during idle:
+    const queue = IN_BETWEEN_INDICES.filter((i) => !STATION_FRAME_INDICES.has(i));
 
     let qIdx = 0;
-    const BATCH = 8;
+    const BATCH = 4;
     function loadBatch() {
       if (qIdx >= queue.length) return;
       const slice = queue.slice(qIdx, qIdx + BATCH);
@@ -888,11 +1079,11 @@
       if ('requestIdleCallback' in window) {
         window.requestIdleCallback(loadBatch, { timeout: 350 });
       } else {
-        setTimeout(loadBatch, 35);
+        setTimeout(loadBatch, 60);
       }
     }
 
-    setTimeout(loadBatch, 150);
+    setTimeout(loadBatch, 200);
   }
 
   // ============================================================================
@@ -959,6 +1150,10 @@
     elChapterCue = document.getElementById('heroChapterCue');
     stationDots = Array.from(document.querySelectorAll('.station-dot'));
 
+    // Synchronous call at startup: guarantee features, tech stack & cue are hidden before any fetch/load
+    updateChaptersFromProgress(0);
+    updateStationDots(0);
+
     // Synchronize role text
     document.querySelectorAll('.nav-role, .hero-tagline, .hero-tagline-badge').forEach((el) => {
       el.textContent = ROLE_LABEL;
@@ -1013,17 +1208,28 @@
     frontImg.decoding = 'sync';
     frontImg.src = getFrameUrl(frontIndex);
     frontImg.onload = () => {
-      loadedFrames.set(frontIndex, frontImg);
-      resizeAllCanvases();
-      renderBlendedFrame(frontIndex);
-      updateChaptersFromProgress(0);
-      updateStationDots(0);
-
-      // Setup ScrollTrigger Pin
-      setupOptionAPin();
-
-      // Preload remaining frames progressively
-      preloadAssetsProgressively();
+      if (window.createImageBitmap) {
+        createImageBitmap(frontImg).then((bmp) => {
+          stationBitmaps.set(frontIndex, bmp);
+          frontImg.onload = null;
+          frontImg.onerror = null;
+          frontImg.src = '';
+          resizeAllCanvases();
+          renderBlendedFrame(frontIndex);
+          updateChaptersFromProgress(0);
+          updateStationDots(0);
+          setupOptionAPin();
+          preloadAssetsProgressively();
+        }).catch(() => {
+          resizeAllCanvases();
+          updateChaptersFromProgress(0);
+          setupOptionAPin();
+        });
+      } else {
+        resizeAllCanvases();
+        updateChaptersFromProgress(0);
+        setupOptionAPin();
+      }
     };
 
     resizeAllCanvases();
@@ -1063,3 +1269,4 @@
     initHeroOrbit();
   }
 })();
+
