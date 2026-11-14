@@ -2960,3 +2960,134 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
     padding: 24px 0 20px !important;
   }
 }
+
+
+/* ==========================================================================
+   ACHIEVEMENTS ROSTER: VISIBLE LIST OF ALL 6 TITLES BESIDE WINCH
+   ========================================================================== */
+.pulley-carriage {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1.35fr) minmax(250px, 0.9fr) !important;
+  gap: 22px !important;
+  align-items: stretch !important;
+  padding: 24px 28px !important;
+  background: var(--stone-base) !important;
+}
+
+@media (max-width: 960px) {
+  .pulley-carriage {
+    grid-template-columns: 28px 1fr !important;
+  }
+  .pulley-titles-roster {
+    grid-column: 1 / -1;
+    margin-top: 14px;
+  }
+}
+
+.pulley-titles-roster {
+  background: rgba(18, 14, 12, 0.65);
+  border: 1px solid rgba(201, 162, 75, 0.25);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pulley-roster-header {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.2);
+}
+
+.pulley-roster-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  color: var(--hero-gold-accent, #C9A24B);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.pulley-roster-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pulley-roster-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #CCC7BC;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pulley-roster-item:hover {
+  background: rgba(201, 162, 75, 0.08);
+  border-color: rgba(201, 162, 75, 0.3);
+  color: #FFFFFF;
+  transform: translateX(3px);
+}
+
+.pulley-roster-item.is-active {
+  background: rgba(200, 101, 59, 0.18);
+  border-color: rgba(200, 101, 59, 0.55);
+  color: #FFFFFF;
+  box-shadow: inset 0 0 12px rgba(200, 101, 59, 0.15);
+}
+
+.roster-item-num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--hero-gold-accent, #C9A24B);
+}
+
+.pulley-roster-item.is-active .roster-item-num {
+  color: var(--accent-copper-hover, #E0784B);
+}
+
+.roster-item-text {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.roster-item-title {
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+}
+
+.roster-item-sub {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: #A8A196;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pulley-roster-item.is-active .roster-item-sub {
+  color: #D9CEBF;
+}
+
+.pulley-roster-item:focus-visible {
+  outline: 2px solid var(--hero-gold-accent, #C9A24B);
+  outline-offset: 2px;
+}

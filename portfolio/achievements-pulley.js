@@ -165,6 +165,7 @@
     const counterCur = root.querySelector('.pulley-counter-current');
     const counterTotal = root.querySelector('.pulley-counter-total');
     const knots = root.querySelectorAll('.pulley-knot');
+    const rosterItems = root.querySelectorAll('.pulley-roster-item');
     const liveAnnounce = root.querySelector('#pulleyLiveAnnounce');
 
     if (counterTotal) {
@@ -210,6 +211,13 @@
         const isActive = i === currentIndex;
         knot.classList.toggle('is-active', isActive);
         knot.setAttribute('aria-current', isActive ? 'true' : 'false');
+      });
+
+      // Update visible roster list
+      rosterItems.forEach((item, i) => {
+        const isActive = i === currentIndex;
+        item.classList.toggle('is-active', isActive);
+        item.setAttribute('aria-selected', isActive ? 'true' : 'false');
       });
 
       // Live region announcement for screen readers
