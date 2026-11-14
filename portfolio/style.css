@@ -5,6 +5,7 @@
 
 :root {
   /* Hero Statue Orbit & Dark Marble Palette */
+  --header-height: 96px;
   --portfolio-word-offset: clamp(86px, 10vh, 102px);
   --hero-dark-bg: #0A0B0E;
   --hero-stone-pale: #E4E0D8;
@@ -3791,4 +3792,17 @@ body.intro-complete footer {
   .nav-desktop-links {
     display: none !important;
   }
+}
+
+
+/* ==========================================================================
+   ANCHOR SCROLL MARGIN: HEADER OFFSET (PREVENTS HEADINGS FROM BEING COVERED)
+   ========================================================================== */
+section,
+#projects,
+#process,
+#skills,
+#experience,
+#contact {
+  scroll-margin-top: var(--header-height, 96px);
 }
