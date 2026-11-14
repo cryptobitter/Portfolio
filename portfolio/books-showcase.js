@@ -128,9 +128,15 @@
       return this;
     }
     update(dt) {
-      const a = this.k * (this.t - this.v) - this.d * this.vel;
-      this.vel += a * dt;
-      this.v += this.vel * dt;
+      // Sub-step integration for rock-solid stability and zero jitter during frame rate fluctuations
+      const clampedDt = Math.min(dt, 0.05);
+      const steps = Math.min(Math.max(Math.ceil(clampedDt / 0.006), 1), 6);
+      const subDt = clampedDt / steps;
+      for (let i = 0; i < steps; i++) {
+        const a = this.k * (this.t - this.v) - this.d * this.vel;
+        this.vel += a * subDt;
+        this.v += this.vel * subDt;
+      }
       return this.v;
     }
   }
@@ -839,9 +845,10 @@
       blob.renderOrder = -5;
       rootG.add(blob);
 
-      // Raycast hit mesh
+      // Raycast hit mesh attached to rootG with vertical coverage so lift (0.3) & tilt never flicker raycasts
       const hit = new THREE.Mesh(hitGeo, hitMat);
-      float.add(hit);
+      hit.position.set(0, 0.15, 0);
+      rootG.add(hit);
       hitMeshes.push(hit);
 
       const springs = {
@@ -1324,8 +1331,8 @@
     if (closeBtn) closeBtn.addEventListener('click', close);
 
     // Pill trailing springs
-    const pillX = new Spring(0, 190, 23);
-    const pillY = new Spring(0, 190, 23);
+    const pillX = new Spring(0, 130, 19);
+    const pillY = new Spring(0, 130, 19);
     let pillOn = false;
 
     function showPill() {
@@ -1642,9 +1649,17 @@
     onResize();
 
     // Render loop
+    let isBooksVisible = true;
+    let booksRafId = null;
+
     function animate() {
       if (cancelled) return;
-      requestAnimationFrame(animate);
+      if (isBooksVisible) {
+        booksRafId = requestAnimationFrame(animate);
+      } else {
+        booksRafId = null;
+        return;
+      }
 
       const dt = Math.min(clock.getDelta(), 0.1);
       const t = clock.getElapsedTime();
@@ -1693,7 +1708,21 @@
 
       renderer.render(scene, camera);
     }
-    animate();
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          isBooksVisible = entry.isIntersecting;
+          if (isBooksVisible && !booksRafId) {
+            clock.getDelta();
+            animate();
+          }
+        });
+      }, { rootMargin: '120px 0px 120px 0px' });
+      io.observe(root);
+    } else {
+      animate();
+    }
   }
 
   // Auto-init when DOM is ready

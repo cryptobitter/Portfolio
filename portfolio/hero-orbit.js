@@ -179,7 +179,8 @@
   // ============================================================================
   // STATUE RENDERING: PRECISE DOWNWARD OFFSET FOR CLEAR LETTER "F"
   // ============================================================================
-  function getStatueDownOffset(ch, drawH) {
+  let cachedStatueDownOffset = null;
+  function updateStatueDownOffset(ch, drawH) {
     if (elWordmark && heroOrbitStage) {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const stageRect = heroOrbitStage.getBoundingClientRect();
@@ -190,10 +191,17 @@
         // Crown tip touches only the bottom ~17-18% of the wordmark letters
         const targetCrownY = wordmarkBottomCanvas - (wordmarkHeightCanvas * 0.18);
         const unshiftedCrownY = (drawH > ch ? 0 : (ch - drawH) / 2) + (0.043 * drawH);
-        return Math.max(0, targetCrownY - unshiftedCrownY);
+        cachedStatueDownOffset = Math.max(0, targetCrownY - unshiftedCrownY);
+        return cachedStatueDownOffset;
       }
     }
-    return ch * 0.138;
+    cachedStatueDownOffset = ch * 0.138;
+    return cachedStatueDownOffset;
+  }
+
+  function getStatueDownOffset(ch, drawH) {
+    if (cachedStatueDownOffset !== null) return cachedStatueDownOffset;
+    return updateStatueDownOffset(ch, drawH);
   }
 
   function drawImageCover(targetCtx, targetCanvas, img) {
@@ -248,6 +256,7 @@
   // Canvas buffer resize matching DPR
   function resizeAllCanvases() {
     if (!heroOrbitStage || !canvas) return;
+    cachedStatueDownOffset = null;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = heroOrbitStage.getBoundingClientRect();
     const w = rect.width || window.innerWidth;

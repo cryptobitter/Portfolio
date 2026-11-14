@@ -716,7 +716,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   background: var(--stone-base) !important;
   border: 1px solid var(--gold-hairline) !important;
   border-radius: 14px !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
 }
 
 .sec-proj-card:hover, .proj-card-editorial:hover {
@@ -725,7 +725,6 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
     inset 0 1px 1px rgba(255, 255, 255, 0.08),
     0 0 24px rgba(232, 139, 58, 0.18),
     0 12px 32px rgba(0, 0, 0, 0.65) !important;
-  transform: translateY(-3px) !important;
 }
 
 .sec-proj-card:hover h3,

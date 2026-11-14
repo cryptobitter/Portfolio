@@ -15,20 +15,28 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mousemove', (e) => {
       mx = e.clientX;
       my = e.clientY;
-      cursorDot.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
+      cursorDot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
       if (!animActive) {
         animActive = true;
         requestAnimationFrame(animRing);
       }
     }, { passive: true });
 
+    let lastCursorTime = performance.now();
     function animRing() {
-      rx += (mx - rx) * 0.18;
-      ry += (my - ry) * 0.18;
-      cursorRing.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-      if (Math.abs(mx - rx) > 0.5 || Math.abs(my - ry) > 0.5) {
+      const now = performance.now();
+      const dt = Math.min((now - lastCursorTime) / 1000, 0.05);
+      lastCursorTime = now;
+      const factor = 1 - Math.exp(-22 * dt);
+      rx += (mx - rx) * factor;
+      ry += (my - ry) * factor;
+      cursorRing.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+      if (Math.abs(mx - rx) > 0.2 || Math.abs(my - ry) > 0.2) {
         requestAnimationFrame(animRing);
       } else {
+        rx = mx;
+        ry = my;
+        cursorRing.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
         animActive = false;
       }
     }
@@ -607,29 +615,43 @@ document.addEventListener('DOMContentLoaded', () => {
     function hoverHand(hand, clientX, clientY) {
       const rect = hand.canvas.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
+      if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return;
+
       const mouseCol = ((clientX - rect.left) / rect.width) * hand.columns;
       const mouseRow = ((clientY - rect.top) / rect.height) * hand.rows;
+      const centerCol = Math.round(mouseCol);
+      const centerRow = Math.round(mouseRow);
 
       let closest = null;
       let closestDist = Infinity;
-      const list = hand.cellList;
-      for (let i = 0; i < list.length; i++) {
-        const cell = list[i];
-        const dx = mouseCol - cell.col;
-        const dy = mouseRow - cell.row;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closest = cell;
+      const rad = Math.ceil(HOVER_RADIUS);
+
+      // Fast O(1) spatial neighborhood lookup (avoids iterating through thousands of cells)
+      for (let r = centerRow - rad; r <= centerRow + rad; r++) {
+        for (let c = centerCol - rad; c <= centerCol + rad; c++) {
+          const cell = hand.cells.get(`${c},${r}`);
+          if (cell) {
+            const dx = mouseCol - c;
+            const dy = mouseRow - r;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < closestDist) {
+              closestDist = distSq;
+              closest = cell;
+            }
+          }
         }
       }
-      if (closest && closestDist <= HOVER_RADIUS) {
+      if (closest && closestDist <= HOVER_RADIUS * HOVER_RADIUS) {
         highlightCluster(hand.cells, closest);
       }
     }
 
+    let isGatewayVisible = false;
+    let cachedGatewayRect = null;
     function onMouseMove(e) {
-      const rect = gateway.getBoundingClientRect();
+      if (!isGatewayVisible) return;
+      const rect = cachedGatewayRect || gateway.getBoundingClientRect();
+      if (e.clientY < rect.top - 60 || e.clientY > rect.bottom + 60) return;
       const w = rect.width || 1;
       const h = rect.height || 1;
       pointer.x = ((e.clientX - rect.left) / w - 0.5) * PARALLAX_STRENGTH * 2;
@@ -726,20 +748,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
       rafId = requestAnimationFrame(frame);
     }
-    rafId = requestAnimationFrame(frame);
-
-    // Observer to activate on scroll
+    // Observer to activate and only render when visible in viewport
     const afObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !isStarted && !isCompleted) {
-            isStarted = true;
-            startTime = performance.now();
-            animateIn();
+          isGatewayVisible = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            cachedGatewayRect = gateway.getBoundingClientRect();
+            if (!isStarted && !isCompleted) {
+              isStarted = true;
+              startTime = performance.now();
+              animateIn();
+            }
+            if (!rafId) {
+              rafId = requestAnimationFrame(frame);
+            }
+          } else {
+            cachedGatewayRect = null;
+            if (rafId) {
+              cancelAnimationFrame(rafId);
+              rafId = 0;
+            }
           }
         });
       },
-      { threshold: 0.25 }
+      { threshold: 0.05 }
     );
     afObserver.observe(gateway);
   }
@@ -843,23 +876,56 @@ document.addEventListener('DOMContentLoaded', () => {
         card.appendChild(sheen);
       }
 
+      let rect = null;
+      let targetRotX = 0, targetRotY = 0;
+      let currRotX = 0, currRotY = 0;
+      let sheenX = 0, sheenY = 0;
+      let isHovered = false;
+      let rafId = null;
+
+      function updateCard() {
+        if (!isHovered && Math.abs(currRotX) < 0.05 && Math.abs(currRotY) < 0.05) {
+          card.style.transform = '';
+          sheen.style.background = '';
+          rafId = null;
+          return;
+        }
+
+        currRotX += (targetRotX - currRotX) * 0.16;
+        currRotY += (targetRotY - currRotY) * 0.16;
+
+        card.style.transform = `perspective(900px) rotateX(${currRotX.toFixed(2)}deg) rotateY(${currRotY.toFixed(2)}deg) translateY(${isHovered ? -4 : 0}px)`;
+        if (isHovered) {
+          sheen.style.background = `radial-gradient(circle at ${sheenX.toFixed(1)}px ${sheenY.toFixed(1)}px, rgba(200, 101, 59, 0.16) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%)`;
+        }
+        rafId = requestAnimationFrame(updateCard);
+      }
+
+      card.addEventListener('mouseenter', () => {
+        rect = card.getBoundingClientRect();
+        isHovered = true;
+        if (!rafId) rafId = requestAnimationFrame(updateCard);
+      }, { passive: true });
+
       card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        if (!rect) rect = card.getBoundingClientRect();
+        sheenX = e.clientX - rect.left;
+        sheenY = e.clientY - rect.top;
         const cx = rect.width / 2;
         const cy = rect.height / 2;
 
-        const rotX = ((y - cy) / cy) * -7;
-        const rotY = ((x - cx) / cx) * 7;
+        targetRotX = ((sheenY - cy) / (cy || 1)) * -6;
+        targetRotY = ((sheenX - cx) / (cx || 1)) * 6;
 
-        card.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateY(-4px)`;
-        sheen.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(200, 101, 59, 0.16) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 75%)`;
+        if (!rafId) rafId = requestAnimationFrame(updateCard);
       }, { passive: true });
 
       card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-      });
+        isHovered = false;
+        rect = null;
+        targetRotX = 0;
+        targetRotY = 0;
+      }, { passive: true });
     });
   }
   setup3dCardsTilt();
