@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Heraldic Castle Pulley Hoist for Achievements & Certifications
  * Aditya Rajput Portfolio
  * 
@@ -50,16 +50,16 @@
       tags: ['IBM', 'Coursera', 'Python', 'Data Analysis', 'Pandas', 'NumPy']
     },
     {
-      id: 'anthropic-academy',
+      id: 'microsoft-google-ai',
       number: '04',
       total: '06',
       category: 'AI & LLM CERTIFICATIONS',
       catClass: 'badge-crimson',
       date: '2026',
-      title: 'Anthropic Academy — Claude 101 & AI Fluency',
-      subtitle: 'Dual Certifications for Students',
-      desc: 'Completed specialized Anthropic certifications covering Claude 3.5/3 model architectures, context-window optimization, system prompts, structured tool use, and generative AI application design.',
-      tags: ['Anthropic', 'Claude API', 'LLM Architectures', 'Prompt Engineering', 'AI Fluency']
+      title: 'Microsoft & Google Cloud — GenAI & Prompt Engineering',
+      subtitle: 'Professional AI Certifications',
+      desc: 'Completed industry certifications in Generative AI from Google Cloud and Prompt Engineering with GitHub Copilot from Microsoft, demonstrating practical expertise in large language models, prompt engineering pipelines, and AI-accelerated developer toolchains.',
+      tags: ['Microsoft', 'Google Cloud', 'GitHub Copilot', 'Generative AI', 'Prompt Engineering']
     },
     {
       id: 'buildwithbharat',
@@ -87,6 +87,78 @@
     }
   ];
 
+  
+  // ============================================================================
+  // CERTIFICATE LIGHTBOX CONTROLLER (ACCESSIBLE, ESC CLOSES)
+  // ============================================================================
+  function initCertificateLightbox() {
+    const lb = document.getElementById('certLightbox');
+    const lbImg = document.getElementById('certLightboxImg');
+    const lbCap = document.getElementById('certLightboxCaption');
+    const lbClose = document.getElementById('certLightboxClose');
+    if (!lb || !lbImg) return;
+
+    let triggerElem = null;
+
+    function openCert(src, title, id, verify) {
+      triggerElem = document.activeElement;
+      lbImg.src = src;
+      lbImg.alt = title || 'Certificate';
+      if (lbCap) {
+        let metaHtml = `<div style="font-weight:600;font-size:0.95rem;">${title || ''}</div>`;
+        if (id) {
+          metaHtml += `<div style="margin-top:4px;font-size:0.78rem;font-family:var(--font-mono);color:var(--gold-pale);">Credential ID: ${id}</div>`;
+        }
+        if (verify) {
+          metaHtml += `<div style="margin-top:6px;"><a href="${verify}" target="_blank" rel="noopener noreferrer" style="font-size:0.78rem;font-family:var(--font-mono);color:var(--hero-gold-accent);text-decoration:underline;display:inline-flex;align-items:center;gap:4px;">Verify Credential Online &nearr;</a></div>`;
+        }
+        lbCap.innerHTML = metaHtml;
+      }
+
+      lb.classList.add('is-open');
+      lb.setAttribute('aria-hidden', 'false');
+      lb.focus();
+      if (lbClose) lbClose.focus();
+    }
+
+    function closeCert() {
+      lb.classList.remove('is-open');
+      lb.setAttribute('aria-hidden', 'true');
+      lbImg.src = '';
+      if (triggerElem && typeof triggerElem.focus === 'function') {
+        triggerElem.focus();
+      }
+    }
+
+    if (lbClose) lbClose.addEventListener('click', closeCert);
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb) closeCert();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lb.classList.contains('is-open')) {
+        e.stopPropagation();
+        closeCert();
+      }
+    });
+
+    // Delegate click for all certificate buttons on the page
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ach-cert-btn');
+      if (!btn) return;
+      e.preventDefault();
+      const slug = btn.getAttribute('data-slug');
+      const title = btn.getAttribute('data-title');
+      const id = btn.getAttribute('data-id');
+      const verify = btn.getAttribute('data-verify');
+      if (slug) {
+        openCert(`assets/certificates/${slug}.webp`, title, id, verify);
+      }
+    });
+  }
+
+  // Hook into pulley initialization
+
   function initPulley() {
     const root = document.getElementById('achievementsPulleyRoot');
     if (!root) return;
@@ -104,6 +176,7 @@
     const counterCur = root.querySelector('.pulley-counter-current');
     const counterTotal = root.querySelector('.pulley-counter-total');
     const knots = root.querySelectorAll('.pulley-knot');
+    const rosterItems = root.querySelectorAll('.pulley-roster-item');
     const liveAnnounce = root.querySelector('#pulleyLiveAnnounce');
 
     if (counterTotal) {
@@ -149,6 +222,13 @@
         const isActive = i === currentIndex;
         knot.classList.toggle('is-active', isActive);
         knot.setAttribute('aria-current', isActive ? 'true' : 'false');
+      });
+
+      // Update visible roster list
+      rosterItems.forEach((item, i) => {
+        const isActive = i === currentIndex;
+        item.classList.toggle('is-active', isActive);
+        item.setAttribute('aria-selected', isActive ? 'true' : 'false');
       });
 
       // Live region announcement for screen readers
@@ -244,9 +324,11 @@
     updatePulley(0, 0);
   }
 
+  window.initPulley = initPulley;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPulley);
   } else {
     initPulley();
   }
 })();
+

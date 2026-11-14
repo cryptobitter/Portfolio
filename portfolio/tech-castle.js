@@ -1,4 +1,4 @@
-/**
+﻿/**
  * tech-castle.js
  * 2D Heraldic Stone Castle for "Tools & Tech Stack"
  * Built with semantic HTML (ul/li), CSS Grid, and GSAP ScrollTrigger.
@@ -309,9 +309,11 @@
   }
 
   // Initialize when DOM is ready
+  window.initTechCastle = initTechCastle;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initTechCastle);
   } else {
     initTechCastle();
   }
 })();
+

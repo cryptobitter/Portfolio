@@ -4,21 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aditya Rajput — Full Stack &amp; AI Engineer</title>
-<meta name="description" content="Aditya Rajput — Full Stack & AI Engineer building high-performance systems, LLM pipelines, and scalable architectures.">
-<meta name="theme-color" content="#F5F2EC">
+<meta name="description" content="Aditya Rajput — Full Stack &amp; AI Engineer building high-performance distributed systems, LLM pipelines, and scalable architectures.">
+<meta name="theme-color" content="#12100E">
+<link rel="canonical" href="https://adityarajput.dev/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 
-<!-- Google Fonts: Preloaded for non-blocking render performance -->
+<!-- Site Configuration & Domain Constant -->
+<script>
+  // Final site domain: change this single constant to update site URLs everywhere
+  const SITE_URL = 'https://adityarajput.dev';
+  window.SITE_URL = SITE_URL;
+</script>
+
+<!-- Open Graph / Social Sharing Metadata -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://adityarajput.dev/">
+<meta property="og:title" content="Aditya Rajput — Full Stack &amp; AI Engineer">
+<meta property="og:description" content="Full Stack &amp; AI Engineer building high-performance distributed systems, LLM pipelines, and scalable architectures.">
+<meta property="og:image" content="https://adityarajput.dev/assets/og-hero.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Aditya Rajput — Full Stack &amp; AI Engineer Portfolio Preview">
+
+<!-- Twitter Card Metadata -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://adityarajput.dev/">
+<meta name="twitter:title" content="Aditya Rajput — Full Stack &amp; AI Engineer">
+<meta name="twitter:description" content="Full Stack &amp; AI Engineer building high-performance distributed systems, LLM pipelines, and scalable architectures.">
+<meta name="twitter:image" content="https://adityarajput.dev/assets/og-hero.jpg">
+
+<!-- Google Fonts: Optimized & Deduplicated -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&family=Space+Mono:wght@400;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&family=Space+Mono:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sacramento&text=Aditya%20Rajput&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sacramento&text=Aditya%20Rajput&display=swap">
 </noscript>
 
+<!-- Core 3D & Animation Libraries (Deferred in <head> to preserve exact execution order) -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="css/theme-castle.css">
+  <link rel="stylesheet" href="css/theme-castle.css">
 
 </head>
 <body>
@@ -40,9 +71,15 @@
       <span class="nav-role">FULL STACK &amp; AI ENGINEER</span>
     </div>
     <a href="#hero" class="nav-brand-logo">ADITYA RAJPUT</a>
+    <nav class="nav-desktop-links" aria-label="Desktop primary navigation">
+      <a href="#projects" class="nav-link">PROJECTS</a>
+      <a href="#process" class="nav-link">SKILLS</a>
+      <a href="#experience" class="nav-link">EXPERIENCE</a>
+      <a href="#contact" class="nav-link">CONTACT</a>
+    </nav>
     <div class="nav-right">
       <span class="status-badge">AVAILABLE FOR 2027 INTERNSHIPS &amp; PROJECTS</span>
-      <a href="assets/resume.pdf" target="_blank" rel="noopener" class="nav-resume-btn">RESUME ↓</a>
+      <a href="assets/resume.pdf" target="_blank" rel="noopener" class="nav-resume-btn" download="Aditya_Rajput_Resume.pdf">RESUME ↓</a>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
         <span></span><span></span>
       </button>
@@ -98,6 +135,12 @@
       </button>
     </nav>
 
+    <!-- 8. Skip to Projects Button (Always visible on hero stage) -->
+    <a href="#projects" class="hero-skip-btn" aria-label="Skip hero section to projects">
+      <span>Skip to projects</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </a>
+
     <!-- 5. Pinned Content Layers (Chapters 0.00 to 1.00) -->
     <div class="hero-orbit-content-wrap">
       
@@ -125,7 +168,7 @@
           <div class="hero-signature">Aditya Rajput</div>
           <div class="hero-action-row">
             <a href="#projects" class="btn-editorial btn-orbit-gold">SEE FEATURED WORK <span class="arrow">→</span></a>
-            <a href="assets/resume.pdf" target="_blank" rel="noopener" class="btn-editorial-ghost btn-orbit-ghost">DOWNLOAD CV</a>
+            <a href="#enter" target="_blank" rel="noopener" class="btn-editorial-ghost btn-orbit-ghost">DOWNLOAD CV</a>
           </div>
         </div>
       </div>
@@ -196,7 +239,7 @@
   </div><!-- /#heroOrbitStage -->
 </section>
 
-<!-- ============ FEATURED PROJECTS SECTION (3D BOOKS SHOWCASE) ============ -->
+﻿<!-- ============ FEATURED PROJECTS SECTION (3D BOOKS SHOWCASE) ============ -->
 <section class="projects-section" id="projects">
   <div class="section-container">
     <div class="section-header-editorial dark-header reveal">
@@ -235,13 +278,11 @@
         <!-- Close Button (✕) -->
         <button id="booksCloseBtn" class="bs-close-btn" aria-label="Close Project View">&#10005;</button>
 
-        <!-- Detail Overlay Panel (Opens when a book is selected) -->
+        <!-- Detail Overlay Panel: Structured Case Study (Problem, Architecture, Decisions, Notes, Metrics, Media, Links) -->
         <div id="booksDetailPanel" class="bs-detail-panel" aria-live="polite">
-          <div class="bs-dp-badge" id="bsDpCategory">LIVE PRODUCT</div>
+          <div class="bs-dp-badge" id="bsDpCategory">LIVE DEMO</div>
           <h1 class="bs-dp-title" id="bsDpTitle">NAYAY AI</h1>
-          <p class="bs-dp-desc" id="bsDpDesc">
-            Bilingual (English/Hindi) legal assistant and clause explainer for Indian citizens. Powered by Groq's llama-3.3-70b via FastAPI backend for low-latency guidance, with Supabase Auth &amp; PostgreSQL.
-          </p>
+          <p class="bs-dp-desc" id="bsDpDesc"></p>
 
           <div class="bs-dp-meta">
             <div class="bs-dp-stars">
@@ -256,27 +297,79 @@
             <div class="bs-dp-year" id="bsDpYear">2026</div>
           </div>
 
-          <div class="bs-dp-tags" id="bsDpTags">
-            <span class="bs-dp-tag">FastAPI</span>
-            <span class="bs-dp-tag">Groq API</span>
-            <span class="bs-dp-tag">Supabase</span>
+          <!-- 1. Problem Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsProblem" style="display: none;">
+            <h4 class="bs-cs-heading">THE PROBLEM</h4>
+            <p class="bs-cs-text" id="bsCsProblemText"></p>
           </div>
 
-          <div class="bs-dp-actions">
-            <a id="bsGithubBtn" href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="bs-btn bs-btn-primary">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              <span>GitHub Code</span>
-            </a>
-            <a id="bsDemoBtn" href="#" target="_blank" rel="noopener" class="bs-btn bs-btn-secondary">
-              <span>Live Demo</span>
-              <span class="bs-arrow">&#8599;</span>
-            </a>
+          <!-- 2. Architecture Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsArch" style="display: none;">
+            <h4 class="bs-cs-heading">SYSTEM ARCHITECTURE</h4>
+            <div class="bs-cs-diagram-wrap" id="bsCsArchWrap" style="display: none;">
+              <img id="bsCsArchImg" class="bs-cs-img" alt="System architecture diagram" loading="lazy">
+            </div>
+            <p class="bs-cs-text" id="bsCsArchText"></p>
+          </div>
+
+          <!-- 3. Key Decisions Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsDecisions" style="display: none;">
+            <h4 class="bs-cs-heading">KEY ENGINEERING DECISIONS</h4>
+            <ul class="bs-cs-list" id="bsCsDecisionsList"></ul>
+          </div>
+
+          <!-- 4. Deep Dive Technical Notes & Tags -->
+          <div class="bs-cs-section bs-cs-tech">
+            <h4 class="bs-cs-heading">STACK &amp; ARCHITECTURE NOTES</h4>
+            <div class="bs-dp-tags" id="bsDpTags"></div>
+            <div class="bs-tech-detail-card" id="bsTechDetailCard" style="display: none;">
+              <div class="bs-tech-card-header">
+                <span class="bs-tech-card-title" id="bsTechCardTitle"></span>
+                <button type="button" class="bs-tech-card-close" id="bsTechCardClose" aria-label="Close tech note">&times;</button>
+              </div>
+              <p class="bs-tech-card-body" id="bsTechCardBody"></p>
+            </div>
+          </div>
+
+          <!-- 5. Metrics Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsMetrics" style="display: none;">
+            <h4 class="bs-cs-heading">BENCHMARKS &amp; METRICS</h4>
+            <div class="bs-cs-metrics-grid" id="bsCsMetricsGrid"></div>
+          </div>
+
+          <!-- 6. Gallery / Screenshots (1-3 images with lazy loading and lightbox) -->
+          <div class="bs-cs-section" id="bsCsGallery" style="display: none;">
+            <h4 class="bs-cs-heading">SCREENSHOTS &amp; INTERFACES</h4>
+            <div class="bs-cs-gallery-grid" id="bsCsGalleryGrid"></div>
+          </div>
+
+          <!-- 7. Actions & Links -->
+          <div class="bs-dp-actions" id="bsDpActions">
+            <!-- Dynamically populated from project links data object -->
+          </div>
+        </div>
+
+        <!-- Accessible Project Image Lightbox -->
+        <div id="bsLightbox" class="bs-lightbox" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+          <div class="bs-lightbox-content">
+            <button type="button" class="bs-lightbox-close" id="bsLightboxClose" aria-label="Close image lightbox">&times;</button>
+            <img id="bsLightboxImg" class="bs-lightbox-img" src="" alt="">
+            <div id="bsLightboxCaption" class="bs-lightbox-caption"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+    <!-- Certificate Lightbox Modal (Keyboard accessible, Esc closes) -->
+    <div id="certLightbox" class="bs-lightbox" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+      <div class="bs-lightbox-content">
+        <button type="button" class="bs-lightbox-close" id="certLightboxClose" aria-label="Close certificate">&times;</button>
+        <img id="certLightboxImg" class="bs-lightbox-img" src="" alt="Certificate view">
+        <div id="certLightboxCaption" class="bs-lightbox-caption"></div>
+      </div>
+    </div>
 
 <!-- ============ PROCESS & SKILLS SECTION (LIGHT EDITORIAL) ============ -->
 <section class="process-skills-section" id="process">
@@ -291,7 +384,7 @@
       </div>
 
       <!-- Row 1, Col 2: Right Heading Block (Above Tools Card) -->
-      <div class="skills-heading-block reveal" style="transition-delay: 0.15s">
+      <div class="skills-heading-block reveal" id="skills" style="transition-delay: 0.15s">
         <span class="section-number">03 / CAPABILITIES</span>
         <h2 class="section-title-serif">TOOLS &amp; TECH STACK</h2>
         <p class="process-intro">Core technologies and frameworks I use to build scalable products.</p>
@@ -445,6 +538,29 @@
           <h3>FLYRANK <span class="tl-role-tag">— Back-End AI Engineering Intern</span></h3>
           <p>Containerized FastAPI, PostgreSQL and Redis with Docker Compose; swapped storage with zero route or service changes. Cut query time 27x (2.41 ms to 0.089 ms) with PostgreSQL indexing, benchmarked using EXPLAIN ANALYZE. Built Supabase Auth JWT middleware tested with pytest; ran Claude vs. ChatGPT prompt comparisons.</p>
           <div class="proj-tags"><span>FastAPI</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span><span>Supabase Auth</span><span>pytest</span></div>
+          <div class="tl-cert-wrap" style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 14px;">
+            <div class="ach-cert-card-wrap">
+              <button type="button" class="ach-cert-btn" data-slug="flyrank-backend-ai-engineering" data-title="FlyRank — Backend AI Engineering Internship Certificate" data-id="FR-D11-3623A-C111A" data-verify="https://internship.flyrank.ai/verify" aria-label="View FlyRank Backend AI Engineering Certificate">
+                <img src="assets/certificates/flyrank-backend-ai-engineering.webp" alt="FlyRank Backend AI Engineering Certificate" loading="lazy">
+                <span class="ach-cert-zoom-pill">Backend AI Engineering &#128269;</span>
+              </button>
+              <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <span>ID: FR-D11-3623A-C111A</span>
+                <a href="https://internship.flyrank.ai/verify" target="_blank" rel="noopener noreferrer" style="color: var(--hero-gold-accent); text-decoration: underline;">Verify &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ach-cert-card-wrap">
+              <button type="button" class="ach-cert-btn" data-slug="flyrank-ai-fluency" data-title="FlyRank — AI Fluency Internship Certificate" data-id="FR-D11-F5AC8-4591C" data-verify="https://internship.flyrank.ai/verify" aria-label="View FlyRank AI Fluency Certificate">
+                <img src="assets/certificates/flyrank-ai-fluency.webp" alt="FlyRank AI Fluency Certificate" loading="lazy">
+                <span class="ach-cert-zoom-pill">AI Fluency &#128269;</span>
+              </button>
+              <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <span>ID: FR-D11-F5AC8-4591C</span>
+                <a href="https://internship.flyrank.ai/verify" target="_blank" rel="noopener noreferrer" style="color: var(--hero-gold-accent); text-decoration: underline;">Verify &nearr;</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -526,7 +642,7 @@
           <button class="pulley-knot is-active" data-index="0" aria-label="Go to achievement 1: GDGoC PSIT" role="tab" aria-selected="true"><span class="knot-bead"></span><span class="knot-tooltip">01 GDGoC</span></button>
           <button class="pulley-knot" data-index="1" aria-label="Go to achievement 2: Walmart Global Tech" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">02 Walmart</span></button>
           <button class="pulley-knot" data-index="2" aria-label="Go to achievement 3: IBM Python" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">03 IBM Python</span></button>
-          <button class="pulley-knot" data-index="3" aria-label="Go to achievement 4: Anthropic Academy" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">04 Anthropic</span></button>
+          <button class="pulley-knot" data-index="3" aria-label="Go to achievement 4: Microsoft & Google Cloud" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">04 MS &amp; Google</span></button>
           <button class="pulley-knot" data-index="4" aria-label="Go to achievement 5: BuildWithBharat 2.0" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">05 BuildWithBharat</span></button>
           <button class="pulley-knot" data-index="5" aria-label="Go to achievement 6: BBD National Hackathon" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">06 BBD Hackathon</span></button>
         </div>
@@ -549,6 +665,13 @@
                   <span>GDGoC</span><span>Technical Head</span><span>Developer Community</span><span>Workshops</span><span>Mentorship</span>
                 </div>
               </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="gdgoc-psit" data-title="Google Developer Groups on Campus (GDGoC) PSIT Certificate" aria-label="View Google Developer Groups on Campus (GDGoC) PSIT Certificate">
+                    <img src="assets/certificates/gdgoc-psit.webp" alt="Google Developer Groups on Campus (GDGoC) PSIT Certificate" loading="lazy" onerror="this.closest('.ach-cert-wrap').style.display='none'">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                </div>
             </article>
 
             <!-- Card 02: Walmart Global Tech -->
@@ -565,6 +688,16 @@
                   <span>Walmart Global Tech</span><span>Software Architecture</span><span>Relational DB</span><span>Data Structures</span><span>Forage</span>
                 </div>
               </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="walmart-forage" data-title="Walmart Global Tech — Advanced Software Engineering Certificate" data-id="6a736a0186066446596cfb00" aria-label="View Walmart Global Tech Advanced Software Engineering Certificate">
+                    <img src="assets/certificates/walmart-forage.webp" alt="Walmart Global Tech Advanced Software Engineering Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>User Verification Code: 6a736a0186066446596cfb00</span>
+                  </div>
+                </div>
             </article>
 
             <!-- Card 03: IBM Python -->
@@ -581,20 +714,83 @@
                   <span>IBM</span><span>Coursera</span><span>Python</span><span>Data Analysis</span><span>Pandas</span><span>NumPy</span>
                 </div>
               </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="ibm-data-analysis-python" data-title="IBM — Data Analysis with Python Certificate" data-id="b1b7124c50c1436ba29871d940308857" data-verify="https://courses.cognitiveclass.ai/certificates/b1b7124c50c1436ba29871d940308857" aria-label="View IBM Data Analysis with Python Certificate">
+                    <img src="assets/certificates/ibm-data-analysis-python.webp" alt="IBM Data Analysis with Python Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                    <span>ID: b1b7124c50c1436ba29871d940308857</span>
+                    <a href="https://courses.cognitiveclass.ai/certificates/b1b7124c50c1436ba29871d940308857" target="_blank" rel="noopener noreferrer" style="color: var(--hero-gold-accent); text-decoration: underline;">Verify &nearr;</a>
+                  </div>
+                </div>
             </article>
 
-            <!-- Card 04: Anthropic Academy -->
+            <!-- Card 04: Anthropic, Microsoft & Google Cloud -->
             <article class="pulley-card">
               <div class="pulley-card-header">
                 <span class="pulley-badge badge-crimson">AI &amp; LLM CERTIFICATIONS</span>
                 <span class="pulley-period">2026</span>
               </div>
               <div class="pulley-card-body">
-                <h3 class="pulley-card-title">ANTHROPIC ACADEMY — CLAUDE 101 &amp; AI FLUENCY</h3>
-                <div class="pulley-card-role">Dual Certifications for Students</div>
-                <p class="pulley-card-desc">Completed specialized Anthropic certifications covering Claude 3.5/3 model architectures, context-window optimization, system prompts, structured tool use, and generative AI application design.</p>
+                <h3 class="pulley-card-title">ANTHROPIC, MICROSOFT &amp; GOOGLE CLOUD — AI &amp; AGENTIC SYSTEMS</h3>
+                <div class="pulley-card-role">Professional AI &amp; MCP Credentials</div>
+                <p class="pulley-card-desc">Completed specialized AI certifications covering Anthropic Claude 101, Model Context Protocol (MCP), Agent Skills, Claude Code, Generative AI from Google Cloud, and Prompt Engineering with GitHub Copilot from Microsoft.</p>
                 <div class="proj-tags">
-                  <span>Anthropic</span><span>Claude API</span><span>LLM Architectures</span><span>Prompt Engineering</span><span>AI Fluency</span>
+                  <span>Anthropic</span><span>Model Context Protocol</span><span>Agent Skills</span><span>Claude Code</span><span>Microsoft Copilot</span><span>Google Cloud AI</span>
+                </div>
+              </div>
+            
+              <div class="ach-cert-wrap" style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="anthropic-claude-101" data-title="Anthropic — Claude 101 Certificate" aria-label="View Anthropic Claude 101 Certificate">
+                    <img src="assets/certificates/anthropic-claude-101.webp" alt="Anthropic Claude 101 Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">Claude 101 &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Anthropic Academy</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="anthropic-mcp-intro" data-title="Anthropic — Introduction to Model Context Protocol (MCP)" aria-label="View Anthropic MCP Certificate">
+                    <img src="assets/certificates/anthropic-mcp-intro.webp" alt="Anthropic Model Context Protocol Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">MCP Protocol &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Anthropic Academy</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="anthropic-agent-skills" data-title="Anthropic — Introduction to Agent Skills" aria-label="View Anthropic Agent Skills Certificate">
+                    <img src="assets/certificates/anthropic-agent-skills.webp" alt="Anthropic Agent Skills Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">Agent Skills &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Anthropic Academy</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="microsoft-prompt-engineering" data-title="Microsoft — Introduction to Prompt Engineering with GitHub Copilot" data-id="9998132" aria-label="View Microsoft Prompt Engineering Certificate">
+                    <img src="assets/certificates/microsoft-prompt-engineering.webp" alt="Microsoft Introduction to Prompt Engineering with GitHub Copilot Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">MS Copilot &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Code: 9998132</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="google-cloud-generative-ai" data-title="Google Cloud — Introduction to Generative AI" data-id="10036761" aria-label="View Google Cloud Generative AI Certificate">
+                    <img src="assets/certificates/google-cloud-generative-ai.webp" alt="Google Cloud Introduction to Generative AI Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">Google Cloud AI &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Code: 10036761</span>
+                  </div>
                 </div>
               </div>
             </article>
@@ -613,6 +809,16 @@
                   <span>NIT Delhi</span><span>National Hackathon</span><span>Systems Architecture</span><span>FastAPI</span><span>High-Impact Tech</span>
                 </div>
               </div>
+            
+              <div class="ach-cert-wrap" style="margin-top: 14px;">
+                <button type="button" class="ach-cert-btn" data-slug="buildwithbharat-2" data-title="Build with Bharat 2.0 — National Semi-Finalist Certificate (NIT Delhi)" aria-label="View Build with Bharat 2.0 Certificate">
+                  <img src="assets/certificates/buildwithbharat-2.webp" alt="Build with Bharat 2.0 National Semi-Finalist Certificate" loading="lazy">
+                  <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                </button>
+                <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                  <span>National Semi-Finalist &bull; Team The Wildcards &bull; NIT Delhi</span>
+                </div>
+              </div>
             </article>
 
             <!-- Card 06: BBD National Hackathon -->
@@ -629,10 +835,80 @@
                   <span>BBDNIIT</span><span>FastAPI</span><span>Microservices</span><span>Async Pipelines</span><span>Finalist</span>
                 </div>
               </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="bbd-hackathon" data-title="BBD National Hackathon Coderush & NEXIFY Certificate" aria-label="View BBD National Hackathon Coderush & NEXIFY Certificate">
+                    <img src="assets/certificates/bbd-hackathon.webp" alt="BBD National Hackathon Coderush & NEXIFY Certificate" loading="lazy" onerror="this.closest('.ach-cert-wrap').style.display='none'">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                </div>
             </article>
 
           </div><!-- /.pulley-track -->
         </div><!-- /.pulley-viewport -->
+
+        <!-- Visible Roster of all 6 Achievement Titles (Click to winch) -->
+        <nav class="pulley-titles-roster" aria-label="Achievement titles directory">
+          <div class="pulley-roster-header">
+            <span class="pulley-roster-eyebrow">ACHIEVEMENTS AT A GLANCE</span>
+          </div>
+          <ul class="pulley-roster-list" role="tablist">
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item is-active" data-index="0" role="tab" aria-selected="true" aria-label="Hoist GDGoC PSIT">
+                <span class="roster-item-num">01</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">GDGoC PSIT</strong>
+                  <small class="roster-item-sub">Technical Head</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="1" role="tab" aria-selected="false" aria-label="Hoist Walmart Global Tech">
+                <span class="roster-item-num">02</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">Walmart Global Tech</strong>
+                  <small class="roster-item-sub">Software Engineering</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="2" role="tab" aria-selected="false" aria-label="Hoist IBM Python">
+                <span class="roster-item-num">03</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">IBM Data Analysis</strong>
+                  <small class="roster-item-sub">Python &amp; Analytics</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="3" role="tab" aria-selected="false" aria-label="Hoist Microsoft & Google Cloud">
+                <span class="roster-item-num">04</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">Anthropic, MS &amp; Google</strong>
+                  <small class="roster-item-sub">Claude, MCP &amp; Generative AI</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="4" role="tab" aria-selected="false" aria-label="Hoist BuildWithBharat 2.0">
+                <span class="roster-item-num">05</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">BuildWithBharat 2.0</strong>
+                  <small class="roster-item-sub">NIT Delhi Semifinalist</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="5" role="tab" aria-selected="false" aria-label="Hoist BBD National Hackathon">
+                <span class="roster-item-num">06</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">BBD Hackathon</strong>
+                  <small class="roster-item-sub">Coderush 2.0 &amp; NEXIFY</small>
+                </span>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div><!-- /.pulley-carriage -->
 
       <!-- Bottom Mechanical Base & Hint -->
@@ -647,32 +923,31 @@
   </div>
 </section>
 
-<!-- ============ ANIMATED FOOTER GATEWAY (ASCII HANDS) ============ -->
-<section class="animated-footer-gateway" id="animatedFooterGateway">
-  <div class="af-container" id="afContainer">
-    <!-- ASCII Canvas Hands -->
-    <div class="af-hands-wrapper">
-      <div class="af-hand-wrap af-hand-left" id="afLeftWrap">
-        <canvas id="afLeftCanvas"></canvas>
-      </div>
-      <div class="af-hand-wrap af-hand-right" id="afRightWrap">
-        <canvas id="afRightCanvas"></canvas>
-      </div>
-    </div>
-
-    <!-- Bottom Display Heading Lines -->
-    <div class="af-headings">
-      <h2 class="af-heading-word" aria-label="LET'S CONNECT">
-        <span class="af-char" data-af-char>L</span><span class="af-char" data-af-char>E</span><span class="af-char" data-af-char>T</span><span class="af-char" data-af-char>'</span><span class="af-char" data-af-char>S</span>
-        <span class="af-char af-char-space">&nbsp;</span>
-        <span class="af-char" data-af-char>C</span><span class="af-char" data-af-char>O</span><span class="af-char" data-af-char>N</span><span class="af-char" data-af-char>N</span><span class="af-char" data-af-char>E</span><span class="af-char" data-af-char>C</span><span class="af-char" data-af-char>T</span>
-      </h2>
-    </div>
-  </div>
-</section>
-
 <!-- ============ CONTACT & FOOTER SECTION (DARK ESPRESSO) ============ -->
 <section class="contact-section" id="contact">
+  <!-- Merged Top Canopy: Animated Footer Gateway (ASCII Hands) -->
+  <div class="animated-footer-gateway" id="animatedFooterGateway">
+    <div class="af-container" id="afContainer">
+      <!-- ASCII Canvas Hands -->
+      <div class="af-hands-wrapper">
+        <div class="af-hand-wrap af-hand-left" id="afLeftWrap">
+          <canvas id="afLeftCanvas"></canvas>
+        </div>
+        <div class="af-hand-wrap af-hand-right" id="afRightWrap">
+          <canvas id="afRightCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Bottom Display Heading Lines -->
+      <div class="af-headings">
+        <h2 class="af-heading-word" aria-label="LET'S CONNECT">
+          <span class="af-char" data-af-char>L</span><span class="af-char" data-af-char>E</span><span class="af-char" data-af-char>T</span><span class="af-char" data-af-char>'</span><span class="af-char" data-af-char>S</span>
+          <span class="af-char af-char-space">&nbsp;</span>
+          <span class="af-char" data-af-char>C</span><span class="af-char" data-af-char>O</span><span class="af-char" data-af-char>N</span><span class="af-char" data-af-char>N</span><span class="af-char" data-af-char>E</span><span class="af-char" data-af-char>C</span><span class="af-char" data-af-char>T</span>
+        </h2>
+      </div>
+    </div>
+  </div>
   <div class="section-container">
     <div class="contact-banner-wrap reveal">
       <span class="contact-eyebrow">GET IN TOUCH</span>
@@ -761,16 +1036,13 @@
   </div>
 </section>
 
+
 <!-- Three.js 3D Engine for 3D Books Showcase -->
 <!-- GSAP & ScrollTrigger for Hero Orbit Pinning and Scroll Animations -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
 <!-- Hero Orbit Canvas Controller -->
 <script defer src="hero-orbit.js"></script>
 
 <!-- Three.js 3D Engine for 3D Books Showcase -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script defer src="books-showcase.js"></script>
 <script defer src="process-banner.js"></script>
 <script defer src="tools-data.js"></script>
