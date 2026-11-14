@@ -1385,6 +1385,24 @@ body:has(a:hover, button:hover, .proj-card-editorial:hover) #cursor-ring {
   transform: translateY(-2px);
 }
 
+
+.bs-btn-ghost {
+  background: transparent;
+  color: var(--hero-gold-accent, #C9A24B);
+  border: 1px solid rgba(201, 162, 75, 0.4);
+}
+
+.bs-btn-ghost:hover {
+  background: rgba(201, 162, 75, 0.15);
+  border-color: #E2C27A;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+.bs-btn-ghost:hover .bs-arrow {
+  transform: translate(2px, -2px);
+}
+
 .bs-arrow {
   font-size: 1rem;
   transition: transform 0.2s ease;
