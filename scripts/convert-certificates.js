@@ -42,7 +42,9 @@ const SLUGS = [
   'anthropic-ai-fluency',
   'gdgoc-psit',
   'buildwithbharat-2',
-  'bbd-hackathon'
+  'bbd-hackathon',
+  'microsoft-prompt-engineering',
+  'google-cloud-generative-ai'
 ];
 
 async function main() {
