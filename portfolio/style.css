@@ -3689,3 +3689,53 @@ body.intro-complete footer {
   background: var(--accent-copper);
   border-color: var(--accent-copper);
 }
+
+
+/* ==========================================================================
+   CERTIFICATE THUMBNAILS & LIGHTBOX BUTTONS
+   ========================================================================== */
+.ach-cert-wrap,
+.tl-cert-wrap {
+  display: inline-block;
+  margin-top: 12px;
+}
+
+.ach-cert-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(38, 24, 18, 0.65);
+  border: 1px solid rgba(201, 162, 75, 0.4);
+  border-radius: 8px;
+  padding: 5px 12px;
+  color: var(--hero-gold-hover, #E2C27A);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.22s ease;
+}
+
+.ach-cert-btn:hover {
+  background: rgba(201, 162, 75, 0.2);
+  border-color: #E2C27A;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.ach-cert-btn img {
+  width: 22px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ach-cert-zoom-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

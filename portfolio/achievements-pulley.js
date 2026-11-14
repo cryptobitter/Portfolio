@@ -87,6 +87,67 @@
     }
   ];
 
+  
+  // ============================================================================
+  // CERTIFICATE LIGHTBOX CONTROLLER (ACCESSIBLE, ESC CLOSES)
+  // ============================================================================
+  function initCertificateLightbox() {
+    const lb = document.getElementById('certLightbox');
+    const lbImg = document.getElementById('certLightboxImg');
+    const lbCap = document.getElementById('certLightboxCaption');
+    const lbClose = document.getElementById('certLightboxClose');
+    if (!lb || !lbImg) return;
+
+    let triggerElem = null;
+
+    function openCert(src, title) {
+      triggerElem = document.activeElement;
+      lbImg.src = src;
+      lbImg.alt = title || 'Certificate';
+      if (lbCap) lbCap.textContent = title || '';
+
+      lb.classList.add('is-open');
+      lb.setAttribute('aria-hidden', 'false');
+      lb.focus();
+      if (lbClose) lbClose.focus();
+    }
+
+    function closeCert() {
+      lb.classList.remove('is-open');
+      lb.setAttribute('aria-hidden', 'true');
+      lbImg.src = '';
+      if (triggerElem && typeof triggerElem.focus === 'function') {
+        triggerElem.focus();
+      }
+    }
+
+    if (lbClose) lbClose.addEventListener('click', closeCert);
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb) closeCert();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lb.classList.contains('is-open')) {
+        e.stopPropagation();
+        closeCert();
+      }
+    });
+
+    // Delegate click for all certificate buttons on the page
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ach-cert-btn');
+      if (!btn) return;
+      e.preventDefault();
+      const slug = btn.getAttribute('data-slug');
+      const title = btn.getAttribute('data-title');
+      if (slug) {
+        openCert(`assets/certificates/${slug}.webp`, title);
+      }
+    });
+  }
+
+  // Hook into pulley initialization
+
   function initPulley() {
     const root = document.getElementById('achievementsPulleyRoot');
     if (!root) return;

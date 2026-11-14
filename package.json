@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "npx serve portfolio"
+    "start": "npx serve portfolio",
+    "convert:certs": "node scripts/convert-certificates.js"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
 }
