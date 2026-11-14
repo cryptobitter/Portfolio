@@ -102,10 +102,28 @@
   let framesBaseDir = 'frames/';
   let pinDistance = 1600; // Calculated dynamically from window.innerHeight * 2
 
-  // Frame Cache
-  const loadedFrames = new Map();
-  const bitmapCache = new Map();
+  // ============================================================================
+  // MEMORY-CONSTRAINED SLIDING LRU BITMAP CACHE (UNDER 250 MB RAM DECODED)
+  // ============================================================================
+  const STATION_FRAME_INDICES = new Set([120, 49, 0]);
+  const stationBitmaps = new Map();     // Permanent 2560x1440 bitmaps at rest (Front: 120, Side: 49, Back: 0)
+  const slidingBitmapLRU = new Map();   // Sliding window of max 14 in-between bitmaps (1600x900)
   const pendingRequests = new Set();
+  const MAX_SLIDING_WINDOW = 14;
+
+  // Sampled in-between frame set (~40 frames total across 121 frames for fluid blending)
+  const IN_BETWEEN_INDICES = [];
+  for (let i = 0; i <= 120; i += 3) {
+    IN_BETWEEN_INDICES.push(i);
+  }
+  if (!IN_BETWEEN_INDICES.includes(49)) {
+    IN_BETWEEN_INDICES.push(49);
+    IN_BETWEEN_INDICES.sort((a, b) => a - b);
+  }
+  if (!IN_BETWEEN_INDICES.includes(120)) {
+    IN_BETWEEN_INDICES.push(120);
+  }
+  const SAMPLE_SET = new Set(IN_BETWEEN_INDICES);
 
   const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
 
@@ -117,32 +135,73 @@
   }
 
   function getFrameDrawable(index) {
-    if (bitmapCache.has(index)) return bitmapCache.get(index);
-    if (loadedFrames.has(index)) return loadedFrames.get(index);
+    if (stationBitmaps.has(index)) return stationBitmaps.get(index);
+    if (slidingBitmapLRU.has(index)) {
+      const bmp = slidingBitmapLRU.get(index);
+      // Refresh recency in LRU
+      slidingBitmapLRU.delete(index);
+      slidingBitmapLRU.set(index, bmp);
+      return bmp;
+    }
     return null;
+  }
+
+  function evictExcessBitmaps() {
+    while (slidingBitmapLRU.size > MAX_SLIDING_WINDOW) {
+      let furthestKey = null;
+      let maxDist = -1;
+      for (const idx of slidingBitmapLRU.keys()) {
+        const dist = Math.abs(idx - currentFrameFloat);
+        if (dist > maxDist) {
+          maxDist = dist;
+          furthestKey = idx;
+        }
+      }
+      if (furthestKey !== null) {
+        const bmp = slidingBitmapLRU.get(furthestKey);
+        slidingBitmapLRU.delete(furthestKey);
+        if (bmp && typeof bmp.close === 'function') {
+          bmp.close(); // Immediate GPU/RAM release
+        }
+      } else {
+        const firstKey = slidingBitmapLRU.keys().next().value;
+        const bmp = slidingBitmapLRU.get(firstKey);
+        slidingBitmapLRU.delete(firstKey);
+        if (bmp && typeof bmp.close === 'function') {
+          bmp.close();
+        }
+      }
+    }
   }
 
   function findClosestLoadedDrawable(targetIndex) {
     const direct = getFrameDrawable(targetIndex);
     if (direct) return direct;
+
     let bestDist = Infinity;
     let bestDrawable = null;
-    for (const [idx, item] of loadedFrames.entries()) {
-      if (item && item.complete && item.naturalWidth) {
-        const d = Math.abs(idx - targetIndex);
-        if (d < bestDist) {
-          bestDist = d;
-          bestDrawable = bitmapCache.get(idx) || item;
-        }
+
+    for (const [idx, bmp] of stationBitmaps.entries()) {
+      const d = Math.abs(idx - targetIndex);
+      if (d < bestDist) {
+        bestDist = d;
+        bestDrawable = bmp;
+      }
+    }
+    for (const [idx, bmp] of slidingBitmapLRU.entries()) {
+      const d = Math.abs(idx - targetIndex);
+      if (d < bestDist) {
+        bestDist = d;
+        bestDrawable = bmp;
       }
     }
     return bestDrawable;
   }
 
-  // Load single frame with async bitmap decode
+  // Load single frame with async bitmap decode, strict LRU window and instant memory cleanup
   function loadSingleFrame(index, priority = false) {
     if (index < 0 || index >= manifest.frameCount) return;
-    if (loadedFrames.has(index) || pendingRequests.has(index)) return;
+    if (stationBitmaps.has(index) || slidingBitmapLRU.has(index) || pendingRequests.has(index)) return;
 
     pendingRequests.add(index);
     const img = new Image();
@@ -150,30 +209,58 @@
     img.src = getFrameUrl(index);
 
     img.onload = () => {
-      loadedFrames.set(index, img);
       pendingRequests.delete(index);
+      const isStation = STATION_FRAME_INDICES.has(index);
+
       if (window.createImageBitmap) {
-        createImageBitmap(img)
+        // Desktop in-betweens decoded at 1600x900 for huge RAM savings. Station frames keep 2560x1440.
+        const bitmapOpts = (!isStation && !isMobile)
+          ? { resizeWidth: 1600, resizeHeight: 900, resizeQuality: 'high' }
+          : undefined;
+
+        createImageBitmap(img, bitmapOpts)
           .then((bmp) => {
-            bitmapCache.set(index, bmp);
-            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
+            // Free the HTMLImageElement immediately from DOM memory
+            img.onload = null;
+            img.onerror = null;
+            img.src = '';
+
+            if (isStation) {
+              stationBitmaps.set(index, bmp);
+            } else {
+              slidingBitmapLRU.set(index, bmp);
+              evictExcessBitmaps();
+            }
+
+            if (Math.abs(currentFrameFloat - index) <= 2.0 && !isTweening) {
               renderBlendedFrame(currentFrameFloat);
             }
           })
           .catch(() => {
-            if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
-              renderBlendedFrame(currentFrameFloat);
-            }
+            img.onload = null;
+            img.onerror = null;
+            img.src = '';
           });
-      } else {
-        if (Math.abs(currentFrameFloat - index) <= 1.0 && !isTweening) {
-          renderBlendedFrame(currentFrameFloat);
-        }
       }
     };
     img.onerror = () => {
       pendingRequests.delete(index);
+      img.onload = null;
+      img.onerror = null;
+      img.src = '';
     };
+  }
+
+  function ensureSurroundingFrames(frameFloat) {
+    const base = Math.round(frameFloat);
+    for (let offset = 0; offset <= 8; offset++) {
+      const idxs = offset === 0 ? [base] : [base - offset, base + offset];
+      idxs.forEach((idx) => {
+        if (SAMPLE_SET.has(idx)) {
+          loadSingleFrame(idx, false);
+        }
+      });
+    }
   }
 
   // ============================================================================
@@ -225,23 +312,64 @@
   function renderBlendedFrame(frameFloat) {
     if (!ctx || !canvas) return;
     const clamped = clamp(frameFloat, 0, manifest.frameCount - 1);
-    const baseIndex = Math.floor(clamped);
-    const nextIndex = Math.min(manifest.frameCount - 1, baseIndex + 1);
-    const frac = clamped - baseIndex;
 
-    const imgA = findClosestLoadedDrawable(baseIndex);
+    // Find nearest loaded frames at or below and at or above clamped
+    let lowerIndex = null;
+    let upperIndex = null;
+    let lowerDist = Infinity;
+    let upperDist = Infinity;
+
+    const allLoaded = [];
+    stationBitmaps.forEach((_, idx) => allLoaded.push(idx));
+    slidingBitmapLRU.forEach((_, idx) => allLoaded.push(idx));
+
+    for (let i = 0; i < allLoaded.length; i++) {
+      const idx = allLoaded[i];
+      if (idx <= clamped) {
+        const d = clamped - idx;
+        if (d < lowerDist) {
+          lowerDist = d;
+          lowerIndex = idx;
+        }
+      }
+      if (idx >= clamped) {
+        const d = idx - clamped;
+        if (d < upperDist) {
+          upperDist = d;
+          upperIndex = idx;
+        }
+      }
+    }
+
+    if (lowerIndex === null && upperIndex === null) {
+      const fallback = findClosestLoadedDrawable(Math.round(clamped));
+      if (fallback) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawImageCover(ctx, canvas, fallback);
+      }
+      return;
+    }
+
+    if (lowerIndex === null) lowerIndex = upperIndex;
+    if (upperIndex === null) upperIndex = lowerIndex;
+
+    const imgA = getFrameDrawable(lowerIndex) || findClosestLoadedDrawable(lowerIndex);
     if (!imgA) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawImageCover(ctx, canvas, imgA);
 
-    if (frac > 0.02 && nextIndex !== baseIndex) {
-      const imgB = findClosestLoadedDrawable(nextIndex);
-      if (imgB && imgB !== imgA) {
-        ctx.save();
-        ctx.globalAlpha = frac;
-        drawImageCover(ctx, canvas, imgB);
-        ctx.restore();
+    if (lowerIndex !== upperIndex) {
+      const span = upperIndex - lowerIndex;
+      const frac = span > 0 ? (clamped - lowerIndex) / span : 0;
+      if (frac > 0.02) {
+        const imgB = getFrameDrawable(upperIndex) || findClosestLoadedDrawable(upperIndex);
+        if (imgB && imgB !== imgA) {
+          ctx.save();
+          ctx.globalAlpha = frac;
+          drawImageCover(ctx, canvas, imgB);
+          ctx.restore();
+        }
       }
     }
   }
@@ -377,6 +505,7 @@
     }
 
     currentFrameFloat = frameFloat;
+    ensureSurroundingFrames(frameFloat);
     renderBlendedFrame(frameFloat);
     updateChaptersFromProgress(p);
   }
@@ -870,10 +999,8 @@
 
   // ============================================================================
   // PROGRESSIVE ASSET PRELOADING
-  // ============================================================================
   function preloadAssetsProgressively() {
     isMobile = window.innerWidth < 768;
-    const total = manifest.frameCount;
 
     // Load Cutout image
     fgImg = new Image();
@@ -882,23 +1009,16 @@
       drawFgStatue();
     };
 
-    // Load key stations first: Profile (49) and Back (0)
-    CONFIG.stations.forEach((st) => {
-      if (!loadedFrames.has(st.frame)) {
-        loadSingleFrame(st.frame, true);
-      }
-    });
+    // 1. Station 1 (120) is loaded first synchronously in initHeroOrbit.
+    // 2. Next, load Station 2 (Profile: 49) and Station 3 (Back: 0) as high priority:
+    loadSingleFrame(49, true);
+    loadSingleFrame(0, true);
 
-    // Queue in-betweens for idle loading
-    const queue = [];
-    for (let i = 0; i < total; i++) {
-      if (!CONFIG.stations.some(s => s.frame === i)) {
-        queue.push(i);
-      }
-    }
+    // 3. Queue in-between sampled frames progressively during idle:
+    const queue = IN_BETWEEN_INDICES.filter((i) => !STATION_FRAME_INDICES.has(i));
 
     let qIdx = 0;
-    const BATCH = 8;
+    const BATCH = 4;
     function loadBatch() {
       if (qIdx >= queue.length) return;
       const slice = queue.slice(qIdx, qIdx + BATCH);
@@ -907,11 +1027,11 @@
       if ('requestIdleCallback' in window) {
         window.requestIdleCallback(loadBatch, { timeout: 350 });
       } else {
-        setTimeout(loadBatch, 35);
+        setTimeout(loadBatch, 60);
       }
     }
 
-    setTimeout(loadBatch, 150);
+    setTimeout(loadBatch, 200);
   }
 
   // ============================================================================
@@ -1032,17 +1152,28 @@
     frontImg.decoding = 'sync';
     frontImg.src = getFrameUrl(frontIndex);
     frontImg.onload = () => {
-      loadedFrames.set(frontIndex, frontImg);
-      resizeAllCanvases();
-      renderBlendedFrame(frontIndex);
-      updateChaptersFromProgress(0);
-      updateStationDots(0);
-
-      // Setup ScrollTrigger Pin
-      setupOptionAPin();
-
-      // Preload remaining frames progressively
-      preloadAssetsProgressively();
+      if (window.createImageBitmap) {
+        createImageBitmap(frontImg).then((bmp) => {
+          stationBitmaps.set(frontIndex, bmp);
+          frontImg.onload = null;
+          frontImg.onerror = null;
+          frontImg.src = '';
+          resizeAllCanvases();
+          renderBlendedFrame(frontIndex);
+          updateChaptersFromProgress(0);
+          updateStationDots(0);
+          setupOptionAPin();
+          preloadAssetsProgressively();
+        }).catch(() => {
+          resizeAllCanvases();
+          updateChaptersFromProgress(0);
+          setupOptionAPin();
+        });
+      } else {
+        resizeAllCanvases();
+        updateChaptersFromProgress(0);
+        setupOptionAPin();
+      }
     };
 
     resizeAllCanvases();
