@@ -3000,6 +3000,19 @@ body.intro-complete footer {
 }
 
 /* Chapter Base Styles */
+/* Initial Chapter State: only intro is visible on load */
+#heroChapterFeatures,
+#heroChapterTechStack,
+#heroChapterCue {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#heroChapterIntro {
+  opacity: 1;
+  visibility: visible;
+}
+
 .hero-chapter {
   position: absolute;
   pointer-events: none;
@@ -3152,11 +3165,11 @@ body.intro-complete footer {
 
 /* Chapter 2: Three Feature Blocks on Right */
 .hero-chapter-features {
-  right: 4vw;
+  right: clamp(100px, 8vw, 130px);
   top: 50%;
   transform: translateY(-50%);
-  max-width: 440px;
-  width: calc(100% - 8vw);
+  max-width: clamp(340px, 24vw, 400px);
+  width: calc(100% - 140px);
 }
 
 .features-card {
@@ -3335,7 +3348,7 @@ body.intro-complete footer {
    ========================================================================== */
 .hero-stations-nav {
   position: absolute;
-  right: clamp(20px, 3.5vw, 48px);
+  right: clamp(14px, 1.8vw, 24px);
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;

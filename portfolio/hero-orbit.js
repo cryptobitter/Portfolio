@@ -425,6 +425,8 @@
       const s1Opacity = 1 - s1Exit;
       elWordmark.style.opacity = String(s1Opacity.toFixed(3));
       elChapterIntro.style.opacity = String(s1Opacity.toFixed(3));
+      elWordmark.style.visibility = s1Opacity > 0.01 ? 'visible' : 'hidden';
+      elChapterIntro.style.visibility = s1Opacity > 0.01 ? 'visible' : 'hidden';
       elWordmark.style.pointerEvents = s1Opacity > 0.6 ? 'auto' : 'none';
       elChapterIntro.classList.toggle('interactive', s1Opacity > 0.6);
       if (fgCanvas) {
@@ -439,6 +441,7 @@
 
     if (elChapterFeatures) {
       elChapterFeatures.style.opacity = String(s2Opacity.toFixed(3));
+      elChapterFeatures.style.visibility = s2Opacity > 0.01 ? 'visible' : 'hidden';
       elChapterFeatures.classList.toggle('interactive', s2Opacity > 0.6);
 
       if (elPillar1) elPillar1.style.opacity = String(Math.min(1, s2Opacity * 1.3).toFixed(3));
@@ -448,6 +451,7 @@
 
     if (elChapterTechStack) {
       elChapterTechStack.style.opacity = String(s2Opacity.toFixed(3));
+      elChapterTechStack.style.visibility = s2Opacity > 0.01 ? 'visible' : 'hidden';
       elChapterTechStack.classList.toggle('interactive', s2Opacity > 0.6);
 
       if (elStack1) elStack1.style.opacity = String(Math.min(1, s2Opacity * 1.3).toFixed(3));
@@ -459,6 +463,7 @@
     if (elChapterCue) {
       const s3Enter = clamp((p - 0.82) / 0.14, 0, 1);
       elChapterCue.style.opacity = String(s3Enter.toFixed(3));
+      elChapterCue.style.visibility = s3Enter > 0.01 ? 'visible' : 'hidden';
       elChapterCue.classList.toggle('interactive', s3Enter > 0.6);
     }
 
@@ -1097,6 +1102,10 @@
     elStack3 = document.getElementById('stackItem3');
     elChapterCue = document.getElementById('heroChapterCue');
     stationDots = Array.from(document.querySelectorAll('.station-dot'));
+
+    // Synchronous call at startup: guarantee features, tech stack & cue are hidden before any fetch/load
+    updateChaptersFromProgress(0);
+    updateStationDots(0);
 
     // Synchronize role text
     document.querySelectorAll('.nav-role, .hero-tagline, .hero-tagline-badge').forEach((el) => {
