@@ -166,7 +166,7 @@
     let currentIndex = 0;
     let wheelRotation = 0;
     const total = ACHIEVEMENTS_DATA.length;
-
+    const cards = root.querySelectorAll('.pulley-card');
     const track = root.querySelector('.pulley-track');
     const wheel = root.querySelector('.pulley-wheel-spindle');
     const ropeLeft = root.querySelector('.pulley-cable-left');
@@ -193,9 +193,14 @@
 
       currentIndex = targetIndex;
 
-      // Update track position (100% per card)
+      // Update track position dynamically to exact card offsetTop (prevents any overlap)
       if (track) {
-        track.style.transform = `translateY(-${currentIndex * 100}%)`;
+        const targetCard = cards[currentIndex];
+        if (targetCard) {
+          track.style.transform = `translateY(-${targetCard.offsetTop}px)`;
+        } else {
+          track.style.transform = `translateY(-${currentIndex * 100}%)`;
+        }
       }
 
       // Rotate wheel: Move Up (hoist) spins clockwise, Move Down spins counter-clockwise
@@ -254,6 +259,18 @@
         updatePulley(currentIndex - 1, -1);
       });
     }
+
+    // Direct roster title jump
+    rosterItems.forEach((item) => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = parseInt(item.getAttribute('data-index'), 10);
+        if (!isNaN(target) && target !== currentIndex) {
+          const dir = target > currentIndex ? 1 : -1;
+          updatePulley(target, dir);
+        }
+      });
+    });
 
     // Direct knot jump
     knots.forEach((knot) => {
@@ -319,6 +336,14 @@
         }
       }, { passive: true });
     }
+
+    // Recalculate card position on window resize
+    window.addEventListener('resize', () => {
+      const targetCard = cards[currentIndex];
+      if (targetCard && track) {
+        track.style.transform = `translateY(-${targetCard.offsetTop}px)`;
+      }
+    });
 
     // Initialize first state
     updatePulley(0, 0);

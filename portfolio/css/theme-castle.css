@@ -2244,8 +2244,9 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  height: 220px;
-  padding: 6px 0;
+  height: 440px;
+  padding: 16px 0;
+  box-sizing: border-box;
 }
 
 .pulley-rope-guide::before {
@@ -2334,7 +2335,9 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 /* Masked Viewport (Only 1 Hoisted Card Visible) */
 .pulley-viewport {
   position: relative;
-  height: 245px;
+  height: 440px;
+  min-height: 440px;
+  max-height: 440px;
   overflow: hidden;
   border-radius: 14px;
   background: rgba(14, 13, 12, 0.55);
@@ -2362,8 +2365,9 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 
 /* Individual Achievement Plaque */
 .pulley-card {
-  height: 245px;
-  min-height: 245px;
+  height: 440px;
+  min-height: 440px;
+  max-height: 440px;
   flex-shrink: 0;
   box-sizing: border-box;
   padding: 22px 28px;
@@ -2371,6 +2375,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   flex-direction: column;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .pulley-card-header {
@@ -2508,11 +2513,14 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
     padding: 16px 14px;
   }
   .pulley-viewport {
-    height: 290px;
+    height: 420px;
+    min-height: 420px;
+    max-height: 420px;
   }
   .pulley-card {
-    height: 290px;
-    min-height: 290px;
+    height: 420px;
+    min-height: 420px;
+    max-height: 420px;
     padding: 16px 16px;
   }
   .pulley-card-title {
@@ -2968,7 +2976,7 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
    ========================================================================== */
 .pulley-carriage {
   display: grid !important;
-  grid-template-columns: 28px minmax(0, 1.35fr) minmax(250px, 0.9fr) !important;
+  grid-template-columns: 28px minmax(0, 1.45fr) minmax(280px, 0.95fr) !important;
   gap: 22px !important;
   align-items: stretch !important;
   padding: 24px 28px !important;
@@ -2980,8 +2988,9 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
     grid-template-columns: 28px 1fr !important;
   }
   .pulley-titles-roster {
-    grid-column: 1 / -1;
-    margin-top: 14px;
+    grid-column: 1 / -1 !important;
+    margin-top: 16px !important;
+    min-height: auto !important;
   }
 }
 
@@ -2992,6 +3001,9 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   padding: 16px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 440px;
+  box-sizing: border-box;
 }
 
 .pulley-roster-header {
