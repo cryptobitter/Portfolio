@@ -37,13 +37,11 @@
         <!-- Close Button (✕) -->
         <button id="booksCloseBtn" class="bs-close-btn" aria-label="Close Project View">&#10005;</button>
 
-        <!-- Detail Overlay Panel (Opens when a book is selected) -->
+        <!-- Detail Overlay Panel: Structured Case Study (Problem, Architecture, Decisions, Notes, Metrics, Media, Links) -->
         <div id="booksDetailPanel" class="bs-detail-panel" aria-live="polite">
-          <div class="bs-dp-badge" id="bsDpCategory">LIVE PRODUCT</div>
+          <div class="bs-dp-badge" id="bsDpCategory">LIVE DEMO</div>
           <h1 class="bs-dp-title" id="bsDpTitle">NAYAY AI</h1>
-          <p class="bs-dp-desc" id="bsDpDesc">
-            Bilingual (English/Hindi) legal assistant and clause explainer for Indian citizens. Powered by Groq's llama-3.3-70b via FastAPI backend for low-latency guidance, with Supabase Auth &amp; PostgreSQL.
-          </p>
+          <p class="bs-dp-desc" id="bsDpDesc"></p>
 
           <div class="bs-dp-meta">
             <div class="bs-dp-stars">
@@ -58,14 +56,64 @@
             <div class="bs-dp-year" id="bsDpYear">2026</div>
           </div>
 
-          <div class="bs-dp-tags" id="bsDpTags">
-            <span class="bs-dp-tag">FastAPI</span>
-            <span class="bs-dp-tag">Groq API</span>
-            <span class="bs-dp-tag">Supabase</span>
+          <!-- 1. Problem Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsProblem" style="display: none;">
+            <h4 class="bs-cs-heading">THE PROBLEM</h4>
+            <p class="bs-cs-text" id="bsCsProblemText"></p>
           </div>
 
+          <!-- 2. Architecture Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsArch" style="display: none;">
+            <h4 class="bs-cs-heading">SYSTEM ARCHITECTURE</h4>
+            <div class="bs-cs-diagram-wrap" id="bsCsArchWrap" style="display: none;">
+              <img id="bsCsArchImg" class="bs-cs-img" alt="System architecture diagram" loading="lazy">
+            </div>
+            <p class="bs-cs-text" id="bsCsArchText"></p>
+          </div>
+
+          <!-- 3. Key Decisions Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsDecisions" style="display: none;">
+            <h4 class="bs-cs-heading">KEY ENGINEERING DECISIONS</h4>
+            <ul class="bs-cs-list" id="bsCsDecisionsList"></ul>
+          </div>
+
+          <!-- 4. Deep Dive Technical Notes & Tags -->
+          <div class="bs-cs-section bs-cs-tech">
+            <h4 class="bs-cs-heading">STACK &amp; ARCHITECTURE NOTES</h4>
+            <div class="bs-dp-tags" id="bsDpTags"></div>
+            <div class="bs-tech-detail-card" id="bsTechDetailCard" style="display: none;">
+              <div class="bs-tech-card-header">
+                <span class="bs-tech-card-title" id="bsTechCardTitle"></span>
+                <button type="button" class="bs-tech-card-close" id="bsTechCardClose" aria-label="Close tech note">&times;</button>
+              </div>
+              <p class="bs-tech-card-body" id="bsTechCardBody"></p>
+            </div>
+          </div>
+
+          <!-- 5. Metrics Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsMetrics" style="display: none;">
+            <h4 class="bs-cs-heading">BENCHMARKS &amp; METRICS</h4>
+            <div class="bs-cs-metrics-grid" id="bsCsMetricsGrid"></div>
+          </div>
+
+          <!-- 6. Gallery / Screenshots (1-3 images with lazy loading and lightbox) -->
+          <div class="bs-cs-section" id="bsCsGallery" style="display: none;">
+            <h4 class="bs-cs-heading">SCREENSHOTS &amp; INTERFACES</h4>
+            <div class="bs-cs-gallery-grid" id="bsCsGalleryGrid"></div>
+          </div>
+
+          <!-- 7. Actions & Links -->
           <div class="bs-dp-actions" id="bsDpActions">
             <!-- Dynamically populated from project links data object -->
+          </div>
+        </div>
+
+        <!-- Accessible Project Image Lightbox -->
+        <div id="bsLightbox" class="bs-lightbox" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+          <div class="bs-lightbox-content">
+            <button type="button" class="bs-lightbox-close" id="bsLightboxClose" aria-label="Close image lightbox">&times;</button>
+            <img id="bsLightboxImg" class="bs-lightbox-img" src="" alt="">
+            <div id="bsLightboxCaption" class="bs-lightbox-caption"></div>
           </div>
         </div>
       </div>

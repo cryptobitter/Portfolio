@@ -3486,3 +3486,206 @@ body.intro-complete footer {
   color: #F0ECE4;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
+
+
+/* ==========================================================================
+   CASE STUDY SECTIONS IN DETAIL PANEL
+   ========================================================================== */
+.bs-detail-panel {
+  max-height: 88vh;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200, 101, 59, 0.4) transparent;
+}
+
+.bs-detail-panel::-webkit-scrollbar {
+  width: 5px;
+}
+.bs-detail-panel::-webkit-scrollbar-thumb {
+  background: rgba(200, 101, 59, 0.4);
+  border-radius: 9999px;
+}
+
+.bs-cs-section {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.bs-cs-heading {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: var(--hero-gold-accent, #C9A24B);
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+  font-weight: 700;
+}
+
+.bs-cs-text {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #D6CFBE;
+  margin: 0;
+}
+
+.bs-cs-diagram-wrap {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 75, 0.3);
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.bs-cs-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.bs-cs-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #D6CFBE;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.bs-cs-list li {
+  margin-bottom: 6px;
+}
+
+.bs-cs-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.bs-metric-card {
+  background: rgba(38, 24, 18, 0.55);
+  border: 1px solid rgba(200, 101, 59, 0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.bs-metric-val {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--hero-gold-hover, #E2C27A);
+  display: block;
+}
+
+.bs-metric-lbl {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: #CCC7BC;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bs-cs-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.bs-gallery-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 242, 236, 0.2);
+  overflow: hidden;
+  cursor: pointer;
+  background: #1a120e;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.bs-gallery-thumb:hover {
+  transform: scale(1.04);
+  border-color: var(--accent-copper);
+}
+
+.bs-gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Lightbox Modal */
+.bs-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(14, 11, 9, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.bs-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bs-lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bs-lightbox-img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 24px rgba(200, 101, 59, 0.3);
+  object-fit: contain;
+}
+
+.bs-lightbox-caption {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: #EAE5DB;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.bs-lightbox-close {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  background: transparent;
+  border: 1px solid rgba(245, 242, 236, 0.3);
+  color: #FFF;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.bs-lightbox-close:hover {
+  background: var(--accent-copper);
+  border-color: var(--accent-copper);
+}

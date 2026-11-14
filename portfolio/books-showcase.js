@@ -1194,27 +1194,82 @@
     }
 
     function updateDetailUI(cfg) {
-      if (!cfg) return;
-      activeTech = null;
-      if (dpCategory) dpCategory.textContent = cfg.badge;
+      if (dpBadge) dpBadge.textContent = cfg.badge || '';
       if (dpTitle) dpTitle.textContent = cfg.title;
-      if (dpDesc) {
-        dpDesc.textContent = cfg.desc;
-        dpDesc.style.opacity = '1';
-        dpDesc.style.transform = 'translateY(0)';
-      }
+      if (dpDesc) dpDesc.textContent = cfg.desc;
       if (dpAuthor) dpAuthor.textContent = cfg.author;
       if (dpYear) dpYear.textContent = cfg.year;
 
+      // 1. Problem Section (rendered only when data exists)
+      const elProblem = document.getElementById('bsCsProblem');
+      const elProblemText = document.getElementById('bsCsProblemText');
+      if (elProblem && elProblemText) {
+        if (cfg.problem) {
+          elProblemText.textContent = cfg.problem;
+          elProblem.style.display = 'block';
+        } else {
+          elProblem.style.display = 'none';
+        }
+      }
+
+      // 2. Architecture Section (rendered only when data exists)
+      const elArch = document.getElementById('bsCsArch');
+      const elArchWrap = document.getElementById('bsCsArchWrap');
+      const elArchImg = document.getElementById('bsCsArchImg');
+      const elArchText = document.getElementById('bsCsArchText');
+      if (elArch && elArchText) {
+        const arch = cfg.architecture;
+        if (arch && (arch.description || arch.diagramUrl)) {
+          elArch.style.display = 'block';
+          if (arch.description) {
+            elArchText.textContent = arch.description;
+            elArchText.style.display = 'block';
+          } else {
+            elArchText.style.display = 'none';
+          }
+          if (elArchWrap && elArchImg && arch.diagramUrl) {
+            elArchImg.src = arch.diagramUrl;
+            elArchImg.alt = `${cfg.title} Architecture Diagram`;
+            elArchWrap.style.display = 'block';
+            elArchWrap.onclick = () => openLightbox(arch.diagramUrl, `${cfg.title} — System Architecture`);
+          } else if (elArchWrap) {
+            elArchWrap.style.display = 'none';
+          }
+        } else {
+          elArch.style.display = 'none';
+        }
+      }
+
+      // 3. Key Decisions Section (rendered only when data exists)
+      const elDecisions = document.getElementById('bsCsDecisions');
+      const elDecisionsList = document.getElementById('bsCsDecisionsList');
+      if (elDecisions && elDecisionsList) {
+        if (cfg.keyDecisions && cfg.keyDecisions.length > 0) {
+          elDecisionsList.innerHTML = '';
+          cfg.keyDecisions.forEach((dec) => {
+            const li = document.createElement('li');
+            li.textContent = typeof dec === 'string' ? dec : `${dec.title}: ${dec.desc}`;
+            elDecisionsList.appendChild(li);
+          });
+          elDecisions.style.display = 'block';
+        } else {
+          elDecisions.style.display = 'none';
+        }
+      }
+
+      // 4. Per-Tag Architecture Notes (preserved)
       if (dpTags) {
         dpTags.innerHTML = '';
-        (cfg.tags || []).forEach((tag) => {
+        activeTech = null;
+        resetTechDetail(cfg);
+
+        cfg.tags.forEach((tag) => {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'bs-dp-tag';
           btn.setAttribute('aria-label', `View ${tag} implementation details`);
           btn.textContent = tag;
-          
+
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (activeTech === tag) {
@@ -1230,6 +1285,53 @@
         });
       }
 
+      // 5. Metrics Section (rendered only when data exists)
+      const elMetrics = document.getElementById('bsCsMetrics');
+      const elMetricsGrid = document.getElementById('bsCsMetricsGrid');
+      if (elMetrics && elMetricsGrid) {
+        if (cfg.metrics && cfg.metrics.length > 0) {
+          elMetricsGrid.innerHTML = '';
+          cfg.metrics.forEach((m) => {
+            const card = document.createElement('div');
+            card.className = 'bs-metric-card';
+            card.innerHTML = `<span class="bs-metric-val">${m.value}</span><span class="bs-metric-lbl">${m.label}</span>`;
+            elMetricsGrid.appendChild(card);
+          });
+          elMetrics.style.display = 'block';
+        } else {
+          elMetrics.style.display = 'none';
+        }
+      }
+
+      // 6. Gallery / Screenshots (1-3 images with lazy loading and lightbox)
+      const elGallery = document.getElementById('bsCsGallery');
+      const elGalleryGrid = document.getElementById('bsCsGalleryGrid');
+      if (elGallery && elGalleryGrid) {
+        if (cfg.images && cfg.images.length > 0) {
+          elGalleryGrid.innerHTML = '';
+          cfg.images.forEach((imgObj) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'bs-gallery-thumb';
+            thumb.tabIndex = 0;
+            thumb.setAttribute('role', 'button');
+            thumb.setAttribute('aria-label', imgObj.alt || 'View screenshot');
+            thumb.innerHTML = `<img src="${imgObj.url}" alt="${imgObj.alt || ''}" loading="lazy">`;
+            thumb.onclick = () => openLightbox(imgObj.url, imgObj.caption || imgObj.alt || cfg.title);
+            thumb.onkeydown = (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(imgObj.url, imgObj.caption || imgObj.alt || cfg.title);
+              }
+            };
+            elGalleryGrid.appendChild(thumb);
+          });
+          elGallery.style.display = 'block';
+        } else {
+          elGallery.style.display = 'none';
+        }
+      }
+
+      // 7. Actions & Links
       const actionsContainer = document.querySelector('.bs-dp-actions');
       if (actionsContainer) {
         actionsContainer.innerHTML = '';
@@ -1276,6 +1378,59 @@
         }
       }
     }
+
+    // Lightbox modal controller
+    let lastActiveElement = null;
+    function openLightbox(imgSrc, captionText) {
+      const lb = document.getElementById('bsLightbox');
+      const img = document.getElementById('bsLightboxImg');
+      const cap = document.getElementById('bsLightboxCaption');
+      if (!lb || !img) return;
+
+      lastActiveElement = document.activeElement;
+      img.src = imgSrc;
+      img.alt = captionText || 'Enlarged project view';
+      if (cap) cap.textContent = captionText || '';
+
+      lb.classList.add('is-open');
+      lb.setAttribute('aria-hidden', 'false');
+      lb.focus();
+
+      const closeBtn = document.getElementById('bsLightboxClose');
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('bsLightbox');
+      if (!lb) return;
+      lb.classList.remove('is-open');
+      lb.setAttribute('aria-hidden', 'true');
+      const img = document.getElementById('bsLightboxImg');
+      if (img) img.src = '';
+      if (lastActiveElement && typeof lastActiveElement.focus === 'function') {
+        lastActiveElement.focus();
+      }
+    }
+
+    // Attach lightbox listeners
+    const lbEl = document.getElementById('bsLightbox');
+    const lbClose = document.getElementById('bsLightboxClose');
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lbEl) {
+      lbEl.addEventListener('click', (e) => {
+        if (e.target === lbEl) closeLightbox();
+      });
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const lb = document.getElementById('bsLightbox');
+        if (lb && lb.classList.contains('is-open')) {
+          e.stopPropagation();
+          closeLightbox();
+        }
+      }
+    });
+
 
     function open(book) {
       if (state.mode !== 'hero') return;
