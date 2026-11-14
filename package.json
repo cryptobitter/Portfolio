@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "start": "npx serve portfolio",
-    "convert:certs": "node scripts/convert-certificates.js"
+    "convert:certs": "node scripts/convert-certificates.js",
+    "generate:og": "node scripts/generate-og-image.cjs"
   },
   "devDependencies": {
+    "playwright": "^1.65.1",
     "sharp": "^0.35.5"
   }
 }
