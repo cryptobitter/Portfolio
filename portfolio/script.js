@@ -787,6 +787,71 @@
     if (typeof window.initTechCastle === 'function') window.initTechCastle();
     if (typeof window.initPulley === 'function') window.initPulley();
     if (typeof window.initScrollAnimations === 'function') window.initScrollAnimations();
+    if (typeof window.initAnimatedFooter === 'function') window.initAnimatedFooter();
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  };
+
+  // ============================================================================
+  // DESKTOP & MOBILE NAVIGATION: ACTIVE SECTION HIGHLIGHTING & GATE RESPECT
+  // ============================================================================
+  function initNavObserver() {
+    const navLinks = document.querySelectorAll('.nav-link, .mobile-menu a');
+
+    // Click handler respecting castle access-gate
+    navLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('#') && href !== '#hero') {
+          if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+            e.preventDefault();
+            if (typeof window.triggerGate === 'function') {
+              window.triggerGate(href);
+            }
+            return;
+          }
+        }
+      });
+    });
+
+    // Active Section Highlighting via IntersectionObserver
+    const sections = [
+      { id: 'hero', linkHref: '#hero' },
+      { id: 'projects', linkHref: '#projects' },
+      { id: 'process', linkHref: '#process' },
+      { id: 'skills', linkHref: '#process' },
+      { id: 'experience', linkHref: '#experience' },
+      { id: 'contact', linkHref: '#contact' }
+    ];
+
+    const secElements = sections.map(s => ({
+      el: document.getElementById(s.id),
+      href: s.linkHref
+    })).filter(s => s.el);
+
+    if ('IntersectionObserver' in window && secElements.length > 0) {
+      const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const targetId = entry.target.id;
+            const match = sections.find(s => s.id === targetId);
+            if (match) {
+              document.querySelectorAll('.nav-link').forEach((nl) => {
+                const isActive = nl.getAttribute('href') === match.linkHref;
+                nl.classList.toggle('is-active', isActive);
+                if (isActive) nl.setAttribute('aria-current', 'page');
+                else nl.removeAttribute('aria-current');
+              });
+            }
+          }
+        });
+      }, { rootMargin: '-20% 0px -60% 0px' });
+
+      secElements.forEach(s => navObserver.observe(s.el));
+    }
+  }
+
+  initNavObserver();
+  initScrollAnimations();
   if (document.fonts) {
     document.fonts.ready.then(() => {
       if (window.ScrollTrigger) window.ScrollTrigger.refresh();
@@ -795,9 +860,7 @@
   window.addEventListener('load', () => {
     if (window.ScrollTrigger) window.ScrollTrigger.refresh();
   });
-    if (typeof window.initAnimatedFooter === 'function') window.initAnimatedFooter();
-    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
-  };
+  initGalleryTunnel();
   initGalleryTunnel();
   initAnimatedFooter();
 

@@ -3739,3 +3739,56 @@ body.intro-complete footer {
   align-items: center;
   gap: 4px;
 }
+
+
+/* ==========================================================================
+   DESKTOP PRIMARY NAVIGATION LINKS & ACTIVE STATE
+   ========================================================================== */
+.nav-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 1.8vw, 26px);
+  margin: 0 clamp(10px, 1.5vw, 20px);
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: #CCC7BC;
+  text-decoration: none;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.22s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--hero-gold-accent, #C9A24B);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link:hover {
+  color: #FFFFFF;
+}
+
+.nav-link:hover::after,
+.nav-link.is-active::after {
+  width: 100%;
+}
+
+.nav-link.is-active {
+  color: var(--hero-gold-hover, #E2C27A);
+}
+
+@media (max-width: 1024px) {
+  .nav-desktop-links {
+    display: none !important;
+  }
+}
