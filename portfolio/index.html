@@ -49,9 +49,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="css/access-gate.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="css/theme-castle.css">
+  <link rel="stylesheet" href="css/theme-castle.css">
 
 </head>
 <body>
@@ -81,7 +79,7 @@
     </nav>
     <div class="nav-right">
       <span class="status-badge">AVAILABLE FOR 2027 INTERNSHIPS &amp; PROJECTS</span>
-      <a href="#enter" target="_blank" rel="noopener" class="nav-resume-btn">RESUME ↓</a>
+      <a href="assets/resume.pdf" target="_blank" rel="noopener" class="nav-resume-btn" download="Aditya_Rajput_Resume.pdf">RESUME ↓</a>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
         <span></span><span></span>
       </button>
@@ -241,8 +239,803 @@
   </div><!-- /#heroOrbitStage -->
 </section>
 
-<!-- PROTECTED ARCHIVE CONTENT INJECTION ROOT -->
-<div id="protected-content-root"></div>
+﻿<!-- ============ FEATURED PROJECTS SECTION (3D BOOKS SHOWCASE) ============ -->
+<section class="projects-section" id="projects">
+  <div class="section-container">
+    <div class="section-header-editorial dark-header reveal">
+      <div>
+        <span class="section-number">01 / PROJECTS</span>
+        <h2 class="section-title-serif">FEATURED PROJECTS</h2>
+      </div>
+      <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="link-arrow">VIEW ALL GITHUB REPOS <span class="arrow">&#8599;</span></a>
+    </div>
+
+    <!-- 3D Books Showcase -->
+    <div class="books-showcase-container reveal" id="booksShowcaseContainer">
+      <div id="booksShowcaseRoot" class="books-showcase-root" data-state="hero">
+        <!-- Giant background watermark -->
+        <div class="bs-hero-word">
+          <span>PROJECTS</span>
+        </div>
+
+        <!-- Top Navigation -->
+        <div class="bs-nav-bar">
+          <div class="bs-nav-hint">
+            <span class="bs-hint-dot"></span>
+            <span>Click any project book to open &amp; explore</span>
+          </div>
+        </div>
+
+        <!-- WebGL Canvas for 3D Books -->
+        <canvas id="booksCanvas"></canvas>
+
+        <!-- Hover Pill Button -->
+        <button id="booksOpenBtn" class="bs-open-pill" aria-label="Open Project">
+          <span>Explore Architecture</span>
+          <svg viewBox="0 0 24 24" class="bs-pill-arrow" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Close Button (✕) -->
+        <button id="booksCloseBtn" class="bs-close-btn" aria-label="Close Project View">&#10005;</button>
+
+        <!-- Detail Overlay Panel: Structured Case Study (Problem, Architecture, Decisions, Notes, Metrics, Media, Links) -->
+        <div id="booksDetailPanel" class="bs-detail-panel" aria-live="polite">
+          <div class="bs-dp-badge" id="bsDpCategory">LIVE DEMO</div>
+          <h1 class="bs-dp-title" id="bsDpTitle">NAYAY AI</h1>
+          <p class="bs-dp-desc" id="bsDpDesc"></p>
+
+          <div class="bs-dp-meta">
+            <div class="bs-dp-stars">
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+              <svg viewBox="0 0 24 24" class="bs-star"><path d="M12 2.6l2.8 6 6.6.6-5 4.4 1.5 6.5L12 16.7 6.1 20.1l1.5-6.5-5-4.4 6.6-.6z"/></svg>
+            </div>
+            <div class="bs-dp-divider"></div>
+            <div class="bs-dp-author" id="bsDpAuthor">FastAPI &bull; Groq API</div>
+            <div class="bs-dp-year" id="bsDpYear">2026</div>
+          </div>
+
+          <!-- 1. Problem Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsProblem" style="display: none;">
+            <h4 class="bs-cs-heading">THE PROBLEM</h4>
+            <p class="bs-cs-text" id="bsCsProblemText"></p>
+          </div>
+
+          <!-- 2. Architecture Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsArch" style="display: none;">
+            <h4 class="bs-cs-heading">SYSTEM ARCHITECTURE</h4>
+            <div class="bs-cs-diagram-wrap" id="bsCsArchWrap" style="display: none;">
+              <img id="bsCsArchImg" class="bs-cs-img" alt="System architecture diagram" loading="lazy">
+            </div>
+            <p class="bs-cs-text" id="bsCsArchText"></p>
+          </div>
+
+          <!-- 3. Key Decisions Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsDecisions" style="display: none;">
+            <h4 class="bs-cs-heading">KEY ENGINEERING DECISIONS</h4>
+            <ul class="bs-cs-list" id="bsCsDecisionsList"></ul>
+          </div>
+
+          <!-- 4. Deep Dive Technical Notes & Tags -->
+          <div class="bs-cs-section bs-cs-tech">
+            <h4 class="bs-cs-heading">STACK &amp; ARCHITECTURE NOTES</h4>
+            <div class="bs-dp-tags" id="bsDpTags"></div>
+            <div class="bs-tech-detail-card" id="bsTechDetailCard" style="display: none;">
+              <div class="bs-tech-card-header">
+                <span class="bs-tech-card-title" id="bsTechCardTitle"></span>
+                <button type="button" class="bs-tech-card-close" id="bsTechCardClose" aria-label="Close tech note">&times;</button>
+              </div>
+              <p class="bs-tech-card-body" id="bsTechCardBody"></p>
+            </div>
+          </div>
+
+          <!-- 5. Metrics Section (rendered only when data exists) -->
+          <div class="bs-cs-section" id="bsCsMetrics" style="display: none;">
+            <h4 class="bs-cs-heading">BENCHMARKS &amp; METRICS</h4>
+            <div class="bs-cs-metrics-grid" id="bsCsMetricsGrid"></div>
+          </div>
+
+          <!-- 6. Gallery / Screenshots (1-3 images with lazy loading and lightbox) -->
+          <div class="bs-cs-section" id="bsCsGallery" style="display: none;">
+            <h4 class="bs-cs-heading">SCREENSHOTS &amp; INTERFACES</h4>
+            <div class="bs-cs-gallery-grid" id="bsCsGalleryGrid"></div>
+          </div>
+
+          <!-- 7. Actions & Links -->
+          <div class="bs-dp-actions" id="bsDpActions">
+            <!-- Dynamically populated from project links data object -->
+          </div>
+        </div>
+
+        <!-- Accessible Project Image Lightbox -->
+        <div id="bsLightbox" class="bs-lightbox" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+          <div class="bs-lightbox-content">
+            <button type="button" class="bs-lightbox-close" id="bsLightboxClose" aria-label="Close image lightbox">&times;</button>
+            <img id="bsLightboxImg" class="bs-lightbox-img" src="" alt="">
+            <div id="bsLightboxCaption" class="bs-lightbox-caption"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Certificate Lightbox Modal (Keyboard accessible, Esc closes) -->
+    <div id="certLightbox" class="bs-lightbox" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+      <div class="bs-lightbox-content">
+        <button type="button" class="bs-lightbox-close" id="certLightboxClose" aria-label="Close certificate">&times;</button>
+        <img id="certLightboxImg" class="bs-lightbox-img" src="" alt="Certificate view">
+        <div id="certLightboxCaption" class="bs-lightbox-caption"></div>
+      </div>
+    </div>
+
+<!-- ============ PROCESS & SKILLS SECTION (LIGHT EDITORIAL) ============ -->
+<section class="process-skills-section" id="process">
+  <div class="section-container">
+    <div class="process-skills-grid">
+      
+      <!-- Row 1, Col 1: Left Heading Block (Above Banner) -->
+      <div class="process-heading-block" id="processHeadingBlock">
+        <span class="section-number">02 / WORKFLOW</span>
+        <h2 class="section-title-serif">MY ENGINEERING PROCESS</h2>
+        <p class="process-intro">A clear process. Thoughtful architecture. High-performance code.</p>
+      </div>
+
+      <!-- Row 1, Col 2: Right Heading Block (Above Tools Card) -->
+      <div class="skills-heading-block reveal" id="skills" style="transition-delay: 0.15s">
+        <span class="section-number">03 / CAPABILITIES</span>
+        <h2 class="section-title-serif">TOOLS &amp; TECH STACK</h2>
+        <p class="process-intro">Core technologies and frameworks I use to build scalable products.</p>
+      </div>
+
+      <!-- Row 2, Col 1: Heraldic Castle Banner (Hanging from Ring Under Heading) -->
+      <div class="process-banner-col" id="processBannerCol">
+        <!-- Small gold ring centered under heading block -->
+        <div class="banner-mount-ring" id="bannerMountRing" aria-hidden="true"></div>
+
+        <!-- Hanging Rig: V-Ropes, Gold-Capped Rod with Finials, Cloth Tab Loops (STAYS FIXED) -->
+        <div class="banner-rig" id="bannerRig" aria-hidden="true">
+          <div class="banner-v-mount">
+            <svg class="banner-v-ropes" viewBox="0 0 320 38" preserveAspectRatio="none">
+              <line x1="160" y1="2" x2="36" y2="36" stroke="var(--banner-gold-trim)" stroke-width="2.5" stroke-linecap="round" />
+              <line x1="160" y1="2" x2="284" y2="36" stroke="var(--banner-gold-trim)" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="banner-rod">
+            <div class="banner-finial banner-finial-left"></div>
+            <div class="banner-rod-shaft"></div>
+            <div class="banner-finial banner-finial-right"></div>
+          </div>
+          <div class="banner-tab-loops">
+            <span class="banner-tab-loop"></span>
+            <span class="banner-tab-loop"></span>
+            <span class="banner-tab-loop"></span>
+            <span class="banner-tab-loop"></span>
+            <span class="banner-tab-loop"></span>
+            <span class="banner-tab-loop"></span>
+          </div>
+        </div>
+
+        <!-- The Hanging Cloth Envelope (Drops/Scales down on unfurl, gently sways) -->
+        <div class="banner-cloth-wrap" id="bannerClothWrap">
+          <div class="banner-cloth" id="bannerCloth">
+            <!-- 3D Wave Canvas for dynamic vertex wave & fold shadows -->
+            <canvas id="bannerWaveCanvas" class="banner-wave-canvas" aria-hidden="true"></canvas>
+
+            <!-- Background Fabric Texture (CSS woven texture fallback & depth) -->
+            <div class="banner-fabric-fallback" aria-hidden="true"></div>
+
+            <!-- Thin Gold Stitched Border & Inset Frame -->
+            <div class="banner-stitch-border" aria-hidden="true"></div>
+
+            <!-- Content on the Cloth: ONLY the 5 Steps as an accessible <ol> -->
+            <div class="banner-content" id="bannerContent">
+              <ol class="banner-steps-list" role="list">
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">I</span>
+                  <div class="step-details">
+                    <h4>DISCOVER &amp; SPEC ARCHITECTURE</h4>
+                    <p>Analyze latency requirements, map data flows, and define API contracts before writing code.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">II</span>
+                  <div class="step-details">
+                    <h4>DB SCHEMA &amp; AUTH SECURITY</h4>
+                    <p>Design normalized relational schemas in PostgreSQL/SQLAlchemy with JWT and Supabase security.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">III</span>
+                  <div class="step-details">
+                    <h4>ASYNC FASTAPI &amp; AI INTEGRATION</h4>
+                    <p>Implement non-blocking async routes and integrate Groq LLMs or OpenCV computer vision pipelines.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">IV</span>
+                  <div class="step-details">
+                    <h4>QUEUE, CACHE &amp; OPTIMIZATION</h4>
+                    <p>Offload heavy tasks to Redis message queues and optimize database queries for low latency.</p>
+                  </div>
+                </li>
+                <li class="banner-step-item" tabindex="0">
+                  <span class="step-num" aria-hidden="true">V</span>
+                  <div class="step-details">
+                    <h4>DEPLOY, CONTAINERIZE &amp; SHIP</h4>
+                    <p>Containerize using Docker, setup CI/CD pipelines, and deploy on Render/Cloud platforms.</p>
+                  </div>
+                </li>
+              </ol>
+            </div><!-- /.banner-content -->
+
+            <!-- Bottom Swallowtail Hem with Gold Fringe -->
+            <div class="banner-fringe" aria-hidden="true">
+              <svg class="banner-fringe-svg" viewBox="0 0 100 14" preserveAspectRatio="none">
+                <defs>
+                  <pattern id="bannerFringePattern" width="2" height="14" patternUnits="userSpaceOnUse">
+                    <line x1="1" y1="0" x2="1" y2="14" stroke="var(--banner-gold-trim)" stroke-width="1.2" stroke-linecap="round" />
+                  </pattern>
+                </defs>
+                <rect width="100" height="14" fill="url(#bannerFringePattern)" />
+              </svg>
+            </div>
+          </div><!-- /.banner-cloth -->
+        </div><!-- /#bannerClothWrap -->
+
+        <!-- Closing Quote Ribbon Under the Hem -->
+        <div class="banner-ribbon-quote" id="bannerRibbonQuote">
+          <div class="banner-ribbon-body">
+            <p><em>&ldquo;Engineering is not just what it does; it's how fast, clean, and reliable it runs.&rdquo;</em></p>
+          </div>
+        </div>
+      </div><!-- /.process-banner-col -->
+
+      <!-- Row 2, Col 2: Skills & Tech Grid -->
+      <div class="skills-col reveal" style="transition-delay: 0.15s">
+
+        <!-- Category Visual Legend & Interactive Toggle Filters -->
+        <div class="skills-legend" id="skillsLegend" role="group" aria-label="Filter technologies by category">
+          <button type="button" class="legend-item" data-category="Language" aria-pressed="false"><span class="legend-dot cat-lang"></span>Language</button>
+          <button type="button" class="legend-item" data-category="Frontend" aria-pressed="false"><span class="legend-dot cat-frontend"></span>Frontend</button>
+          <button type="button" class="legend-item" data-category="Backend" aria-pressed="false"><span class="legend-dot cat-backend"></span>Backend</button>
+          <button type="button" class="legend-item" data-category="LLM / RAG" aria-pressed="false"><span class="legend-dot cat-ai"></span>LLM / RAG</button>
+          <button type="button" class="legend-item" data-category="Database" aria-pressed="false"><span class="legend-dot cat-db"></span>Database</button>
+          <button type="button" class="legend-item" data-category="Deployment" aria-pressed="false"><span class="legend-dot cat-devops"></span>Deployment</button>
+          <button type="button" class="legend-item" data-category="IoT" aria-pressed="false"><span class="legend-dot cat-iot"></span>IoT</button>
+        </div>
+
+        <!-- 4x5 Continuous Matrix Grid rendered dynamically via script.js -->
+        <div class="skills-matrix-grid" id="skillsMatrixGrid"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCE & ACHIEVEMENTS SECTION (LIGHT EDITORIAL) ============ -->
+<section class="experience-section" id="experience">
+  <div class="section-container">
+    <div class="section-header-editorial reveal">
+      <div>
+        <span class="section-number">04 / BACKGROUND</span>
+        <h2 class="section-title-serif">EXPERIENCE &amp; ACHIEVEMENTS</h2>
+      </div>
+      <span class="section-tagline">SHIPPING PRODUCTION CODE &amp; HACKATHON FINALIST</span>
+    </div>
+
+    <div class="timeline-editorial">
+      
+      <!-- Timeline item: FlyRank Production Internship -->
+      <div class="timeline-row reveal">
+        <div class="tl-left">
+          <span class="tl-period">JUL 2026 — OCT 2026</span>
+          <span class="tl-badge">PRODUCTION INTERNSHIP</span>
+        </div>
+        <div class="tl-right">
+          <h3>FLYRANK <span class="tl-role-tag">— Back-End AI Engineering Intern</span></h3>
+          <p>Containerized FastAPI, PostgreSQL and Redis with Docker Compose; swapped storage with zero route or service changes. Cut query time 27x (2.41 ms to 0.089 ms) with PostgreSQL indexing, benchmarked using EXPLAIN ANALYZE. Built Supabase Auth JWT middleware tested with pytest; ran Claude vs. ChatGPT prompt comparisons.</p>
+          <div class="proj-tags"><span>FastAPI</span><span>PostgreSQL</span><span>Redis</span><span>Docker</span><span>Supabase Auth</span><span>pytest</span></div>
+          <div class="tl-cert-wrap" style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 14px;">
+            <div class="ach-cert-card-wrap">
+              <button type="button" class="ach-cert-btn" data-slug="flyrank-backend-ai-engineering" data-title="FlyRank — Backend AI Engineering Internship Certificate" data-id="FR-D11-3623A-C111A" data-verify="https://internship.flyrank.ai/verify" aria-label="View FlyRank Backend AI Engineering Certificate">
+                <img src="assets/certificates/flyrank-backend-ai-engineering.webp" alt="FlyRank Backend AI Engineering Certificate" loading="lazy">
+                <span class="ach-cert-zoom-pill">Backend AI Engineering &#128269;</span>
+              </button>
+              <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <span>ID: FR-D11-3623A-C111A</span>
+                <a href="https://internship.flyrank.ai/verify" target="_blank" rel="noopener noreferrer" style="color: var(--hero-gold-accent); text-decoration: underline;">Verify &nearr;</a>
+              </div>
+            </div>
+
+            <div class="ach-cert-card-wrap">
+              <button type="button" class="ach-cert-btn" data-slug="flyrank-ai-fluency" data-title="FlyRank — AI Fluency Internship Certificate" data-id="FR-D11-F5AC8-4591C" data-verify="https://internship.flyrank.ai/verify" aria-label="View FlyRank AI Fluency Certificate">
+                <img src="assets/certificates/flyrank-ai-fluency.webp" alt="FlyRank AI Fluency Certificate" loading="lazy">
+                <span class="ach-cert-zoom-pill">AI Fluency &#128269;</span>
+              </button>
+              <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <span>ID: FR-D11-F5AC8-4591C</span>
+                <a href="https://internship.flyrank.ai/verify" target="_blank" rel="noopener noreferrer" style="color: var(--hero-gold-accent); text-decoration: underline;">Verify &nearr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.timeline-editorial -->
+
+    <!-- ============ HERALDIC PULLEY HOIST: ACHIEVEMENTS & CERTIFICATIONS ============ -->
+    <div class="achievements-pulley-wrapper reveal" id="achievementsPulleyRoot" style="transition-delay: 0.1s">
+      
+      <!-- Overhead Castle Pulley Winch Rig -->
+      <div class="pulley-winch-rig" aria-hidden="true">
+        <div class="pulley-timber-beam"></div>
+        <div class="pulley-mounting-bracket">
+          <svg class="pulley-wheel-svg" viewBox="0 0 100 100" width="80" height="80">
+            <!-- Pulley bracket frame -->
+            <path d="M50 2 L50 20 M35 15 L50 20 L65 15" stroke="var(--gold-deep)" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <!-- Wheel outer rim with groove -->
+            <circle cx="50" cy="56" r="38" fill="rgba(14, 13, 12, 0.95)" stroke="var(--gold-accent)" stroke-width="4"/>
+            <circle cx="50" cy="56" r="32" fill="none" stroke="rgba(201, 162, 75, 0.35)" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <!-- Spinning Spindle & Spokes -->
+            <g class="pulley-wheel-spindle">
+              <!-- 6 Wheel Spokes -->
+              <line x1="50" y1="20" x2="50" y2="92" stroke="var(--gold-accent)" stroke-width="2.5"/>
+              <line x1="18.8" y1="38" x2="81.2" y2="74" stroke="var(--gold-accent)" stroke-width="2.5"/>
+              <line x1="18.8" y1="74" x2="81.2" y2="38" stroke="var(--gold-accent)" stroke-width="2.5"/>
+              <!-- Central axle hub & brass bolt -->
+              <circle cx="50" cy="56" r="10" fill="var(--stone-darker)" stroke="var(--gold-highlight)" stroke-width="2.5"/>
+              <circle cx="50" cy="56" r="4" fill="var(--gold-highlight)"/>
+              <!-- Rivets around rim -->
+              <circle cx="50" cy="24" r="1.8" fill="var(--gold-deep)"/>
+              <circle cx="78" cy="40" r="1.8" fill="var(--gold-deep)"/>
+              <circle cx="78" cy="72" r="1.8" fill="var(--gold-deep)"/>
+              <circle cx="50" cy="88" r="1.8" fill="var(--gold-deep)"/>
+              <circle cx="22" cy="72" r="1.8" fill="var(--gold-deep)"/>
+              <circle cx="22" cy="40" r="1.8" fill="var(--gold-deep)"/>
+            </g>
+          </svg>
+        </div>
+        <!-- Left and Right Braided Cable Ropes Drop Down -->
+        <div class="pulley-cable pulley-cable-left"></div>
+        <div class="pulley-cable pulley-cable-right"></div>
+      </div>
+
+      <!-- Pulley Controls Bar (Winch Crank & Live Mechanical Counter) -->
+      <div class="pulley-controls-bar">
+        <div class="pulley-title-group">
+          <span class="pulley-eyebrow">MEDIEVAL WINCH RIG</span>
+          <h4 class="pulley-title">HONORS, CERTIFICATIONS &amp; HACKATHONS</h4>
+        </div>
+
+        <div class="pulley-action-group">
+          <!-- Counter Dial -->
+          <div class="pulley-counter-dial" title="Current Hoisted Record">
+            <span class="pulley-counter-label">HOISTED SLATE</span>
+            <div class="pulley-digits">
+              <span class="pulley-counter-current">01</span>
+              <span class="pulley-counter-sep">/</span>
+              <span class="pulley-counter-total">06</span>
+            </div>
+          </div>
+
+          <!-- Crank Controls: Move Up (Hoist) & Move Down (Lower) -->
+          <div class="pulley-btn-pair">
+            <button type="button" class="pulley-btn pulley-btn-up" aria-label="Move Up / Hoist next achievement">
+              <span class="pulley-btn-arrow">&#9650;</span>
+              <span class="pulley-btn-text">MOVE UP</span>
+            </button>
+            <button type="button" class="pulley-btn pulley-btn-down" aria-label="Move Down / Lower previous achievement">
+              <span class="pulley-btn-arrow">&#9660;</span>
+              <span class="pulley-btn-text">MOVE DOWN</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Hoisted Achievement Carriage -->
+      <div class="pulley-carriage">
+        <!-- Side Rope Guide with Interactive Knots -->
+        <div class="pulley-rope-guide" aria-label="Direct achievement selection knots" role="tablist">
+          <button class="pulley-knot is-active" data-index="0" aria-label="Go to achievement 1: GDGoC PSIT" role="tab" aria-selected="true"><span class="knot-bead"></span><span class="knot-tooltip">01 GDGoC</span></button>
+          <button class="pulley-knot" data-index="1" aria-label="Go to achievement 2: Walmart Global Tech" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">02 Walmart</span></button>
+          <button class="pulley-knot" data-index="2" aria-label="Go to achievement 3: IBM Python" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">03 IBM Python</span></button>
+          <button class="pulley-knot" data-index="3" aria-label="Go to achievement 4: Microsoft & Google Cloud" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">04 MS &amp; Google</span></button>
+          <button class="pulley-knot" data-index="4" aria-label="Go to achievement 5: BuildWithBharat 2.0" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">05 BuildWithBharat</span></button>
+          <button class="pulley-knot" data-index="5" aria-label="Go to achievement 6: BBD National Hackathon" role="tab" aria-selected="false"><span class="knot-bead"></span><span class="knot-tooltip">06 BBD Hackathon</span></button>
+        </div>
+
+        <!-- Masked Viewport -->
+        <div class="pulley-viewport" tabindex="0" role="region" aria-roledescription="pulley carousel" aria-label="Interactive Achievements Hoist. Use arrow keys or Move Up / Move Down buttons to hoist records.">
+          <div class="pulley-track">
+
+            <!-- Card 01: GDGoC PSIT -->
+            <article class="pulley-card">
+              <div class="pulley-card-header">
+                <span class="pulley-badge badge-gold">CAMPUS LEADERSHIP</span>
+                <span class="pulley-period">2024 — PRESENT</span>
+              </div>
+              <div class="pulley-card-body">
+                <h3 class="pulley-card-title">GOOGLE DEVELOPER GROUPS ON CAMPUS (GDGoC) PSIT</h3>
+                <div class="pulley-card-role">Technical Head</div>
+                <p class="pulley-card-desc">Leading technical initiatives, architecting developer learning roadmaps, conducting hands-on engineering workshops, and mentoring student developers across web architecture, APIs, and AI systems at PSIT.</p>
+                <div class="proj-tags">
+                  <span>GDGoC</span><span>Technical Head</span><span>Developer Community</span><span>Workshops</span><span>Mentorship</span>
+                </div>
+              </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="gdgoc-psit" data-title="Google Developer Groups on Campus (GDGoC) PSIT Certificate" aria-label="View Google Developer Groups on Campus (GDGoC) PSIT Certificate">
+                    <img src="assets/certificates/gdgoc-psit.webp" alt="Google Developer Groups on Campus (GDGoC) PSIT Certificate" loading="lazy" onerror="this.closest('.ach-cert-wrap').style.display='none'">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                </div>
+            </article>
+
+            <!-- Card 02: Walmart Global Tech -->
+            <article class="pulley-card">
+              <div class="pulley-card-header">
+                <span class="pulley-badge badge-blue">SOFTWARE ENGINEERING SIMULATION</span>
+                <span class="pulley-period">AUG 2026</span>
+              </div>
+              <div class="pulley-card-body">
+                <h3 class="pulley-card-title">WALMART GLOBAL TECH — ADVANCED SOFTWARE ENGINEERING</h3>
+                <div class="pulley-card-role">Job Simulation via Forage</div>
+                <p class="pulley-card-desc">Completed Walmart Global Tech's intensive advanced engineering simulation covering Advanced Data Structures, Enterprise Software Architecture, Relational Database Design, and Data Munging pipelines.</p>
+                <div class="proj-tags">
+                  <span>Walmart Global Tech</span><span>Software Architecture</span><span>Relational DB</span><span>Data Structures</span><span>Forage</span>
+                </div>
+              </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="walmart-forage" data-title="Walmart Global Tech — Advanced Software Engineering Certificate" data-id="6a736a0186066446596cfb00" aria-label="View Walmart Global Tech Advanced Software Engineering Certificate">
+                    <img src="assets/certificates/walmart-forage.webp" alt="Walmart Global Tech Advanced Software Engineering Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>User Verification Code: 6a736a0186066446596cfb00</span>
+                  </div>
+                </div>
+            </article>
+
+            <!-- Card 03: IBM Python -->
+            <article class="pulley-card">
+              <div class="pulley-card-header">
+                <span class="pulley-badge badge-emerald">PROFESSIONAL CERTIFICATION</span>
+                <span class="pulley-period">2026</span>
+              </div>
+              <div class="pulley-card-body">
+                <h3 class="pulley-card-title">IBM — DATA ANALYSIS WITH PYTHON</h3>
+                <div class="pulley-card-role">Certified via Coursera</div>
+                <p class="pulley-card-desc">Mastered production data analysis and statistical pipelines using Python, pandas, NumPy, and SciPy; engineered automated data wrangling workflows and exploratory analytics.</p>
+                <div class="proj-tags">
+                  <span>IBM</span><span>Coursera</span><span>Python</span><span>Data Analysis</span><span>Pandas</span><span>NumPy</span>
+                </div>
+              </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="ibm-data-analysis-python" data-title="IBM — Data Analysis with Python Certificate" data-id="b1b7124c50c1436ba29871d940308857" data-verify="https://courses.cognitiveclass.ai/certificates/b1b7124c50c1436ba29871d940308857" aria-label="View IBM Data Analysis with Python Certificate">
+                    <img src="assets/certificates/ibm-data-analysis-python.webp" alt="IBM Data Analysis with Python Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale); display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                    <span>ID: b1b7124c50c1436ba29871d940308857</span>
+                    <a href="https://courses.cognitiveclass.ai/certificates/b1b7124c50c1436ba29871d940308857" target="_blank" rel="noopener noreferrer" style="color: var(--hero-gold-accent); text-decoration: underline;">Verify &nearr;</a>
+                  </div>
+                </div>
+            </article>
+
+            <!-- Card 04: Anthropic, Microsoft & Google Cloud -->
+            <article class="pulley-card">
+              <div class="pulley-card-header">
+                <span class="pulley-badge badge-crimson">AI &amp; LLM CERTIFICATIONS</span>
+                <span class="pulley-period">2026</span>
+              </div>
+              <div class="pulley-card-body">
+                <h3 class="pulley-card-title">ANTHROPIC, MICROSOFT &amp; GOOGLE CLOUD — AI &amp; AGENTIC SYSTEMS</h3>
+                <div class="pulley-card-role">Professional AI &amp; MCP Credentials</div>
+                <p class="pulley-card-desc">Completed specialized AI certifications covering Anthropic Claude 101, Model Context Protocol (MCP), Agent Skills, Claude Code, Generative AI from Google Cloud, and Prompt Engineering with GitHub Copilot from Microsoft.</p>
+                <div class="proj-tags">
+                  <span>Anthropic</span><span>Model Context Protocol</span><span>Agent Skills</span><span>Claude Code</span><span>Microsoft Copilot</span><span>Google Cloud AI</span>
+                </div>
+              </div>
+            
+              <div class="ach-cert-wrap" style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="anthropic-claude-101" data-title="Anthropic — Claude 101 Certificate" aria-label="View Anthropic Claude 101 Certificate">
+                    <img src="assets/certificates/anthropic-claude-101.webp" alt="Anthropic Claude 101 Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">Claude 101 &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Anthropic Academy</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="anthropic-mcp-intro" data-title="Anthropic — Introduction to Model Context Protocol (MCP)" aria-label="View Anthropic MCP Certificate">
+                    <img src="assets/certificates/anthropic-mcp-intro.webp" alt="Anthropic Model Context Protocol Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">MCP Protocol &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Anthropic Academy</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="anthropic-agent-skills" data-title="Anthropic — Introduction to Agent Skills" aria-label="View Anthropic Agent Skills Certificate">
+                    <img src="assets/certificates/anthropic-agent-skills.webp" alt="Anthropic Agent Skills Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">Agent Skills &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Anthropic Academy</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="microsoft-prompt-engineering" data-title="Microsoft — Introduction to Prompt Engineering with GitHub Copilot" data-id="9998132" aria-label="View Microsoft Prompt Engineering Certificate">
+                    <img src="assets/certificates/microsoft-prompt-engineering.webp" alt="Microsoft Introduction to Prompt Engineering with GitHub Copilot Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">MS Copilot &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Code: 9998132</span>
+                  </div>
+                </div>
+
+                <div class="ach-cert-card-wrap">
+                  <button type="button" class="ach-cert-btn" data-slug="google-cloud-generative-ai" data-title="Google Cloud — Introduction to Generative AI" data-id="10036761" aria-label="View Google Cloud Generative AI Certificate">
+                    <img src="assets/certificates/google-cloud-generative-ai.webp" alt="Google Cloud Introduction to Generative AI Certificate" loading="lazy">
+                    <span class="ach-cert-zoom-pill">Google Cloud AI &#128269;</span>
+                  </button>
+                  <div class="cert-meta-bar" style="margin-top: 5px; font-size: 0.65rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                    <span>Code: 10036761</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 05: BuildWithBharat 2.0 -->
+            <article class="pulley-card">
+              <div class="pulley-card-header">
+                <span class="pulley-badge badge-amber">NATIONAL HACKATHON</span>
+                <span class="pulley-period">SEP 2026</span>
+              </div>
+              <div class="pulley-card-body">
+                <h3 class="pulley-card-title">BUILD WITH BHARAT 2.0 — NATIONAL SEMIFINALIST</h3>
+                <div class="pulley-card-role">NIT Delhi &bull; Team The Wildcards</div>
+                <p class="pulley-card-desc">Qualified as National Semifinalist in Build with Bharat 2.0 at NIT Delhi (13–14 September 2026), demonstrating high-impact systems engineering and FastAPI backend innovation (organized by Codeverse, HackCulture, Logitech, and GitHub).</p>
+                <div class="proj-tags">
+                  <span>NIT Delhi</span><span>National Hackathon</span><span>Systems Architecture</span><span>FastAPI</span><span>High-Impact Tech</span>
+                </div>
+              </div>
+            
+              <div class="ach-cert-wrap" style="margin-top: 14px;">
+                <button type="button" class="ach-cert-btn" data-slug="buildwithbharat-2" data-title="Build with Bharat 2.0 — National Semi-Finalist Certificate (NIT Delhi)" aria-label="View Build with Bharat 2.0 Certificate">
+                  <img src="assets/certificates/buildwithbharat-2.webp" alt="Build with Bharat 2.0 National Semi-Finalist Certificate" loading="lazy">
+                  <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                </button>
+                <div class="cert-meta-bar" style="margin-top: 6px; font-size: 0.68rem; font-family: var(--font-mono); color: var(--gold-pale);">
+                  <span>National Semi-Finalist &bull; Team The Wildcards &bull; NIT Delhi</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 06: BBD National Hackathon -->
+            <article class="pulley-card">
+              <div class="pulley-card-header">
+                <span class="pulley-badge badge-amber">NATIONAL HACKATHON</span>
+                <span class="pulley-period">APR 2026</span>
+              </div>
+              <div class="pulley-card-body">
+                <h3 class="pulley-card-title">BBD NATIONAL HACKATHON (CODERUSH 2.0 &amp; NEXIFY)</h3>
+                <div class="pulley-card-role">National Finalist — BBDNIIT</div>
+                <p class="pulley-card-desc">Finalist at Coderush 2.0 Hackathon organized by BBDNIIT (13th April 2026) and NEXIFY'26 as lead backend developer (FastAPI), architecting real-time microservices and async data pipelines.</p>
+                <div class="proj-tags">
+                  <span>BBDNIIT</span><span>FastAPI</span><span>Microservices</span><span>Async Pipelines</span><span>Finalist</span>
+                </div>
+              </div>
+            
+                <div class="ach-cert-wrap" style="margin-top: 14px;">
+                  <button type="button" class="ach-cert-btn" data-slug="bbd-hackathon" data-title="BBD National Hackathon Coderush & NEXIFY Certificate" aria-label="View BBD National Hackathon Coderush & NEXIFY Certificate">
+                    <img src="assets/certificates/bbd-hackathon.webp" alt="BBD National Hackathon Coderush & NEXIFY Certificate" loading="lazy" onerror="this.closest('.ach-cert-wrap').style.display='none'">
+                    <span class="ach-cert-zoom-pill">View Certificate &#128269;</span>
+                  </button>
+                </div>
+            </article>
+
+          </div><!-- /.pulley-track -->
+        </div><!-- /.pulley-viewport -->
+
+        <!-- Visible Roster of all 6 Achievement Titles (Click to winch) -->
+        <nav class="pulley-titles-roster" aria-label="Achievement titles directory">
+          <div class="pulley-roster-header">
+            <span class="pulley-roster-eyebrow">ACHIEVEMENTS AT A GLANCE</span>
+          </div>
+          <ul class="pulley-roster-list" role="tablist">
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item is-active" data-index="0" role="tab" aria-selected="true" aria-label="Hoist GDGoC PSIT">
+                <span class="roster-item-num">01</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">GDGoC PSIT</strong>
+                  <small class="roster-item-sub">Technical Head</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="1" role="tab" aria-selected="false" aria-label="Hoist Walmart Global Tech">
+                <span class="roster-item-num">02</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">Walmart Global Tech</strong>
+                  <small class="roster-item-sub">Software Engineering</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="2" role="tab" aria-selected="false" aria-label="Hoist IBM Python">
+                <span class="roster-item-num">03</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">IBM Data Analysis</strong>
+                  <small class="roster-item-sub">Python &amp; Analytics</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="3" role="tab" aria-selected="false" aria-label="Hoist Microsoft & Google Cloud">
+                <span class="roster-item-num">04</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">Anthropic, MS &amp; Google</strong>
+                  <small class="roster-item-sub">Claude, MCP &amp; Generative AI</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="4" role="tab" aria-selected="false" aria-label="Hoist BuildWithBharat 2.0">
+                <span class="roster-item-num">05</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">BuildWithBharat 2.0</strong>
+                  <small class="roster-item-sub">NIT Delhi Semifinalist</small>
+                </span>
+              </button>
+            </li>
+            <li role="presentation">
+              <button type="button" class="pulley-roster-item" data-index="5" role="tab" aria-selected="false" aria-label="Hoist BBD National Hackathon">
+                <span class="roster-item-num">06</span>
+                <span class="roster-item-text">
+                  <strong class="roster-item-title">BBD Hackathon</strong>
+                  <small class="roster-item-sub">Coderush 2.0 &amp; NEXIFY</small>
+                </span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div><!-- /.pulley-carriage -->
+
+      <!-- Bottom Mechanical Base & Hint -->
+      <div class="pulley-bottom-bar">
+        <span class="pulley-hint-text">&bull; USE MOVE UP / DOWN BUTTONS OR SCROLL OVER CARRIAGE TO HOIST RECORDS &bull;</span>
+      </div>
+
+      <!-- Hidden ARIA Live Region for screen readers -->
+      <div id="pulleyLiveAnnounce" class="sr-only" aria-live="polite"></div>
+
+    </div><!-- /.achievements-pulley-wrapper -->
+  </div>
+</section>
+
+<!-- ============ CONTACT & FOOTER SECTION (DARK ESPRESSO) ============ -->
+<section class="contact-section" id="contact">
+  <!-- Merged Top Canopy: Animated Footer Gateway (ASCII Hands) -->
+  <div class="animated-footer-gateway" id="animatedFooterGateway">
+    <div class="af-container" id="afContainer">
+      <!-- ASCII Canvas Hands -->
+      <div class="af-hands-wrapper">
+        <div class="af-hand-wrap af-hand-left" id="afLeftWrap">
+          <canvas id="afLeftCanvas"></canvas>
+        </div>
+        <div class="af-hand-wrap af-hand-right" id="afRightWrap">
+          <canvas id="afRightCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Bottom Display Heading Lines -->
+      <div class="af-headings">
+        <h2 class="af-heading-word" aria-label="LET'S CONNECT">
+          <span class="af-char" data-af-char>L</span><span class="af-char" data-af-char>E</span><span class="af-char" data-af-char>T</span><span class="af-char" data-af-char>'</span><span class="af-char" data-af-char>S</span>
+          <span class="af-char af-char-space">&nbsp;</span>
+          <span class="af-char" data-af-char>C</span><span class="af-char" data-af-char>O</span><span class="af-char" data-af-char>N</span><span class="af-char" data-af-char>N</span><span class="af-char" data-af-char>E</span><span class="af-char" data-af-char>C</span><span class="af-char" data-af-char>T</span>
+        </h2>
+      </div>
+    </div>
+  </div>
+  <div class="section-container">
+    <div class="contact-banner-wrap reveal">
+      <span class="contact-eyebrow">GET IN TOUCH</span>
+      <h2 class="contact-big-title">LET'S CREATE SOMETHING EXTRAORDINARY</h2>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Left Column: Details & Arch Portrait -->
+      <div class="contact-col-info reveal">
+        <div class="arch-frame">
+          <div class="arch-inner">
+            <span class="arch-initials">AR</span>
+            <p class="arch-name">ADITYA RAJPUT</p>
+            <p class="arch-sub">B.Tech CSE '28 · PSIT Kanpur</p>
+          </div>
+        </div>
+
+        <div class="contact-links-list">
+          <a href="mailto:adityarajput.86046@gmail.com" class="c-link">
+            <span class="c-label">EMAIL</span>
+            <span class="c-val">adityarajput.86046@gmail.com</span>
+          </a>
+          <a href="https://github.com/cryptobitter" target="_blank" rel="noopener" class="c-link">
+            <span class="c-label">GITHUB</span>
+            <span class="c-val">github.com/cryptobitter</span>
+          </a>
+          <a href="https://linkedin.com/in/aditya-rajput-245b65395" target="_blank" rel="noopener" class="c-link">
+            <span class="c-label">LINKEDIN</span>
+            <span class="c-val">in/aditya-rajput-245b65395</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Direct Form & Action Card -->
+      <div class="contact-col-form reveal" style="transition-delay: 0.15s">
+        <form class="editorial-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+          <!-- Web3Forms API Configuration -->
+          <input type="hidden" name="access_key" id="cfAccessKey" value="20cf919b-f97a-4f5b-8e6d-dd22d057c161">
+          <input type="hidden" name="subject" value="New Portfolio Inquiry - Aditya Rajput">
+          <input type="hidden" name="from_name" value="Aditya Portfolio Contact">
+          <!-- Honeypot Anti-Spam (hidden from real users) -->
+          <input type="checkbox" name="botcheck" class="botcheck-field" style="display: none;">
+
+          <h3 class="form-title">LET'S COLLABORATE</h3>
+          <p class="form-sub">Available for backend internships, AI systems roles, and freelance backend work.</p>
+
+          <div class="form-group">
+            <label for="cf-name">YOUR NAME</label>
+            <input type="text" id="cf-name" name="name" placeholder="Jane Doe" required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label for="cf-email">YOUR EMAIL</label>
+            <input type="email" id="cf-email" name="email" placeholder="jane@company.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="cf-message">YOUR MESSAGE</label>
+            <textarea id="cf-message" name="message" rows="4" placeholder="Let's build something scalable together..." required></textarea>
+          </div>
+
+          <button type="submit" id="cfSubmitBtn" class="btn-editorial btn-editorial-dark">
+            <span class="btn-text">SEND MESSAGE</span>
+            <span class="arrow">→</span>
+          </button>
+
+          <!-- Status Message Container -->
+          <div id="formStatus" class="form-status" aria-live="polite"></div>
+        </form>
+
+        <div class="lets-talk-card">
+          <div class="lt-left">
+            <h4>LET'S TALK</h4>
+            <p>Direct inquiry &amp; response within 24h</p>
+          </div>
+          <a href="mailto:adityarajput.86046@gmail.com" class="lt-btn">MAIL NOW <span class="lt-arrow">&nearr;</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom Bar -->
+    <div class="footer-bar">
+      <p>© 2026 ADITYA RAJPUT · ALL RIGHTS RESERVED</p>
+      <p>DESIGNED WITH EDITORIAL PASSION &amp; CODE PRECISION</p>
+    </div>
+  </div>
+</section>
+
 
 <!-- Three.js 3D Engine for 3D Books Showcase -->
 <!-- GSAP & ScrollTrigger for Hero Orbit Pinning and Scroll Animations -->
@@ -256,6 +1049,5 @@
 <script defer src="tech-castle.js"></script>
 <script defer src="achievements-pulley.js"></script>
 <script defer src="script.js"></script>
-<script type="module" src="js/gate-controller.js"></script>
 </body>
 </html>

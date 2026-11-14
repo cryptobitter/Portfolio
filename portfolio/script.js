@@ -411,17 +411,15 @@
   function initNavObserver() {
     const navLinks = document.querySelectorAll('.nav-link, .mobile-menu a');
 
-    // Click handler respecting castle access-gate
+    // Smooth scrolling click handler for nav links
     navLinks.forEach((link) => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
-        if (href && href.startsWith('#') && href !== '#hero') {
-          if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+        if (href && href.startsWith('#')) {
+          const target = document.querySelector(href);
+          if (target) {
             e.preventDefault();
-            if (typeof window.triggerGate === 'function') {
-              window.triggerGate(href);
-            }
-            return;
+            target.scrollIntoView({ behavior: 'smooth' });
           }
         }
       });
@@ -707,9 +705,20 @@
     revealEls.forEach(el => el.classList.add('visible'));
   }
 
-  // Initialize scroll animations once DOM and deferred scripts are ready
+  // Initialize all sections and animations once DOM and deferred scripts are ready
+  window.initAllSections = function() {
+    if (typeof window.initBooksShowcase === 'function') window.initBooksShowcase();
+    if (typeof window.initProcessBanner === 'function') window.initProcessBanner();
+    if (typeof window.initTechCastle === 'function') window.initTechCastle();
+    if (typeof window.initPulley === 'function') window.initPulley();
+    if (typeof window.initScrollAnimations === 'function') window.initScrollAnimations();
+    if (typeof window.initAnimatedFooter === 'function') window.initAnimatedFooter();
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  };
+  window.initProtectedSections = window.initAllSections;
+
   const startDeferredMotion = () => {
-    initScrollAnimations();
+    window.initAllSections();
   };
 
   if (document.readyState === 'loading') {

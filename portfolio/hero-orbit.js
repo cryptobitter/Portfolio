@@ -522,10 +522,6 @@
   const scrollProxy = { y: 0 };
 
   function jumpToEnd() {
-    if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
-      if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
-      return;
-    }
     isHeroActive = false;
     queuedStationIndex = null;
     if (isTweening) {
@@ -883,12 +879,7 @@
               tweenToStation(2);
             } else {
               // At exact Station 3 pin end: check if access gate is locked
-              if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
-                e.preventDefault();
-                if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
-              } else {
-                isHeroActive = false;
-              }
+              isHeroActive = false;
             }
           }
         } else if (e.deltaY < 0) {
@@ -948,12 +939,7 @@
                 tweenToStation(2);
                 touchStartY = e.touches[0].clientY;
               } else {
-                if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
-                  e.preventDefault();
-                  if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
-                } else {
-                  isHeroActive = false;
-                }
+                isHeroActive = false;
               }
             }
           } else {
