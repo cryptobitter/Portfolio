@@ -50,6 +50,7 @@
   /* ============ Animated Footer Gateway (Vengeance UI ASCII Hands) ============ */
   function initAnimatedFooter() {
     const gateway    = document.getElementById('animatedFooterGateway');
+    if (!gateway) return;
     const leftWrap   = document.getElementById('afLeftWrap');
     const rightWrap  = document.getElementById('afRightWrap');
     const leftCanvas = document.getElementById('afLeftCanvas');
