@@ -2887,6 +2887,57 @@ body.intro-complete footer {
   pointer-events: none;
 }
 .skip-to-projects-link:focus,
+
+/* Visible Hero Skip Button (Always visible on hero stage) */
+.hero-skip-btn {
+  position: absolute;
+  bottom: clamp(20px, 3.5vh, 36px);
+  right: clamp(20px, 3vw, 44px);
+  z-index: 45;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hero-gold-accent, #C8A256);
+  background: rgba(18, 16, 14, 0.78);
+  border: 1px solid rgba(200, 162, 86, 0.35);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+}
+.hero-skip-btn:hover,
+.hero-skip-btn:focus-visible {
+  background: rgba(200, 162, 86, 0.2);
+  border-color: rgba(200, 162, 86, 0.8);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(200, 162, 86, 0.3);
+  outline: none;
+}
+.hero-skip-btn svg {
+  transition: transform 0.2s ease;
+}
+.hero-skip-btn:hover svg {
+  transform: translateY(2px);
+}
+@media (max-width: 640px) {
+  .hero-skip-btn {
+    bottom: 14px;
+    right: 14px;
+    padding: 6px 12px;
+    font-size: 0.62rem;
+  }
+}
+
 .skip-to-projects-link:focus-visible {
   opacity: 1;
   pointer-events: auto;

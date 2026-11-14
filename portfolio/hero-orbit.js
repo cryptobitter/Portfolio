@@ -41,8 +41,8 @@
       { id: 'side',  frame: 49,  label: '02. PROFILE', title: 'System Architecture & Capabilities' },
       { id: 'back',  frame: 0,   label: '03. BACK', title: 'Featured Projects & Work' }
     ],
-    moveDuration: 1.5,         // Step move tween duration in seconds (GSAP)
-    cooldownMs: 300,           // Inertia swallow cooldown after tween in ms
+    moveDuration: 1.0,         // Step move tween duration in seconds (GSAP)
+    cooldownMs: 250,           // Inertia swallow cooldown after tween in ms
     flameIntensity: 1.0,       // Torch flame intensity multiplier
     particleCount: 40,         // Translucent flame particles per torch
     emberCount: 4,             // Tiny rising sparks per torch
@@ -95,6 +95,7 @@
   let currentStationIndex = 0;
   let currentFrameFloat = CONFIG.stations[0].frame;
   let isTweening = false;
+  let queuedStationIndex = null;
   let lastTweenEndTime = 0;
   let isHeroActive = true;
   let isMobile = false;
@@ -520,12 +521,32 @@
   // ============================================================================
   const scrollProxy = { y: 0 };
 
-  function tweenToStation(targetStationIndex) {
-    if (isTweening) return;
+  function jumpToEnd() {
+    if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
+      if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
+      return;
+    }
+    isHeroActive = false;
+    queuedStationIndex = null;
+    if (isTweening) {
+      window.gsap.killTweensOf(scrollProxy);
+      isTweening = false;
+    }
+    currentStationIndex = 2;
+    updateStationDots(2);
+    const targetScroll = pinDistance + 40;
+    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+  }
+
+  function tweenToStation(targetStationIndex, isQueued = false) {
+    if (isTweening) {
+      queuedStationIndex = targetStationIndex;
+      return;
+    }
     if (targetStationIndex < 0 || targetStationIndex >= CONFIG.stations.length) return;
 
     const now = Date.now();
-    if (now - lastTweenEndTime < CONFIG.cooldownMs) return;
+    if (!isQueued && (now - lastTweenEndTime < CONFIG.cooldownMs)) return;
 
     if (prefersReducedMotion) {
       const targetP = targetStationIndex === 0 ? 0 : (targetStationIndex === 1 ? 0.5 : 1.0);
@@ -556,6 +577,13 @@
         lastTweenEndTime = Date.now();
         window.scrollTo(0, targetScrollY);
         handleScrollProgress(targetP);
+        if (queuedStationIndex !== null && queuedStationIndex !== currentStationIndex) {
+          const nextTarget = queuedStationIndex;
+          queuedStationIndex = null;
+          tweenToStation(nextTarget, true);
+        } else {
+          queuedStationIndex = null;
+        }
       }
     });
   }
@@ -825,9 +853,16 @@
 
       // When within the hero pin range (0 to pinDistance)
       if (scrollY <= pinDistance + 10) {
-        // While our GSAP tween is running, lock all user input completely
+                // While tweening: queue one extra step instead of ignoring it
         if (isTweening) {
           e.preventDefault();
+          if (Math.abs(e.deltaY) >= CONFIG.wheelThreshold) {
+            if (e.deltaY > 0) {
+              queuedStationIndex = Math.min(CONFIG.stations.length - 1, currentStationIndex + 1);
+            } else {
+              queuedStationIndex = Math.max(0, currentStationIndex - 1);
+            }
+          }
           return;
         }
 
@@ -882,8 +917,16 @@
       const scrollY = window.scrollY || window.pageYOffset || 0;
 
       if (scrollY <= pinDistance + 10 && e.touches && e.touches.length) {
-        if (isTweening) {
+                if (isTweening) {
           e.preventDefault();
+          const deltaY = touchStartY - e.touches[0].clientY;
+          if (Math.abs(deltaY) > CONFIG.touchThreshold) {
+            if (deltaY > 0) {
+              queuedStationIndex = Math.min(CONFIG.stations.length - 1, currentStationIndex + 1);
+            } else {
+              queuedStationIndex = Math.max(0, currentStationIndex - 1);
+            }
+          }
           return;
         }
 
@@ -934,14 +977,35 @@
       const scrollY = window.scrollY || window.pageYOffset || 0;
 
       if (scrollY <= pinDistance + 10) {
+        if (e.key === 'End' || e.key === 'PageDown') {
+          e.preventDefault();
+          jumpToEnd();
+          return;
+        }
+
+        if (e.key === 'Home' || e.key === 'PageUp') {
+          e.preventDefault();
+          queuedStationIndex = null;
+          if (isTweening) {
+            window.gsap.killTweensOf(scrollProxy);
+            isTweening = false;
+          }
+          tweenToStation(0, true);
+          return;
+        }
+
         if (isTweening) {
-          if (['ArrowDown', 'PageDown', ' ', 'ArrowUp', 'PageUp'].includes(e.key)) {
+          if (['ArrowDown', ' '].includes(e.key)) {
             e.preventDefault();
+            queuedStationIndex = Math.min(CONFIG.stations.length - 1, currentStationIndex + 1);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            queuedStationIndex = Math.max(0, currentStationIndex - 1);
           }
           return;
         }
 
-        if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
+        if (['ArrowDown', ' '].includes(e.key)) {
           if (currentStationIndex === 0) {
             e.preventDefault();
             tweenToStation(1);
@@ -953,15 +1017,10 @@
               e.preventDefault();
               tweenToStation(2);
             } else {
-              if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
-                e.preventDefault();
-                if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
-              } else {
-                isHeroActive = false;
-              }
+              jumpToEnd();
             }
           }
-        } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
+        } else if (e.key === 'ArrowUp') {
           if (currentStationIndex === 2) {
             e.preventDefault();
             tweenToStation(1);
@@ -969,12 +1028,6 @@
             e.preventDefault();
             tweenToStation(0);
           }
-        } else if (e.key === 'Home') {
-          e.preventDefault();
-          tweenToStation(0);
-        } else if (e.key === 'End' && scrollY <= pinDistance) {
-          e.preventDefault();
-          tweenToStation(2);
         }
       }
     });
@@ -987,17 +1040,11 @@
     });
 
     // 5. Skip link & Project Links
-    const jumpLinks = document.querySelectorAll('.skip-to-projects-link, a[href="#projects"]');
+    const jumpLinks = document.querySelectorAll('.skip-to-projects-link, .hero-skip-btn, a[href="#projects"]');
     jumpLinks.forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        if (typeof window.isGateLocked === 'function' && window.isGateLocked()) {
-          if (typeof window.triggerGate === 'function') { window.triggerGate('#projects'); }
-          return;
-        }
-        isHeroActive = false;
-        const targetScroll = pinDistance + 40;
-        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        jumpToEnd();
       });
     });
   }
