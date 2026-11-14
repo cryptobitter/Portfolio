@@ -787,6 +787,14 @@
     if (typeof window.initTechCastle === 'function') window.initTechCastle();
     if (typeof window.initPulley === 'function') window.initPulley();
     if (typeof window.initScrollAnimations === 'function') window.initScrollAnimations();
+  if (document.fonts) {
+    document.fonts.ready.then(() => {
+      if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+    });
+  }
+  window.addEventListener('load', () => {
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  });
     if (typeof window.initAnimatedFooter === 'function') window.initAnimatedFooter();
     if (window.ScrollTrigger) window.ScrollTrigger.refresh();
   };
@@ -971,7 +979,7 @@
       });
 
       // Cards 3D Entry Motion
-      const animatedCards = document.querySelectorAll('.proj-card-editorial, .sec-proj-card, .timeline-row, .process-step');
+      const animatedCards = document.querySelectorAll('.proj-card-editorial, .sec-proj-card, .timeline-row');
       animatedCards.forEach(card => {
         gsap.fromTo(card,
           { opacity: 0, y: 35, rotateX: 6 },
