@@ -715,6 +715,10 @@
     // Animation & timer loop
     let rafId = 0;
     function frame(t) {
+      if (!isGatewayVisible) {
+        rafId = 0;
+        return;
+      }
       const now = Date.now();
       for (let i = 0; i < hands.length; i++) {
         renderHand(hands[i], now);

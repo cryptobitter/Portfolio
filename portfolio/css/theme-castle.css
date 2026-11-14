@@ -2543,14 +2543,15 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
 .animated-footer-gateway {
   position: relative;
   width: 100%;
-  height: 65vh;
-  min-height: 460px;
-  max-height: 640px;
+  height: clamp(240px, 40vh, 380px) !important;
+  min-height: 240px !important;
+  max-height: 400px !important;
   background: radial-gradient(ellipse at 50% 30%, rgba(34, 31, 28, 0.7) 0%, rgba(14, 13, 12, 0.98) 75%), var(--stone-deepest) !important;
   overflow: hidden;
-  border-top: 2px solid var(--gold-hairline) !important;
-  border-bottom: 2px solid var(--gold-hairline) !important;
-  box-shadow: inset 0 24px 60px rgba(0, 0, 0, 0.9) !important;
+  border-top: 1px solid var(--gold-hairline) !important;
+  border-bottom: none !important;
+  box-shadow: inset 0 16px 40px rgba(0, 0, 0, 0.8) !important;
+  margin-bottom: 0 !important;
 }
 
 /* Subtle Portcullis Bars & Iron Grille Pattern */
