@@ -88,9 +88,26 @@
   ];
 
   
+    // ============================================================================
+  // CERTIFICATE LIGHTBOX CONTROLLER (ACCESSIBLE, ESC CLOSES, IMAGES & NATIVE PDFS)
   // ============================================================================
-  // CERTIFICATE LIGHTBOX CONTROLLER (ACCESSIBLE, ESC CLOSES)
-  // ============================================================================
+  const CERT_PDF_MAP = {
+    'flyrank-backend-ai-engineering': 'assets/certificates-src/flyrank-backend-ai-engineering.pdf',
+    'flyrank-ai-fluency': 'assets/certificates-src/flyrank-ai-fluency.pdf',
+    'walmart-forage': 'assets/certificates-src/walmart-forage.pdf',
+    'ibm-data-analysis-python': 'assets/certificates-src/ibm-data-analysis-python.pdf',
+    'anthropic-claude-101': 'assets/certificates-src/anthropic-claude-101.pdf',
+    'anthropic-mcp-intro': 'assets/certificates-src/anthropic-mcp-intro.pdf',
+    'anthropic-agent-skills': 'assets/certificates-src/anthropic-agent-skills.pdf',
+    'microsoft-prompt-engineering': 'assets/certificates-src/microsoft-prompt-engineering.pdf',
+    'google-cloud-generative-ai': 'assets/certificates-src/google-cloud-generative-ai.pdf',
+    'anthropic-claude-code': 'assets/certificates-src/anthropic-claude-code.pdf',
+    'anthropic-mcp-advanced': 'assets/certificates-src/anthropic-mcp-advanced.pdf',
+    'anthropic-vertex-ai': 'assets/certificates-src/anthropic-vertex-ai.pdf',
+    'anthropic-ai-fluency': 'assets/certificates-src/anthropic-ai-fluency.pdf',
+    'buildwithbharat-2': 'assets/certificates-src/buildwithbharat-2.jpg'
+  };
+
   function initCertificateLightbox() {
     const lb = document.getElementById('certLightbox');
     const lbImg = document.getElementById('certLightboxImg');
@@ -100,18 +117,26 @@
 
     let triggerElem = null;
 
-    function openCert(src, title, id, verify) {
+    function openCert(src, title, id, verify, slug) {
       triggerElem = document.activeElement;
       lbImg.src = src;
       lbImg.alt = title || 'Certificate';
+      const pdfPath = slug && CERT_PDF_MAP[slug] ? CERT_PDF_MAP[slug] : null;
+
       if (lbCap) {
-        let metaHtml = `<div style="font-weight:600;font-size:0.95rem;">${title || ''}</div>`;
+        let metaHtml = `<div style="font-weight:700;font-size:1.05rem;color:var(--marble-primary,#F5F2EC);letter-spacing:0.02em;">${title || 'Certificate Verification'}</div>`;
         if (id) {
-          metaHtml += `<div style="margin-top:4px;font-size:0.78rem;font-family:var(--font-mono);color:var(--gold-pale);">Credential ID: ${id}</div>`;
+          metaHtml += `<div style="margin-top:6px;font-size:0.78rem;font-family:var(--font-mono);color:var(--gold-pale,#D8CBB2);">Credential ID: <span style="color:#FFFFFF;font-weight:600;">${id}</span></div>`;
+        }
+        metaHtml += `<div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">`;
+        if (pdfPath) {
+          const isPdf = pdfPath.endsWith('.pdf');
+          metaHtml += `<a href="${pdfPath}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;background:rgba(201,162,75,0.22);border:1px solid var(--gold-accent,#C9A24B);color:#FFFFFF;font-size:0.76rem;font-family:var(--font-mono);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(201,162,75,0.45)'" onmouseout="this.style.background='rgba(201,162,75,0.22)'">${isPdf ? '&#128196; View Original PDF' : '&#128065; Full Resolution File'} &nearr;</a>`;
         }
         if (verify) {
-          metaHtml += `<div style="margin-top:6px;"><a href="${verify}" target="_blank" rel="noopener noreferrer" style="font-size:0.78rem;font-family:var(--font-mono);color:var(--hero-gold-accent);text-decoration:underline;display:inline-flex;align-items:center;gap:4px;">Verify Credential Online &nearr;</a></div>`;
+          metaHtml += `<a href="${verify}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;background:rgba(62,207,142,0.18);border:1px solid #3ECF8E;color:#FFFFFF;font-size:0.76rem;font-family:var(--font-mono);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(62,207,142,0.35)'" onmouseout="this.style.background='rgba(62,207,142,0.18)'">&check; Verify Credential Online &nearr;</a>`;
         }
+        metaHtml += `</div>`;
         lbCap.innerHTML = metaHtml;
       }
 
@@ -142,7 +167,7 @@
       }
     });
 
-    // Delegate click for all certificate buttons on the page
+    // Delegate click for all certificate buttons on the entire page
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('.ach-cert-btn');
       if (!btn) return;
@@ -152,7 +177,7 @@
       const id = btn.getAttribute('data-id');
       const verify = btn.getAttribute('data-verify');
       if (slug) {
-        openCert(`assets/certificates/${slug}.webp`, title, id, verify);
+        openCert(`assets/certificates/${slug}.webp`, title, id, verify, slug);
       }
     });
   }
@@ -350,10 +375,17 @@
   }
 
   window.initPulley = initPulley;
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPulley);
-  } else {
+  window.initCertificateLightbox = initCertificateLightbox;
+
+  function initAllPulleyModules() {
+    initCertificateLightbox();
     initPulley();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllPulleyModules);
+  } else {
+    initAllPulleyModules();
   }
 })();
 
