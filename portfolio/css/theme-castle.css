@@ -3104,3 +3104,57 @@ button.bs-dp-tag.is-active, .bs-dp-tag.is-active {
   outline: 2px solid var(--hero-gold-accent, #C9A24B);
   outline-offset: 2px;
 }
+
+
+/* Pulley Slate Highlights & Content Fit */
+.pulley-card-highlights {
+  list-style: none;
+  margin: 8px 0 10px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pulley-card-highlights li {
+  font-size: 0.79rem;
+  line-height: 1.42;
+  color: #CCC7BC;
+  position: relative;
+  padding-left: 13px;
+}
+
+.pulley-card-highlights li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--hero-gold-accent, #C9A24B);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.pulley-card-highlights li strong {
+  color: #F5F2EC;
+  font-weight: 600;
+}
+
+.pulley-card .cert-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--gold-pale, #D8CBB2);
+}
+
+.pulley-card .cert-meta-bar a {
+  color: var(--hero-gold-accent, #C9A24B);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.pulley-card .cert-meta-bar a:hover {
+  color: #FFFFFF;
+}
